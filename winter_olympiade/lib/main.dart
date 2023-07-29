@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:winter_olympiade/mainMenu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Winter Olympiade',
+      title: 'Mini Olympiade',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Winter Olympiade'),
+      home: MainMenu(),
     );
   }
 }
@@ -105,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(" World"),
             const Text(
               'You have pushed the button this many times:',
             ),
