@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'main_menu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:winter_olympiade/MainMenu.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});
@@ -9,7 +10,7 @@ class TeamSelection extends StatefulWidget {
 }
 
 class _TeamSelectionState extends State<TeamSelection> {
-  String selectedTeam = ''; // Hier kannst du das ausgewählte Team speichern
+  String selectedTeam = '';
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +24,18 @@ class _TeamSelectionState extends State<TeamSelection> {
           children: [
             Wrap(
               spacing: 8.0,
-              children: _buildTeamChips(), // Methode, um Chips zu erstellen
+              children: _buildTeamChips(),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String storedSelectedTeam = prefs.getString('selectedTeam') ?? '';
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            MainMenu()));
+                  MaterialPageRoute(
+                    builder: (context) => mainMenu(),
+                  ),
+                );
               },
               child: Text('Zum Hauptmenü'),
             ),
@@ -57,10 +61,11 @@ class _TeamSelectionState extends State<TeamSelection> {
       return ChoiceChip(
         label: Text(team),
         selected: isSelected,
-        onSelected: (bool value) {
+        onSelected: (bool value) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
           setState(() {
-            selectedTeam =
-                value ? team : ''; // Auswähltes Team setzen oder leeren
+            selectedTeam = value ? team : '';
+            prefs.setString('selectedTeam', selectedTeam);
           });
         },
       );
