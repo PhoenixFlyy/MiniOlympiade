@@ -3,10 +3,46 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/Dartsrechner.dart';
 import 'package:winter_olympiade/Laufplan.dart';
+import 'package:winter_olympiade/Regeln.dart';
 import 'package:winter_olympiade/Schachuhr.dart';
+import 'package:winter_olympiade/TeamSelection.dart';
 
 void main() {
-  runApp(MaterialApp(home: mainMenu()));
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _checkIfTeamSelected(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error'));
+        } else {
+          final bool teamSelected = snapshot.data ?? false;
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Mini Olympiade',
+            theme: ThemeData.dark(
+              useMaterial3: true,
+            ),
+            home: teamSelected ? mainMenu() : TeamSelection(),
+          );
+        }
+      },
+    );
+  }
+
+  Future<bool> _checkIfTeamSelected() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('selectedTeam');
+  }
 }
 
 class mainMenu extends StatefulWidget {
@@ -17,15 +53,36 @@ class mainMenu extends StatefulWidget {
 }
 
 class _mainMenuState extends State<mainMenu> {
-  int currentRound = 1;
   int maxtime = 240;
-  int eventStartTime = 0;
+  DateTime? eventStartTime;
+
+  int roundTime = 10; // Round time in minutes
+  final _roundTimeController = TextEditingController();
 
   bool eventStarted = false;
-  String selectedTeam = ''; // Hier wird das ausgewählte Team gespeichert
+  String selectedTeam = '';
+
+  TimeOfDay _eventStartTime = TimeOfDay(hour: 0, minute: 0);
 
   final _maxTimeController = TextEditingController();
   final _eventStartTimeController = TextEditingController();
+
+  List<List<String>> pairings = [
+    // ... Your existing pairings list ...
+  ];
+
+  void _startEvent() {
+    setState(() {
+      eventStarted = true;
+      eventStartTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        _eventStartTime.hour,
+        _eventStartTime.minute,
+      );
+    });
+  }
 
   @override
   void initState() {
@@ -44,15 +101,41 @@ class _mainMenuState extends State<mainMenu> {
   @override
   void dispose() {
     _maxTimeController.dispose();
+    _roundTimeController.dispose();
     _eventStartTimeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Calculate current round
+    int elapsedSeconds =
+        DateTime.now().difference(eventStartTime ?? DateTime.now()).inSeconds;
+    int currentRound = (elapsedSeconds / (roundTime * 60)).ceil(); // Use roundTime here
+
+    // Determine team's match
+    String match = '';
+    if (selectedTeam.isNotEmpty &&
+        currentRound > 0 &&
+        currentRound <= pairings.length) {
+      List<String> roundPairings = pairings[currentRound - 1];
+      for (String pairing in roundPairings) {
+        List<String> teams = pairing.split('-');
+        if (teams.contains(selectedTeam.split(' ')[1])) {
+          match = pairing;
+          break;
+        }
+      }
+    }
+
+    String appBarTitle = 'Olympiade';
+    if (selectedTeam.isNotEmpty) {
+      appBarTitle += ' - $selectedTeam';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mini Olympiade'),
+        title: Text(appBarTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -80,48 +163,78 @@ class _mainMenuState extends State<mainMenu> {
               Text('Runde $currentRound'),
             ],
           ),
-          // Hier wird das ausgewählte Team angezeigt
-          Text(
-            'Ausgewähltes Team: $selectedTeam',
-            style: TextStyle(fontSize: 16),
-          ),
-
-          Spacer(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => DartsRechner()));
-                },
-                child: Text('Dartsrechner'),
-              ),
-              SizedBox(width: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SchachUhr(
-                                maxtime: maxtime,
-                              )));
-                },
-                child: Text('Schachuhr'),
-              ),
+              Icon(Icons.people),
+              SizedBox(width: 8.0),
+              Text('Team\'s Match: $match'),
             ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Aktion für den "Regeln"-Button
-            },
-            child: Text('Regeln'),
+          Spacer(),
+          Container(
+            height: MediaQuery.of(context).size.height / 12,
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0),
+              ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => DartsRechner()));
+              },
+              child: Text(
+                'Dartsrechner',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.0),
+          Container(
+            height: MediaQuery.of(context).size.height / 12,
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SchachUhr(
+                          maxtime: maxtime,
+                        )));
+              },
+              child: Text(
+                'Schachuhr',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.0),
+          Container(
+            height: MediaQuery.of(context).size.height / 12,
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0),
+              ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RulesScreen()));
+              },
+              child: Text(
+                'Regeln',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
           ),
           SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
               _startEvent();
             },
-            child: Text(eventStarted ? 'Event Gestartet' : 'Event Starten'),
+            child: Text(eventStarted ? 'Das Event ist im Gange...' : 'Event Starten'),
           ),
           SizedBox(height: 16.0),
         ],
@@ -129,9 +242,11 @@ class _mainMenuState extends State<mainMenu> {
     );
   }
 
+
+
   void _openSettings() {
     _maxTimeController.text = maxtime.toString();
-    _eventStartTimeController.text = eventStartTime.toString();
+    _roundTimeController.text = roundTime.toString(); // Add this line
 
     showModalBottomSheet(
       context: context,
@@ -146,11 +261,23 @@ class _mainMenuState extends State<mainMenu> {
                   controller: _maxTimeController,
                   keyboardType: TextInputType.number,
                   decoration:
-                      InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
+                  InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
                       maxtime = int.tryParse(value) ?? maxtime;
+                    });
+                  },
+                ),
+                TextField( // New TextField for round time
+                  controller: _roundTimeController,
+                  keyboardType: TextInputType.number,
+                  decoration:
+                  InputDecoration(labelText: "Rundenzeit in Minuten"),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged: (value) {
+                    setState(() {
+                      roundTime = int.tryParse(value) ?? roundTime;
                     });
                   },
                 ),
@@ -162,13 +289,20 @@ class _mainMenuState extends State<mainMenu> {
                   },
                   child: Text('Laufplan öffnen'),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => TeamSelection(),
+                    ));
+                  },
+                  child: Text('Teamauswahl'),
+                ),
                 SizedBox(height: 16.0),
                 TimePickerWidget(
-                  controller: _eventStartTimeController,
-                  labelText: "Event Startzeit",
-                  onChanged: (value) {
+                  initialTime: _eventStartTime,
+                  onTimeSelected: (selectedTime) {
                     setState(() {
-                      eventStartTime = value;
+                      _eventStartTime = selectedTime;
                     });
                   },
                 ),
@@ -180,25 +314,16 @@ class _mainMenuState extends State<mainMenu> {
       },
     );
   }
-
-  void _startEvent() {
-    setState(() {
-      eventStarted = true;
-      eventStartTime = DateTime.now().second;
-    });
-  }
 }
 
 class TimePickerWidget extends StatefulWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final ValueChanged<int> onChanged;
+  final TimeOfDay initialTime;
+  final Function(TimeOfDay) onTimeSelected;
 
   const TimePickerWidget({
     Key? key,
-    required this.controller,
-    required this.labelText,
-    required this.onChanged,
+    required this.initialTime,
+    required this.onTimeSelected,
   }) : super(key: key);
 
   @override
@@ -206,46 +331,33 @@ class TimePickerWidget extends StatefulWidget {
 }
 
 class _TimePickerWidgetState extends State<TimePickerWidget> {
-  int selectedTime = 0;
+  late TimeOfDay _selectedTime;
 
   @override
   void initState() {
     super.initState();
-    selectedTime = int.tryParse(widget.controller.text) ?? 0;
+    _selectedTime = widget.initialTime;
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: TextField(
-            controller: widget.controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: widget.labelText),
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: (value) {
-              setState(() {
-                selectedTime = int.tryParse(value) ?? 0;
-                widget.onChanged(selectedTime);
-              });
-            },
-          ),
-        ),
+        Text('Event Startzeit: ${_selectedTime.format(context)}'),
         IconButton(
           icon: Icon(Icons.access_time),
           onPressed: () async {
-            int pickedTime = await showTimePicker(
+            final TimeOfDay? pickedTime = await showTimePicker(
               context: context,
-              initialTime: TimeOfDay(
-                  hour: selectedTime ~/ 3600,
-                  minute: (selectedTime % 3600) ~/ 60),
-            ).then((time) => time!.hour * 3600 + time.minute * 60);
-            setState(() {
-              selectedTime = pickedTime;
-              widget.controller.text = selectedTime.toString();
-              widget.onChanged(selectedTime);
-            });
+              initialTime: _selectedTime,
+            );
+
+            if (pickedTime != null) {
+              setState(() {
+                _selectedTime = pickedTime;
+              });
+              widget.onTimeSelected(pickedTime);
+            }
           },
         ),
       ],
