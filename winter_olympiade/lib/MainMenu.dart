@@ -6,6 +6,22 @@ import 'package:winter_olympiade/Laufplan.dart';
 import 'package:winter_olympiade/Regeln.dart';
 import 'package:winter_olympiade/Schachuhr.dart';
 import 'package:winter_olympiade/TeamSelection.dart';
+import 'dart:async';
+import 'package:winter_olympiade/main.dart'; //brauchen wir das?
+
+class TeamDetails {
+  final String selectedTeam;
+  final String opponent;
+  final int round;
+  final int discipline;
+
+  TeamDetails({
+    required this.selectedTeam,
+    required this.opponent,
+    required this.round,
+    required this.discipline,
+  });
+}
 
 void main() {
   runApp(const MyApp());
@@ -53,6 +69,9 @@ class mainMenu extends StatefulWidget {
 }
 
 class _mainMenuState extends State<mainMenu> {
+  late Timer _timer;
+  String match = ''; // Hier definiere ich 'match' als Instanzvariable.
+
   int maxtime = 240;
   DateTime? eventStartTime;
 
@@ -64,6 +83,8 @@ class _mainMenuState extends State<mainMenu> {
 
   TimeOfDay _eventStartTime = TimeOfDay(hour: 0, minute: 0);
 
+  late Future<TeamDetails> futureTeamDetails;
+
   final _maxTimeController = TextEditingController();
   final _eventStartTimeController = TextEditingController();
 
@@ -72,30 +93,103 @@ class _mainMenuState extends State<mainMenu> {
   ];
 
   void _startEvent() {
+    eventStartTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      _eventStartTime.hour,
+      _eventStartTime.minute,
+    );
     setState(() {
       eventStarted = true;
-      eventStartTime = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        _eventStartTime.hour,
-        _eventStartTime.minute,
-      );
     });
   }
+
+  int currentRound = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadSelectedTeam();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await _loadSelectedTeam();
+
+      if (selectedTeam.isNotEmpty &&
+          currentRound > 0 &&
+          currentRound <= pairings.length) {
+        List<String> roundPairings = pairings[currentRound - 1];
+        for (String pairing in roundPairings) {
+          List<String> teams = pairing.split('-');
+          if (teams.contains(selectedTeam.split(' ')[1])) {
+            match = pairing;
+            break;
+          }
+        }
+      }
+    });
+
+    _timer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) {
+        if (this.mounted) {
+          setState(() {
+            if (eventStarted) {
+              int elapsedSeconds = DateTime.now()
+                  .difference(eventStartTime ?? DateTime.now())
+                  .inSeconds;
+              int newCurrentRound = (elapsedSeconds / (roundTime * 60)).ceil();
+
+              if (newCurrentRound != currentRound) {
+                currentRound = newCurrentRound;
+
+                if (selectedTeam.isNotEmpty &&
+                    currentRound > 0 &&
+                    currentRound <= pairings.length) {
+                  List<String> roundPairings = pairings[currentRound - 1];
+                  for (String pairing in roundPairings) {
+                    List<String> teams = pairing.split('-');
+                    if (teams.contains(selectedTeam.split(' ')[1])) {
+                      match = pairing;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+      },
+    );
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await _loadSelectedTeam();
+      futureTeamDetails = getTeamDetails();
+    });
   }
 
-  void _loadSelectedTeam() async {
+  Future<void> _loadSelectedTeam() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String storedSelectedTeam = prefs.getString('selectedTeam') ?? '';
-    setState(() {
-      selectedTeam = storedSelectedTeam;
-    });
+    if (this.mounted) {
+      setState(() {
+        selectedTeam = storedSelectedTeam;
+      });
+    }
+  }
+
+  Future<TeamDetails> getTeamDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String selectedTeam = prefs.getString('selectedTeam') ?? '';
+    String opponent = prefs.getString('opponent') ?? '';
+    int round = prefs.getInt('round') ?? 0;
+    int discipline = prefs.getInt('discipline') ?? 0;
+
+    return TeamDetails(
+      selectedTeam: selectedTeam,
+      opponent: opponent,
+      round: round,
+      discipline: discipline,
+    );
   }
 
   @override
@@ -103,6 +197,7 @@ class _mainMenuState extends State<mainMenu> {
     _maxTimeController.dispose();
     _roundTimeController.dispose();
     _eventStartTimeController.dispose();
+    _timer.cancel(); // Cancel the timer
     super.dispose();
   }
 
@@ -111,7 +206,19 @@ class _mainMenuState extends State<mainMenu> {
     // Calculate current round
     int elapsedSeconds =
         DateTime.now().difference(eventStartTime ?? DateTime.now()).inSeconds;
-    int currentRound = (elapsedSeconds / (roundTime * 60)).ceil(); // Use roundTime here
+    int currentRound = (elapsedSeconds / (roundTime * 60)).ceil();
+
+    // Calculate remaining time in the current round
+    int elapsedSecondsInCurrentRound = elapsedSeconds % (roundTime * 60);
+    int remainingSecondsInCurrentRound =
+        roundTime * 60 - elapsedSecondsInCurrentRound;
+
+    String remainingTimeInCurrentRound =
+        Duration(seconds: remainingSecondsInCurrentRound)
+            .toString()
+            .split('.')
+            .first
+            .padLeft(8, "0");
 
     // Determine team's match
     String match = '';
@@ -152,7 +259,7 @@ class _mainMenuState extends State<mainMenu> {
             children: [
               Icon(Icons.timer),
               SizedBox(width: 8.0),
-              Text('00:00'),
+              Text('Zeit: $remainingTimeInCurrentRound'),
             ],
           ),
           Row(
@@ -168,7 +275,7 @@ class _mainMenuState extends State<mainMenu> {
             children: [
               Icon(Icons.people),
               SizedBox(width: 8.0),
-              Text('Team\'s Match: $match'),
+              Text('Team\'s Match: $match'), // Use match variable here
             ],
           ),
           Spacer(),
@@ -202,8 +309,8 @@ class _mainMenuState extends State<mainMenu> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SchachUhr(
-                          maxtime: maxtime,
-                        )));
+                              maxtime: maxtime,
+                            )));
               },
               child: Text(
                 'Schachuhr',
@@ -234,7 +341,8 @@ class _mainMenuState extends State<mainMenu> {
             onPressed: () {
               _startEvent();
             },
-            child: Text(eventStarted ? 'Das Event ist im Gange...' : 'Event Starten'),
+            child: Text(
+                eventStarted ? 'Das Event ist im Gange...' : 'Event Starten'),
           ),
           SizedBox(height: 16.0),
         ],
@@ -242,11 +350,11 @@ class _mainMenuState extends State<mainMenu> {
     );
   }
 
-
-
   void _openSettings() {
     _maxTimeController.text = maxtime.toString();
-    _roundTimeController.text = roundTime.toString(); // Add this line
+    _roundTimeController.text = roundTime.toString();
+
+    // _roundTimeController.text = roundTime.toString(); // ChatGPt ist sich uneins, ob man das hier braucht
 
     showModalBottomSheet(
       context: context,
@@ -261,7 +369,7 @@ class _mainMenuState extends State<mainMenu> {
                   controller: _maxTimeController,
                   keyboardType: TextInputType.number,
                   decoration:
-                  InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
+                      InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
@@ -269,11 +377,12 @@ class _mainMenuState extends State<mainMenu> {
                     });
                   },
                 ),
-                TextField( // New TextField for round time
+                TextField(
+                  // New TextField for round time
                   controller: _roundTimeController,
                   keyboardType: TextInputType.number,
                   decoration:
-                  InputDecoration(labelText: "Rundenzeit in Minuten"),
+                      InputDecoration(labelText: "Rundenzeit in Minuten"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
