@@ -61,6 +61,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MatchDetails {
+  final String opponent;
+  final int discipline;
+
+  MatchDetails({required this.opponent, required this.discipline});
+}
+
 class mainMenu extends StatefulWidget {
   const mainMenu({super.key});
 
@@ -69,8 +76,21 @@ class mainMenu extends StatefulWidget {
 }
 
 class _mainMenuState extends State<mainMenu> {
+
+  Map<String, String> disciplines = {
+    '1': 'Kicker',
+    '2': 'Darts',
+    '3': 'Billard',
+    '4': 'Bierpong',
+    '5': 'Kubb',
+    '6': 'Jenga',
+  };
+
+
+
   late Timer _timer;
   String match = ''; // Hier definiere ich 'match' als Instanzvariable.
+  String discipline = '';
 
   int maxtime = 240;
   DateTime? eventStartTime;
@@ -90,7 +110,55 @@ class _mainMenuState extends State<mainMenu> {
 
   List<List<String>> pairings = [
     // ... Your existing pairings list ...
+    ['1-6', '3-4', '2-5', '', '', ''],
+    ['', '', '', '4-2', '1-5', '6-3'],
+    ['3-2', '6-5', '1-4', '', '', ''],
+    ['', '', '', '3-5', '4-6', '2-1'],
+    ['5-4', '3-1', '6-2', '', '', ''],
+    ['', '', '', '6-1', '3-4', '5-2'],
+    ['6-3', '2-4', '5-1', '', '', ''],
+    ['', '', '', '2-3', '5-6', '4-1'],
+    ['2-1', '5-3', '4-6', '', '', ''],
+    ['', '', '', '4-5', '1-3', '2-6'],
+    ['5-2', '1-6', '3-4', '', '', ''],
+    ['', '', '', '6-3', '2-4', '1-5'],
+    ['4-1', '3-2', '5-6', '', '', ''],
+    ['', '', '', '1-2', '3-5', '4-6'],
+    ['2-6', '5-4', '1-3', '', '', ''],
+    ['', '', '', '2-5', '1-6', '3-4'],
+    ['1-5', '6-3', '4-2', '', '', ''],
+    ['', '', '', '1-4', '2-3', '6-5'],
+    ['4-6', '2-1', '3-5', '', '', ''],
+    ['', '', '', '6-2', '4-5', '1-3'],
+    ['3-4', '5-2', '6-1', '', '', ''],
+    ['', '', '', '5-1', '3-6', '2-4'],
+    ['6-5', '4-1', '2-3', '', '', ''],
+    ['', '', '', '4-6', '1-2', '5-3'],
+    ['3-1', '2-6', '4-5', '', '', ''],
+    ['', '', '', '3-4', '2-5', '1-6'],
+    ['2-4', '1-5', '6-3', '', '', ''],
+    ['', '', '', '5-6', '1-4', '3-2'],
+    ['5-3', '4-6', '1-2', '', '', ''],
+    ['', '', '', '1-3', '2-6', '5-4']
   ];
+
+  MatchDetails getOpponentAndDiscipline(int roundNumber, int teamNumber) {
+    for (var discipline = 0;
+        discipline < pairings[roundNumber - 1].length;
+        discipline++) {
+      var teams = pairings[roundNumber - 1][discipline].split('-');
+      if (teams.contains(teamNumber.toString())) {
+        var opponent =
+            (teams[0] == teamNumber.toString()) ? teams[1] : teams[0];
+        return MatchDetails(opponent: opponent, discipline: discipline + 1);
+      }
+    }
+    return MatchDetails(opponent: 'None', discipline: 0);
+  }
+
+  void main() {
+    getOpponentAndDiscipline(3, 4); // Runde und Teamnummer
+  }
 
   void _startEvent() {
     eventStartTime = DateTime(
@@ -117,20 +185,25 @@ class _mainMenuState extends State<mainMenu> {
       if (selectedTeam.isNotEmpty &&
           currentRound > 0 &&
           currentRound <= pairings.length) {
-        List<String> roundPairings = pairings[currentRound - 1];
-        for (String pairing in roundPairings) {
-          List<String> teams = pairing.split('-');
-          if (teams.contains(selectedTeam.split(' ')[1])) {
-            match = pairing;
-            break;
-          }
+        var details = getOpponentAndDiscipline(
+            currentRound, int.parse(selectedTeam.split(' ')[1]));
+
+        if (details.opponent != null) {
+          setState(() {
+            match =
+                'Team ${selectedTeam.split(' ')[1]} spielt gegen Team ${details.opponent} in Disziplin ${details.discipline}.';
+          });
+        } else {
+          setState(() {
+            match = 'Das ausgewählte Team spielt in dieser Runde nicht.';
+          });
         }
       }
     });
 
     _timer = Timer.periodic(
       Duration(seconds: 1),
-      (timer) {
+          (timer) {
         if (this.mounted) {
           setState(() {
             if (eventStarted) {
@@ -141,25 +214,25 @@ class _mainMenuState extends State<mainMenu> {
 
               if (newCurrentRound != currentRound) {
                 currentRound = newCurrentRound;
+              }
 
-                if (selectedTeam.isNotEmpty &&
-                    currentRound > 0 &&
-                    currentRound <= pairings.length) {
-                  List<String> roundPairings = pairings[currentRound - 1];
-                  for (String pairing in roundPairings) {
-                    List<String> teams = pairing.split('-');
-                    if (teams.contains(selectedTeam.split(' ')[1])) {
-                      match = pairing;
-                      break;
-                    }
-                  }
-                }
+              if (selectedTeam.isNotEmpty &&
+                  currentRound > 0 &&
+                  currentRound <= pairings.length) {
+                var details = getOpponentAndDiscipline(
+                    currentRound, int.parse(selectedTeam.split(' ')[1]));
+                setState(() {
+                  match = '${details.opponent}';
+                  discipline = '${details.discipline}';
+                });
               }
             }
           });
         }
       },
     );
+
+
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await _loadSelectedTeam();
@@ -275,7 +348,7 @@ class _mainMenuState extends State<mainMenu> {
             children: [
               Icon(Icons.people),
               SizedBox(width: 8.0),
-              Text('Team\'s Match: $match'), // Use match variable here
+              Text('Team\'s Match: $match in Disziplin $discipline: ${disciplines[discipline]}'), // Use match and discipline variables here
             ],
           ),
           Spacer(),
