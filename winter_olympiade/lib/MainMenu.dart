@@ -257,149 +257,155 @@ class _MainMenuState extends State<MainMenu> {
       body: ConstrainedBox(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.circle),
-                        Text(' Runde $currentRound',
-                            style: const TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.timer),
-                        Text(' Zeit: $remainingTimeInCurrentRound',
-                            style: const TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.people),
-                      Flexible(
+                      Row(
+                        children: [
+                          const Icon(Icons.circle),
+                          Text(' Runde $currentRound',
+                              style: const TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.timer),
+                          Text(' Zeit: $remainingTimeInCurrentRound',
+                              style: const TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.people),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 12,
+                      width: double.infinity,
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const DartsRechner()));
+                        },
+                        child: const Text(
+                          'Dartsrechner',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 12,
+                      width: double.infinity,
+                      child: FilledButton.tonal(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(16.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SchachUhr(
+                                        maxtime: maxtime,
+                                      )));
+                        },
+                        child: const Text(
+                          'Schachuhr',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16.0),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RulesScreen()));
+                            },
+                            child: const Text(
+                              'Regeln',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16.0),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SchedulePage(
+                                            pairings: pairings,
+                                            disciplines: disciplines,
+                                          )));
+                            },
+                            child: const Text(
+                              'Laufplan',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 12,
-                    width: double.infinity,
-                    child: FilledButton.tonal(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const DartsRechner()));
-                      },
-                      child: const Text(
-                        'Dartsrechner',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 12,
-                  width: double.infinity,
-                  child: FilledButton.tonal(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(16.0),
-                    ),
+                  OutlinedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SchachUhr(
-                                    maxtime: maxtime,
-                                  )));
+                      _startEvent();
                     },
-                    child: const Text(
-                      'Schachuhr',
-                      style: TextStyle(fontSize: 20),
-                    ),
+                    child: Text(eventStarted
+                        ? 'Das Event ist im Gange...'
+                        : 'Event Starten'),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(16.0),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RulesScreen()));
-                          },
-                          child: const Text(
-                            'Regeln',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(16.0),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SchedulePage(
-                                          pairings: pairings,
-                                          disciplines: disciplines,
-                                        )));
-                          },
-                          child: const Text(
-                            'Laufplan',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                OutlinedButton(
-                  onPressed: () {
-                    _startEvent();
-                  },
-                  child: Text(eventStarted
-                      ? 'Das Event ist im Gange...'
-                      : 'Event Starten'),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
