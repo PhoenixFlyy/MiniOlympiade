@@ -7,6 +7,13 @@ class DartsRechner extends StatefulWidget {
   State<DartsRechner> createState() => _DartsRechnerState();
 }
 
+class Turn {
+  final bool wasPlayerOneTurn;
+  final int turnValue;
+
+  Turn(this.wasPlayerOneTurn, this.turnValue);
+}
+
 class _DartsRechnerState extends State<DartsRechner> {
   int startNumber = 301;
   bool playerOneTurn = true;
@@ -19,6 +26,12 @@ class _DartsRechnerState extends State<DartsRechner> {
   List<int> playerTwoScoreHistory = [];
   bool doubleNextScore = false;
   bool tripleNextScore = false;
+  bool isOverthrown = false;
+  bool playerOneOverthrown = false;
+  bool playerTwoOverthrown = false;
+
+
+
 
   _DartsRechnerState() {
     playerOneNumber = startNumber;
@@ -39,9 +52,10 @@ class _DartsRechnerState extends State<DartsRechner> {
                   child: Column(
                     children: [
                       playerCard("Player One", playerOneNumber, playerOneTurn,
-                          playerOneTurnValues, playerOneScoreHistory),
+                          playerOneTurnValues, playerOneScoreHistory, playerOneOverthrown),
                       playerCard("Player Two", playerTwoNumber, !playerOneTurn,
-                          playerTwoTurnValues, playerTwoScoreHistory),
+                          playerTwoTurnValues, playerTwoScoreHistory, playerTwoOverthrown),
+
                     ],
                   ),
                 )),
@@ -66,29 +80,95 @@ class _DartsRechnerState extends State<DartsRechner> {
 
                     if (num >= 0) {
                       if (playerOneTurn) {
-                        playerOneNumber -= num;
-                        playerOneTurnValues.add(num);
-                        playerOneScoreHistory.add(num);
+                        if (playerOneNumber - num < 0) {
+                          // player has overthrown
+                          playerOneTurnValues.add(num);
+                          playerOneOverthrown = true;
+                          playerOneTurn = !playerOneTurn;
+                          turnCounter = 0;
+                          playerTwoTurnValues.clear();
+                          playerTwoOverthrown = false; // Add this line
+                        } else {
+                          // player has not overthrown
+                          playerOneTurnValues.add(num);
+                          playerOneNumber -= num;
+                          playerOneScoreHistory.add(num);
+                          playerOneOverthrown = false;
+                          if (playerOneNumber == 0) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Spielende'),
+                                  content: const Text('Player One wins'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       } else {
-                        playerTwoNumber -= num;
-                        playerTwoTurnValues.add(num);
-                        playerTwoScoreHistory.add(num);
+                        if (playerTwoNumber - num < 0) {
+                          // player has overthrown
+                          playerTwoTurnValues.add(num);
+                          playerTwoOverthrown = true;
+                          playerOneTurn = !playerOneTurn;
+                          turnCounter = 0;
+                          playerOneTurnValues.clear();
+                          playerOneOverthrown = false; // Add this line
+                        } else {
+                          // player has not overthrown
+                          playerTwoTurnValues.add(num);
+                          playerTwoNumber -= num;
+                          playerTwoScoreHistory.add(num);
+                          playerTwoOverthrown = false;
+                          if (playerTwoNumber == 0) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Spielende'),
+                                  content: const Text('Player Two wins'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        }
                       }
-
                       turnCounter += 1;
-
                       if (turnCounter == 3) {
                         playerOneTurn = !playerOneTurn;
                         turnCounter = 0;
                         if (playerOneTurn) {
                           playerOneTurnValues.clear();
+                          playerTwoOverthrown = false;
                         } else {
                           playerTwoTurnValues.clear();
+                          playerOneOverthrown = false;
                         }
                       }
                     }
+
                   });
                 },
+
+
+
               ),
             ),
           ],
@@ -96,11 +176,13 @@ class _DartsRechnerState extends State<DartsRechner> {
   }
 
   Widget playerCard(String playerName, int playerScore, bool isTurn,
-      List<int> turnValues, List<int> scoreHistory) {
+      List<int> turnValues, List<int> scoreHistory, bool isOverthrown) {
+    Color turnBoxColor = isOverthrown ? Colors.red : Colors.black;
     var turnSum =
-        turnValues.isNotEmpty ? turnValues.reduce((a, b) => a + b) : 0;
+    turnValues.isNotEmpty ? turnValues.reduce((a, b) => a + b) : 0;
     var average = calculateAverage(scoreHistory).toStringAsFixed(1);
     var totalEntries = scoreHistory.length;
+
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
@@ -138,9 +220,9 @@ class _DartsRechnerState extends State<DartsRechner> {
                     child: Row(
                       children: List.generate(
                         3,
-                        (index) => Expanded(
+                            (index) => Expanded(
                           child: Container(
-                            color: Colors.black,
+                            color: turnBoxColor,
                             margin: const EdgeInsets.all(2),
                             child: Center(
                               child: Text(
@@ -192,7 +274,7 @@ class _DartsRechnerState extends State<DartsRechner> {
                       Text(
                         " $average",
                         style:
-                            const TextStyle(color: Colors.white, fontSize: 16),
+                        const TextStyle(color: Colors.white, fontSize: 16),
                         textAlign: TextAlign.right,
                       ),
                     ],
@@ -205,6 +287,7 @@ class _DartsRechnerState extends State<DartsRechner> {
       ),
     );
   }
+
 
   double calculateAverage(List<int> scores) {
     if (scores.isEmpty) {
