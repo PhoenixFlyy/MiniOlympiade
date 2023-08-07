@@ -289,8 +289,13 @@ class _MainMenuState extends State<MainMenu> {
                     child: Row(
                       children: [
                         const Icon(Icons.people),
-                        Text(
-                          ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                            ),
+                          ),
                         ),
                       ],
                     ),
