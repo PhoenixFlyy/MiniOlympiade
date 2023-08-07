@@ -36,38 +36,38 @@ class _TeamSelectionState extends State<TeamSelection> {
       appBar: AppBar(
         title: const Text('Team Auswahl'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Wrap(
-              spacing: 8.0,
-              children: _buildTeamChips(),
-            ),
-            TextField(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Wrap(
+            spacing: 8.0,
+            children: _buildTeamChips(),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: TextField(
               controller: teamNameController,
             ),
-            const Divider(),
-            ElevatedButton(
-              onPressed: teamName.isNotEmpty && selectedTeam.isNotEmpty
-                  ? () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('selectedTeam', selectedTeam);
-                      prefs.setString('teamName', teamName);
-                      if (context.mounted) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const MainMenu(),
-                          ),
-                        );
-                      }
+          ),
+          FilledButton(
+            onPressed: teamName.isNotEmpty && selectedTeam.isNotEmpty
+                ? () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setString('selectedTeam', selectedTeam);
+                    prefs.setString('teamName', teamName);
+                    if (context.mounted) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const MainMenu(),
+                        ),
+                      );
                     }
-                  : null,
-              child: const Text('Bestätigen'),
-            ),
-          ],
-        ),
+                  }
+                : null,
+            child: const Text('Bestätigen'),
+          ),
+        ],
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
-import 'package:winter_olympiade/utils/TeamSelection.dart';
+import 'package:winter_olympiade/utils/TeamDetails.dart';
 import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
 import 'Dartsrechner.dart';
@@ -40,8 +40,11 @@ class _MainMenuState extends State<MainMenu> {
   int roundTime = 10;
   final _roundTimeController = TextEditingController();
 
+  int currentRound = 0;
+
   bool eventStarted = false;
   String selectedTeam = '';
+  String selectedTeamName = "";
 
   TimeOfDay _eventStartTime = const TimeOfDay(hour: 0, minute: 0);
 
@@ -110,8 +113,6 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  int currentRound = 0;
-
   @override
   void initState() {
     super.initState();
@@ -136,7 +137,7 @@ class _MainMenuState extends State<MainMenu> {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             if (eventStarted) {
               int elapsedSeconds = DateTime.now()
@@ -168,9 +169,11 @@ class _MainMenuState extends State<MainMenu> {
   Future<void> _loadSelectedTeam() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String storedSelectedTeam = prefs.getString('selectedTeam') ?? '';
+    String storedTeamName = prefs.getString('teamName') ?? "";
     if (mounted) {
       setState(() {
         selectedTeam = storedSelectedTeam;
+        selectedTeamName = storedTeamName;
       });
     }
   }
@@ -236,10 +239,14 @@ class _MainMenuState extends State<MainMenu> {
     if (selectedTeam.isNotEmpty) {
       appBarTitle += ' - $selectedTeam';
     }
+    if (selectedTeamName.isNotEmpty) {
+      appBarTitle += ' - $selectedTeamName';
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        backgroundColor: Colors.black12,
+        title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -249,142 +256,160 @@ class _MainMenuState extends State<MainMenu> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
                 children: [
-                  const Icon(Icons.circle),
-                  const SizedBox(width: 8.0),
-                  Text('Runde $currentRound'),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.timer),
-                  const SizedBox(width: 8.0),
-                  Text('Zeit: $remainingTimeInCurrentRound'),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0), // This adds a space between the rows
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Icon(Icons.people),
-              const SizedBox(width: 8.0),
-              Flexible(
-                // Using a Flexible widget to avoid overflow
-                child: Text(
-                  'Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 12,
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16.0),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DartsRechner()));
-              },
-              child: const Text(
-                'Dartsrechner',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 12,
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16.0),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SchachUhr(
-                              maxtime: maxtime,
-                            )));
-              },
-              child: const Text(
-                'Schachuhr',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(16.0),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RulesScreen()));
-                    },
-                    child: const Text(
-                      'Regeln',
-                      style: TextStyle(fontSize: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.circle),
+                          Text(' Runde $currentRound',
+                              style: const TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.timer),
+                          Text(' Zeit: $remainingTimeInCurrentRound',
+                              style: const TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.people),
+                        Text(
+                          ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(16.0),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SchedulePage(
-                                    pairings: pairings,
-                                    disciplines: disciplines,
-                                  )));
-                    },
-                    child: const Text(
-                      'Laufplan',
-                      style: TextStyle(fontSize: 20),
+            ),
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 12,
+                      width: double.infinity,
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const DartsRechner()));
+                        },
+                        child: const Text(
+                          'Dartsrechner',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 12,
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SchachUhr(
+                                      maxtime: maxtime,
+                                    )));
+                      },
+                      child: const Text(
+                        'Schachuhr',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              _startEvent();
-            },
-            child: Text(
-                eventStarted ? 'Das Event ist im Gange...' : 'Event Starten'),
-          ),
-          const SizedBox(height: 16.0),
-        ],
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16.0),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RulesScreen()));
+                            },
+                            child: const Text(
+                              'Regeln',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16.0),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SchedulePage(
+                                            pairings: pairings,
+                                            disciplines: disciplines,
+                                          )));
+                            },
+                            child: const Text(
+                              'Laufplan',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      _startEvent();
+                    },
+                    child: Text(eventStarted
+                        ? 'Das Event ist im Gange...'
+                        : 'Event Starten'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -428,11 +453,14 @@ class _MainMenuState extends State<MainMenu> {
                   },
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
+                FilledButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const TeamSelection(),
-                    ));
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const TeamSelection(),
+                      ),
+                      (route) => false,
+                    );
                   },
                   child: const Text('Teamauswahl'),
                 ),

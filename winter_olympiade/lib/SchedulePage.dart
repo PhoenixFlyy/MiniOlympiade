@@ -21,15 +21,20 @@ class SchedulePage extends StatelessWidget {
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: DataTable(
-              columnSpacing: 12,  // Reduziert den Spaltenabstand
-              dataRowHeight: 40,  // Reduziert die Zeilenhöhe
-              headingRowHeight: 50, // Reduziert die Höhe der Überschriftszeile
-              headingTextStyle: TextStyle(fontSize: 10),  // Reduziert die Schriftgröße der Überschrift
-              dataTextStyle: TextStyle(fontSize: 10),  // Reduziert die Schriftgröße der Daten
-              dividerThickness: 2,  // Erhöht die Dicke der Trennlinien
+              columnSpacing: 12,
+              dataRowMinHeight: 40,
+              // Reduziert die Zeilenhöhe
+              headingRowHeight: 50,
+              // Reduziert die Höhe der Überschriftszeile
+              headingTextStyle: TextStyle(fontSize: 10),
+              // Reduziert die Schriftgröße der Überschrift
+              dataTextStyle: TextStyle(fontSize: 10),
+              // Reduziert die Schriftgröße der Daten
+              dividerThickness: 2,
+              // Erhöht die Dicke der Trennlinien
               columns: List<DataColumn>.generate(
                 7,
-                    (index) {
+                (index) {
                   if (index == 0) {
                     return DataColumn(label: Text('Runde'));
                   }
@@ -40,11 +45,11 @@ class SchedulePage extends StatelessWidget {
               ),
               rows: List<DataRow>.generate(
                 pairings.length,
-                    (rowIndex) {
+                (rowIndex) {
                   return DataRow(
                     cells: List<DataCell>.generate(
                       pairings[rowIndex].length + 1,
-                          (cellIndex) {
+                      (cellIndex) {
                         if (cellIndex == 0) {
                           return DataCell(Text('Runde ${rowIndex + 1}'));
                         }
