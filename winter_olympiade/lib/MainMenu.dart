@@ -1,14 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/Dartsrechner.dart';
-import 'package:winter_olympiade/Laufplan.dart';
 import 'package:winter_olympiade/Regeln.dart';
 import 'package:winter_olympiade/Schachuhr.dart';
-import 'package:winter_olympiade/TeamSelection.dart';
-import 'dart:async';
-import 'package:winter_olympiade/main.dart'; //brauchen wir das?
 import 'package:winter_olympiade/SchedulePage.dart';
+import 'package:winter_olympiade/TeamSelection.dart';
 
 class TeamDetails {
   final String selectedTeam;

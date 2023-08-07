@@ -14,7 +14,6 @@ final List<GameRule> gameRules = [
     'Bei einer Rundenzeit von nur 10 Minuten darf nicht getrödelt werden. Insbesondere bei Bierpong und Tischkicker muss das Spiel zügig begonnen und durchgeführt werden. Bei Meinungsverschiedenheiten, die sich nicht mithilfe des nachstehenden Regelwerks ausräumen lassen, muss sich schnell geeinigt werden. Wir haben nicht viel Zeit!',
     'Es beginnt immer das Team, dessen Nummer es anzeigt. Ist keine Nummer gegeben, muss sich so geeinigt werden.',
   ]),
-
   GameRule('Kicker', [
     '• Ein Spiel geht bis 10 Punkte.',
     '• Das Durchdrehen der Kickerstangen (Trillern) ist verboten.',
@@ -23,7 +22,6 @@ final List<GameRule> gameRules = [
     '• Ein Torwart-Tor zählt nicht doppelt.',
     // Add more rules here...
   ]),
-
   GameRule('Darts', [
     '• Gespielt wird ein klassisches Dartsspiel 301.',
     '• Das Spiel muss nicht mit einem Double beendet werden.',
@@ -31,7 +29,6 @@ final List<GameRule> gameRules = [
     '• Das Spiel endet Unentschieden, wenn bei Gongschlag kein Sieger feststeht.',
     // Add more rules here...
   ]),
-
   GameRule('Billard', [
     'Es ist eng. Damit muss jeder leben. Bitte passt auf Queues und das Klavier auf! Im Team wird sich jeweils abgewechselt. Die Reihenfolge darf nicht geändert werden.',
     '• Die Kugeln werden wie gezeigt aufgebaut. Die oberste Kugel liegt dabei auf der Markierung.',
@@ -55,7 +52,6 @@ final List<GameRule> gameRules = [
     '   - Die Acht in eine andere Tasche gespielt wurde als angesagt wurde.',
     // Add more rules here...
   ]),
-
   GameRule('Bierpong', [
     'Gespielt wird mit sechs Bechern. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf dennoch ausgiebig getrunken werden!',
     '• Die Ellenbogen müssen hinter dem Tisch bleiben. Ist dies nicht der Fall, ist der Wurf zwar getan, jedoch ungültig.',
@@ -66,9 +62,6 @@ final List<GameRule> gameRules = [
     '• Kommt ein Ball über die Hälfte des Tisches zurück und gelingt es dem diesseitigen Team, den Ball zu erlangen, darf dieses einen zusätzlichen Trick-Shot-Wurf ausführen.',
     '• Es gibt keinen Nachwurf!',
   ]),
-
-
-
   GameRule('Kubb', [
     '• Wer als Team zuerst im Ziel angekommen ist, gewinnt. Gespielt wird immer in denselben Autos...',
     '• Jeder Spieler darf nur sein eigenes Auto fahren. Es werden immer dieselben beiden Strecken gefahren...',
@@ -93,12 +86,7 @@ final List<GameRule> gameRules = [
     'Am Ende des Abends werden die Punkte pro Disziplin zusammengezählt und die Gesamtpunktzahl wird ermittelt. Pro Disziplin werden dabei 1-6 Gesamtpunkte vergeben; also maximal 21 Gesamtpunkte. Bei gleich vielen Disziplin-Punkten wird der Durchschnitt der entsprechenden Gesamtpunkte gebildet und auf die Spieler aufgeteilt.',
     'Beispiel: Haben drei Teams dieselbe Anzahl von Disziplin-Punkten, z.B. 2,5 Punkte, und belegen die anderen Teams die Plätze 1, 2 und 6 (es bleiben also 3-5) übrig, steht jedem der drei Teams dieselbe Punktzahl zu. Für die Plätze 3-5 sind 12 Gesamtpunkte zu vergeben. 12 Gesamtpunkte (3 + 4 + 5 = 12) aufgeteilt auf 3 Teams ergibt demnach 4 Gesamtpunkte pro Team. Die Gesamtpunkteverteilung in diesem Beispiel ist also: 6, 4, 4, 4, 2, 1 (= 21).',
   ]),
-
 ];
-
-void main() {
-  runApp(MyApp());
-}
 
 class MyApp extends StatelessWidget {
   @override
