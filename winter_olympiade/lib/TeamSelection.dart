@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:winter_olympiade/MainMenu.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});
@@ -10,12 +11,30 @@ class TeamSelection extends StatefulWidget {
 
 class _TeamSelectionState extends State<TeamSelection> {
   String selectedTeam = '';
+  String teamName = "";
+  final teamNameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    teamNameController.addListener(() {
+      setState(() {
+        teamName = teamNameController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    teamNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Team Auswahl'),
+        title: const Text('Team Auswahl'),
       ),
       body: Center(
         child: Column(
@@ -25,19 +44,27 @@ class _TeamSelectionState extends State<TeamSelection> {
               spacing: 8.0,
               children: _buildTeamChips(),
             ),
-            SizedBox(height: 20.0),
+            TextField(
+              controller: teamNameController,
+            ),
+            const Divider(),
             ElevatedButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                String storedSelectedTeam =
-                    prefs.getString('selectedTeam') ?? '';
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => TeamSelection(),
-                  ),
-                );
-              },
-              child: Text('Bestätigen'),
+              onPressed: teamName.isNotEmpty && selectedTeam.isNotEmpty
+                  ? () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('selectedTeam', selectedTeam);
+                      prefs.setString('teamName', teamName);
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const MainMenu(),
+                          ),
+                        );
+                      }
+                    }
+                  : null,
+              child: const Text('Bestätigen'),
             ),
           ],
         ),
@@ -61,11 +88,9 @@ class _TeamSelectionState extends State<TeamSelection> {
       return ChoiceChip(
         label: Text(team),
         selected: isSelected,
-        onSelected: (bool value) async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
+        onSelected: (bool value) {
           setState(() {
             selectedTeam = value ? team : '';
-            prefs.setString('selectedTeam', selectedTeam);
           });
         },
       );

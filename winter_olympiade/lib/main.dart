@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:winter_olympiade/MainMenu.dart';
 
 import 'TeamSelection.dart';
 
@@ -21,11 +22,9 @@ class MyApp extends StatelessWidget {
       future: _checkIfTeamSelected(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Zeige einen Ladeindikator, während die Prüfung läuft
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Center(
-              child: Text(
-                  'Error')); // Zeige eine Fehlermeldung, wenn ein Fehler auftritt
+          return const Center(child: Text('Error'));
         } else {
           final bool teamSelected = snapshot.data ?? false;
 
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
               theme: ThemeData.dark(
                 useMaterial3: true,
               ),
-              home: TeamSelection());
+              home: teamSelected ? const MainMenu() : const TeamSelection());
         }
       },
     );
