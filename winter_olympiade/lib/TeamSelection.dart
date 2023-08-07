@@ -37,7 +37,7 @@ class _TeamSelectionState extends State<TeamSelection> {
                   ),
                 );
               },
-              child: Text('Zum Hauptmenü'),
+              child: Text('Bestätigen'),
             ),
           ],
         ),

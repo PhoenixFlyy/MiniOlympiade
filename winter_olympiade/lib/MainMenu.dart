@@ -8,6 +8,7 @@ import 'package:winter_olympiade/Schachuhr.dart';
 import 'package:winter_olympiade/TeamSelection.dart';
 import 'dart:async';
 import 'package:winter_olympiade/main.dart'; //brauchen wir das?
+import 'package:winter_olympiade/SchedulePage.dart';
 
 class TeamDetails {
   final String selectedTeam;
@@ -76,7 +77,6 @@ class mainMenu extends StatefulWidget {
 }
 
 class _mainMenuState extends State<mainMenu> {
-
   Map<String, String> disciplines = {
     '1': 'Kicker',
     '2': 'Darts',
@@ -85,8 +85,6 @@ class _mainMenuState extends State<mainMenu> {
     '5': 'Kubb',
     '6': 'Jenga',
   };
-
-
 
   late Timer _timer;
   String match = ''; // Hier definiere ich 'match' als Instanzvariable.
@@ -203,7 +201,7 @@ class _mainMenuState extends State<mainMenu> {
 
     _timer = Timer.periodic(
       Duration(seconds: 1),
-          (timer) {
+      (timer) {
         if (this.mounted) {
           setState(() {
             if (eventStarted) {
@@ -231,8 +229,6 @@ class _mainMenuState extends State<mainMenu> {
         }
       },
     );
-
-
 
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await _loadSelectedTeam();
@@ -328,27 +324,36 @@ class _mainMenuState extends State<mainMenu> {
       body: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.timer),
-              SizedBox(width: 8.0),
-              Text('Zeit: $remainingTimeInCurrentRound'),
+              Row(
+                children: [
+                  Icon(Icons.circle),
+                  SizedBox(width: 8.0),
+                  Text('Runde $currentRound'),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(Icons.timer),
+                  SizedBox(width: 8.0),
+                  Text('Zeit: $remainingTimeInCurrentRound'),
+                ],
+              ),
             ],
           ),
+          SizedBox(height: 8.0), // This adds a space between the rows
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(Icons.circle),
-              SizedBox(width: 8.0),
-              Text('Runde $currentRound'),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(Icons.people),
               SizedBox(width: 8.0),
-              Text('Team\'s Match: $match in Disziplin $discipline: ${disciplines[discipline]}'), // Use match and discipline variables here
+              Flexible(
+                // Using a Flexible widget to avoid overflow
+                child: Text(
+                  'Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                ),
+              ),
             ],
           ),
           Spacer(),
@@ -392,22 +397,53 @@ class _mainMenuState extends State<mainMenu> {
             ),
           ),
           SizedBox(height: 16.0),
-          Container(
-            height: MediaQuery.of(context).size.height / 12,
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(16.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(16.0),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RulesScreen()));
+                    },
+                    child: Text(
+                      'Regeln',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
               ),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RulesScreen()));
-              },
-              child: Text(
-                'Regeln',
-                style: TextStyle(fontSize: 20),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(16.0),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SchedulePage(
+                                    pairings: pairings,
+                                    disciplines: disciplines,
+                                  )));
+                    },
+                    child: Text(
+                      'Laufplan',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
           SizedBox(height: 16.0),
           ElevatedButton(
@@ -464,13 +500,6 @@ class _mainMenuState extends State<mainMenu> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Laufplan()));
-                  },
-                  child: Text('Laufplan öffnen'),
-                ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
