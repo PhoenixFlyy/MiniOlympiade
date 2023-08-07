@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:winter_olympiade/MainMenu.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});
@@ -30,10 +29,11 @@ class _TeamSelectionState extends State<TeamSelection> {
             ElevatedButton(
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                String storedSelectedTeam = prefs.getString('selectedTeam') ?? '';
+                String storedSelectedTeam =
+                    prefs.getString('selectedTeam') ?? '';
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => mainMenu(),
+                    builder: (context) => TeamSelection(),
                   ),
                 );
               },
