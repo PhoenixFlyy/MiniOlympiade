@@ -250,168 +250,154 @@ class _MainMenuState extends State<MainMenu> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              _openSettings();
-            },
+            onPressed: _openSettings,
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+      body: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.circle),
+                        Text(' Runde $currentRound',
+                            style: const TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer),
+                        Text(' Zeit: $remainingTimeInCurrentRound',
+                            style: const TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.circle),
-                          Text(' Runde $currentRound',
-                              style: const TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.timer),
-                          Text(' Zeit: $remainingTimeInCurrentRound',
-                              style: const TextStyle(fontSize: 18)),
-                        ],
+                      const Icon(Icons.people),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.people),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height / 12,
-                      width: double.infinity,
-                      child: FilledButton.tonal(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const DartsRechner()));
-                        },
-                        child: const Text(
-                          'Dartsrechner',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height / 12,
                     width: double.infinity,
                     child: FilledButton.tonal(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
-                      ),
                       onPressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SchachUhr(
-                                      maxtime: maxtime,
-                                    )));
+                                builder: (context) => const DartsRechner()));
                       },
                       child: const Text(
-                        'Schachuhr',
+                        'Dartsrechner',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.all(16.0),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RulesScreen()));
-                            },
-                            child: const Text(
-                              'Regeln',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.all(16.0),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SchedulePage(
-                                            pairings: pairings,
-                                            disciplines: disciplines,
-                                          )));
-                            },
-                            child: const Text(
-                              'Laufplan',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  OutlinedButton(
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 12,
+                  width: double.infinity,
+                  child: FilledButton.tonal(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(16.0),
+                    ),
                     onPressed: () {
-                      _startEvent();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SchachUhr(
+                                    maxtime: maxtime,
+                                  )));
                     },
-                    child: Text(eventStarted
-                        ? 'Das Event ist im Gange...'
-                        : 'Event Starten'),
+                    child: const Text(
+                      'Schachuhr',
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
-                ],
-              ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(16.0),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RulesScreen()));
+                          },
+                          child: const Text(
+                            'Regeln',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(16.0),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SchedulePage(
+                                          pairings: pairings,
+                                          disciplines: disciplines,
+                                        )));
+                          },
+                          child: const Text(
+                            'Laufplan',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    _startEvent();
+                  },
+                  child: Text(eventStarted
+                      ? 'Das Event ist im Gange...'
+                      : 'Event Starten'),
+                ),
+              ],
             ),
           ],
         ),
