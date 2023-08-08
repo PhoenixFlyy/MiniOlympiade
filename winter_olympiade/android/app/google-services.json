@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "835884867331",
+    "firebase_url": "https://mini-olympiade-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "mini-olympiade",
     "storage_bucket": "mini-olympiade.appspot.com"
   },

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
 import 'package:winter_olympiade/utils/TeamDetails.dart';
 import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
@@ -360,7 +361,10 @@ class _MainMenuState extends State<MainMenu> {
                     alignment: Alignment.centerRight,
                     child: FilledButton.tonal(
                       onPressed: () {
-                        // TODO: Hier können Sie die gewünschte Aktion einfügen
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UploadResults()));
                       },
                       child: Text('Ergebnisse eintragen'),
                     ),
