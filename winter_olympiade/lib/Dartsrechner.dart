@@ -29,13 +29,44 @@ class _DartsRechnerState extends State<DartsRechner> {
   bool isOverthrown = false;
   bool playerOneOverthrown = false;
   bool playerTwoOverthrown = false;
-
-
-
+  int roundScore = 0;
+  int temporaryPlayerOneScore = 0;
+  int temporaryPlayerTwoScore = 0;
+  int startingScore = 0;
+  List<int> temporaryPlayerOneTurnValues = [];
+  List<int> temporaryPlayerTwoTurnValues = [];
 
   _DartsRechnerState() {
     playerOneNumber = startNumber;
     playerTwoNumber = startNumber;
+  }
+
+  // Function to save the scores temporarily before every throw
+  void saveTempScores() {
+    temporaryPlayerOneScore = playerOneNumber;
+    temporaryPlayerTwoScore = playerTwoNumber;
+    temporaryPlayerOneTurnValues = List.from(playerOneTurnValues);
+    temporaryPlayerTwoTurnValues = List.from(playerTwoTurnValues);
+  }
+
+  // Function to restore the scores if a player overthrows
+  void restoreScores() {
+    playerOneNumber = temporaryPlayerOneScore;
+    playerTwoNumber = temporaryPlayerTwoScore;
+    playerOneTurnValues = List.from(temporaryPlayerOneTurnValues);
+    playerTwoTurnValues = List.from(temporaryPlayerTwoTurnValues);
+  }
+
+  void endTurn() {
+    if (playerOneTurn) {
+      playerTwoTurnValues.clear();
+      playerTwoOverthrown = false;
+    } else {
+      playerOneTurnValues.clear();
+      playerOneOverthrown = false;
+    }
+    playerOneTurn = !playerOneTurn;
+    turnCounter = 0;
   }
 
   @override
@@ -51,11 +82,20 @@ class _DartsRechnerState extends State<DartsRechner> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      playerCard("Player One", playerOneNumber, playerOneTurn,
-                          playerOneTurnValues, playerOneScoreHistory, playerOneOverthrown),
-                      playerCard("Player Two", playerTwoNumber, !playerOneTurn,
-                          playerTwoTurnValues, playerTwoScoreHistory, playerTwoOverthrown),
-
+                      playerCard(
+                          "Player One",
+                          playerOneNumber,
+                          playerOneTurn,
+                          playerOneTurnValues,
+                          playerOneScoreHistory,
+                          playerOneOverthrown),
+                      playerCard(
+                          "Player Two",
+                          playerTwoNumber,
+                          !playerOneTurn,
+                          playerTwoTurnValues,
+                          playerTwoScoreHistory,
+                          playerTwoOverthrown),
                     ],
                   ),
                 )),
@@ -64,6 +104,16 @@ class _DartsRechnerState extends State<DartsRechner> {
               child: DartsRechnerTastatur(
                 onNumberSelected: (num) {
                   setState(() {
+                    turnCounter += 1;
+
+                    if (turnCounter % 3 == 1) {  // Wenn es der erste Wurf im Zug ist
+                      if (playerOneTurn) {
+                        startingScore = playerOneNumber;
+                      } else {
+                        startingScore = playerTwoNumber;
+                      }
+                    }
+
                     if (num == -1) {
                       doubleNextScore = true;
                       tripleNextScore = false;
@@ -78,20 +128,24 @@ class _DartsRechnerState extends State<DartsRechner> {
                       tripleNextScore = false;
                     }
 
+                    // Berechne den neuen Score nach dem Wurf, aber setze ihn noch nicht
+                    int newScore = playerOneTurn ? playerOneNumber - num : playerTwoNumber - num;
+
                     if (num >= 0) {
-                      if (playerOneTurn) {
-                        if (playerOneNumber - num < 0) {
-                          // player has overthrown
-                          playerOneTurnValues.add(num);
+                      if (newScore < 0) {  // Überwurf
+                        if (playerOneTurn) {
+                          playerOneNumber = startingScore;  // Punkte zurücksetzen
                           playerOneOverthrown = true;
-                          playerOneTurn = !playerOneTurn;
-                          turnCounter = 0;
-                          playerTwoTurnValues.clear();
-                          playerTwoOverthrown = false; // Add this line
+                          endTurn();
                         } else {
-                          // player has not overthrown
+                          playerTwoNumber = startingScore;  // Punkte zurücksetzen
+                          playerTwoOverthrown = true;
+                          endTurn();
+                        }
+                      } else {
+                        if (playerOneTurn) {
+                          playerOneNumber = newScore;  // Setze den neuen Score
                           playerOneTurnValues.add(num);
-                          playerOneNumber -= num;
                           playerOneScoreHistory.add(num);
                           playerOneOverthrown = false;
                           if (playerOneNumber == 0) {
@@ -113,61 +167,45 @@ class _DartsRechnerState extends State<DartsRechner> {
                               },
                             );
                           }
-                        }
-                      } else {
-                        if (playerTwoNumber - num < 0) {
-                          // player has overthrown
-                          playerTwoTurnValues.add(num);
-                          playerTwoOverthrown = true;
-                          playerOneTurn = !playerOneTurn;
-                          turnCounter = 0;
-                          playerOneTurnValues.clear();
-                          playerOneOverthrown = false; // Add this line
                         } else {
-                          // player has not overthrown
-                          playerTwoTurnValues.add(num);
-                          playerTwoNumber -= num;
-                          playerTwoScoreHistory.add(num);
-                          playerTwoOverthrown = false;
-                          if (playerTwoNumber == 0) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Spielende'),
-                                  content: const Text('Player Two wins'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                          if (playerTwoNumber - num < 0) {
+                            playerTwoNumber = startingScore;  // Punkte zurücksetzen
+                            playerTwoOverthrown = true;
+                            endTurn();
+                          } else {
+                            playerTwoNumber = newScore;  // Setze den neuen Score
+                            playerTwoTurnValues.add(num);
+                            playerTwoScoreHistory.add(num);
+                            playerTwoOverthrown = false;
+                            if (playerTwoNumber == 0) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Spielende'),
+                                    content: const Text('Player Two wins'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
                         }
                       }
-                      turnCounter += 1;
+
                       if (turnCounter == 3) {
-                        playerOneTurn = !playerOneTurn;
-                        turnCounter = 0;
-                        if (playerOneTurn) {
-                          playerOneTurnValues.clear();
-                          playerTwoOverthrown = false;
-                        } else {
-                          playerTwoTurnValues.clear();
-                          playerOneOverthrown = false;
-                        }
+                        endTurn();
                       }
                     }
-
                   });
                 },
-
-
 
               ),
             ),
@@ -179,7 +217,7 @@ class _DartsRechnerState extends State<DartsRechner> {
       List<int> turnValues, List<int> scoreHistory, bool isOverthrown) {
     Color turnBoxColor = isOverthrown ? Colors.red : Colors.black;
     var turnSum =
-    turnValues.isNotEmpty ? turnValues.reduce((a, b) => a + b) : 0;
+        turnValues.isNotEmpty ? turnValues.reduce((a, b) => a + b) : 0;
     var average = calculateAverage(scoreHistory).toStringAsFixed(1);
     var totalEntries = scoreHistory.length;
 
@@ -220,7 +258,7 @@ class _DartsRechnerState extends State<DartsRechner> {
                     child: Row(
                       children: List.generate(
                         3,
-                            (index) => Expanded(
+                        (index) => Expanded(
                           child: Container(
                             color: turnBoxColor,
                             margin: const EdgeInsets.all(2),
@@ -274,7 +312,7 @@ class _DartsRechnerState extends State<DartsRechner> {
                       Text(
                         " $average",
                         style:
-                        const TextStyle(color: Colors.white, fontSize: 16),
+                            const TextStyle(color: Colors.white, fontSize: 16),
                         textAlign: TextAlign.right,
                       ),
                     ],
@@ -287,7 +325,6 @@ class _DartsRechnerState extends State<DartsRechner> {
       ),
     );
   }
-
 
   double calculateAverage(List<int> scores) {
     if (scores.isEmpty) {
