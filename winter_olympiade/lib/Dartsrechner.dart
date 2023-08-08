@@ -26,10 +26,8 @@ class _DartsRechnerState extends State<DartsRechner> {
   List<int> playerTwoScoreHistory = [];
   bool doubleNextScore = false;
   bool tripleNextScore = false;
-  bool isOverthrown = false;
   bool playerOneOverthrown = false;
   bool playerTwoOverthrown = false;
-  int roundScore = 0;
   int temporaryPlayerOneScore = 0;
   int temporaryPlayerTwoScore = 0;
   int startingScore = 0;
@@ -104,9 +102,11 @@ class _DartsRechnerState extends State<DartsRechner> {
               child: DartsRechnerTastatur(
                 onNumberSelected: (num) {
                   setState(() {
-                    turnCounter += 1;
-
-                    if (turnCounter % 3 == 1) {  // Wenn es der erste Wurf im Zug ist
+                    if (num >= 0) {
+                      turnCounter += 1;
+                    }
+                    if (turnCounter % 3 == 1) {
+                      // Wenn es der erste Wurf im Zug ist
                       if (playerOneTurn) {
                         startingScore = playerOneNumber;
                       } else {
@@ -129,22 +129,31 @@ class _DartsRechnerState extends State<DartsRechner> {
                     }
 
                     // Berechne den neuen Score nach dem Wurf, aber setze ihn noch nicht
-                    int newScore = playerOneTurn ? playerOneNumber - num : playerTwoNumber - num;
+                    int newScore = playerOneTurn
+                        ? playerOneNumber - num
+                        : playerTwoNumber - num;
 
                     if (num >= 0) {
-                      if (newScore < 0) {  // Überwurf
+                      if (newScore < 0) { // Überwurf
                         if (playerOneTurn) {
-                          playerOneNumber = startingScore;  // Punkte zurücksetzen
+                          playerOneNumber =
+                              startingScore; // Punkte zurücksetzen
+                          playerOneTurnValues.add(num);
+                          playerOneScoreHistory.add(num);
                           playerOneOverthrown = true;
                           endTurn();
                         } else {
-                          playerTwoNumber = startingScore;  // Punkte zurücksetzen
+                          playerTwoNumber =
+                              startingScore; // Punkte zurücksetzen
+                          playerTwoTurnValues.add(num);
+                          playerTwoScoreHistory.add(num);
                           playerTwoOverthrown = true;
                           endTurn();
                         }
-                      } else {
+
+                      } else { //kein Überwurf
                         if (playerOneTurn) {
-                          playerOneNumber = newScore;  // Setze den neuen Score
+                          playerOneNumber = newScore; // Setze den neuen Score
                           playerOneTurnValues.add(num);
                           playerOneScoreHistory.add(num);
                           playerOneOverthrown = false;
@@ -169,11 +178,12 @@ class _DartsRechnerState extends State<DartsRechner> {
                           }
                         } else {
                           if (playerTwoNumber - num < 0) {
-                            playerTwoNumber = startingScore;  // Punkte zurücksetzen
+                            playerTwoNumber =
+                                startingScore; // Punkte zurücksetzen
                             playerTwoOverthrown = true;
                             endTurn();
                           } else {
-                            playerTwoNumber = newScore;  // Setze den neuen Score
+                            playerTwoNumber = newScore; // Setze den neuen Score
                             playerTwoTurnValues.add(num);
                             playerTwoScoreHistory.add(num);
                             playerTwoOverthrown = false;
@@ -206,7 +216,6 @@ class _DartsRechnerState extends State<DartsRechner> {
                     }
                   });
                 },
-
               ),
             ),
           ],
