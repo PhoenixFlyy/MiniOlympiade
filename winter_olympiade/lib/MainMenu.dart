@@ -47,39 +47,6 @@ class _MainMenuState extends State<MainMenu> {
 
   List<Break> eventBreaks = [];
 
-  List<List<String>> pairings = [
-    ['1-6', '3-4', '2-5', '', '', ''],
-    ['', '', '', '4-2', '1-5', '6-3'],
-    ['3-2', '6-5', '1-4', '', '', ''],
-    ['', '', '', '3-5', '4-6', '2-1'],
-    ['5-4', '3-1', '6-2', '', '', ''],
-    ['', '', '', '6-1', '3-4', '5-2'],
-    ['6-3', '2-4', '5-1', '', '', ''],
-    ['', '', '', '2-3', '5-6', '4-1'],
-    ['2-1', '5-3', '4-6', '', '', ''],
-    ['', '', '', '4-5', '1-3', '2-6'],
-    ['5-2', '1-6', '3-4', '', '', ''],
-    ['', '', '', '6-3', '2-4', '1-5'],
-    ['4-1', '3-2', '5-6', '', '', ''],
-    ['', '', '', '1-2', '3-5', '4-6'],
-    ['2-6', '5-4', '1-3', '', '', ''],
-    ['', '', '', '2-5', '1-6', '3-4'],
-    ['1-5', '6-3', '4-2', '', '', ''],
-    ['', '', '', '1-4', '2-3', '6-5'],
-    ['4-6', '2-1', '3-5', '', '', ''],
-    ['', '', '', '6-2', '4-5', '1-3'],
-    ['3-4', '5-2', '6-1', '', '', ''],
-    ['', '', '', '5-1', '3-6', '2-4'],
-    ['6-5', '4-1', '2-3', '', '', ''],
-    ['', '', '', '4-6', '1-2', '5-3'],
-    ['3-1', '2-6', '4-5', '', '', ''],
-    ['', '', '', '3-4', '2-5', '1-6'],
-    ['2-4', '1-5', '6-3', '', '', ''],
-    ['', '', '', '5-6', '1-4', '3-2'],
-    ['5-3', '4-6', '1-2', '', '', ''],
-    ['', '', '', '1-3', '2-6', '5-4']
-  ];
-
   MatchDetails getOpponentAndDiscipline(int roundNumber, int teamNumber) {
     for (var discipline = 0;
         discipline < pairings[roundNumber - 1].length;
@@ -171,13 +138,14 @@ class _MainMenuState extends State<MainMenu> {
         if (mounted) {
           setState(() {
             if (eventStarted) {
-              int elapsedSeconds = DateTime.now().difference(eventStartTime ?? DateTime.now()).inSeconds;
+              int elapsedSeconds = DateTime.now()
+                  .difference(eventStartTime ?? DateTime.now())
+                  .inSeconds;
               int newCurrentRound = calculateCurrentRound(elapsedSeconds);
 
               if (newCurrentRound != currentRound) {
                 currentRound = newCurrentRound;
               }
-
 
               if (currentRound > 0 && currentRound <= pairings.length) {
                 var details =
@@ -246,7 +214,6 @@ class _MainMenuState extends State<MainMenu> {
     int elapsedSeconds =
         DateTime.now().difference(eventStartTime ?? DateTime.now()).inSeconds;
     int currentRound = calculateCurrentRound(elapsedSeconds);
-
 
     // Calculate remaining time in the current round
     int elapsedSecondsInCurrentRound = elapsedSeconds % (roundTime * 60);
@@ -520,7 +487,8 @@ class _MainMenuState extends State<MainMenu> {
                 TextField(
                   controller: _breakDurationController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: "Pausendauer in Minuten"),
+                  decoration: const InputDecoration(
+                      labelText: "Pausendauer in Minuten"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 ElevatedButton(
@@ -528,7 +496,8 @@ class _MainMenuState extends State<MainMenu> {
                     int? round = int.tryParse(_breakRoundController.text);
                     int? duration = int.tryParse(_breakDurationController.text);
                     if (round != null && duration != null) {
-                      eventBreaks.add(Break(roundNumber: round, duration: duration));
+                      eventBreaks
+                          .add(Break(roundNumber: round, duration: duration));
                       _breakRoundController.clear();
                       _breakDurationController.clear();
                     }
@@ -557,7 +526,8 @@ class _MainMenuState extends State<MainMenu> {
                   },
                 ),
                 const SizedBox(height: 16.0),
-                Text('Pausenkonfiguration', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Pausenkonfiguration',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 ListView.builder(
                   shrinkWrap: true,
                   itemCount: eventBreaks.length,
@@ -568,10 +538,13 @@ class _MainMenuState extends State<MainMenu> {
                           child: TextField(
                             onChanged: (value) {
                               setState(() {
-                                eventBreaks[index].roundNumber = int.tryParse(value) ?? eventBreaks[index].roundNumber;
+                                eventBreaks[index].roundNumber =
+                                    int.tryParse(value) ??
+                                        eventBreaks[index].roundNumber;
                               });
                             },
-                            decoration: const InputDecoration(labelText: "Nach welcher Runde"),
+                            decoration: const InputDecoration(
+                                labelText: "Nach welcher Runde"),
                           ),
                         ),
                         const SizedBox(width: 8.0),
@@ -579,10 +552,13 @@ class _MainMenuState extends State<MainMenu> {
                           child: TextField(
                             onChanged: (value) {
                               setState(() {
-                                eventBreaks[index].duration = int.tryParse(value) ?? eventBreaks[index].duration;
+                                eventBreaks[index].duration =
+                                    int.tryParse(value) ??
+                                        eventBreaks[index].duration;
                               });
                             },
-                            decoration: const InputDecoration(labelText: "Dauer in Minuten"),
+                            decoration: const InputDecoration(
+                                labelText: "Dauer in Minuten"),
                           ),
                         ),
                       ],
