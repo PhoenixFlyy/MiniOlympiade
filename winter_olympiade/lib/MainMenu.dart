@@ -113,6 +113,46 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
+  Widget getDisciplineImage() {
+    switch (discipline) {
+      case "1":
+        return Image.asset(
+          "assets/kicker.png",
+          scale: 8,
+        );
+      case "2":
+        return Image.asset(
+          "assets/darts.png",
+          scale: 2.5,
+        );
+      case "3":
+        return Image.asset(
+          "assets/billard.png",
+          scale: 8,
+        );
+      case "4":
+        return Image.asset(
+          "assets/beerpong.png",
+          scale: 2.5,
+        );
+      case "5":
+        return Image.asset(
+          "assets/kubb.png",
+          scale: 2.5,
+        );
+      case "6":
+        return Image.asset(
+          "assets/jenga.png",
+          scale: 1,
+        );
+      default:
+        return Image.asset(
+          "assets/pokalganz.png",
+          scale: 7,
+        );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -299,10 +339,32 @@ class _MainMenuState extends State<MainMenu> {
                       ],
                     ),
                   ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Text("test")),
+                          Text("test"),
+                        ],
+                      ),
+                      getDisciplineImage()
+                    ],
+                  )
                 ],
               ),
               Column(
                 children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FilledButton.tonal(
+                      onPressed: () {
+                        // TODO: Hier können Sie die gewünschte Aktion einfügen
+                      },
+                      child: Text('Ergebnisse eintragen'),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: SizedBox(
