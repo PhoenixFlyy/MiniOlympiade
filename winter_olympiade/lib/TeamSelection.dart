@@ -10,7 +10,7 @@ class TeamSelection extends StatefulWidget {
 }
 
 class _TeamSelectionState extends State<TeamSelection> {
-  String selectedTeam = '';
+  int selectedTeam = 0;
   String teamName = "";
   final teamNameController = TextEditingController();
 
@@ -50,11 +50,11 @@ class _TeamSelectionState extends State<TeamSelection> {
             ),
           ),
           FilledButton(
-            onPressed: teamName.isNotEmpty && selectedTeam.isNotEmpty
+            onPressed: teamName.isNotEmpty && selectedTeam != 0
                 ? () async {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
-                    prefs.setString('selectedTeam', selectedTeam);
+                    prefs.setInt('selectedTeam', selectedTeam);
                     prefs.setString('teamName', teamName);
                     if (context.mounted) {
                       Navigator.of(context).pushReplacement(
@@ -73,24 +73,17 @@ class _TeamSelectionState extends State<TeamSelection> {
   }
 
   List<Widget> _buildTeamChips() {
-    List<String> teams = [
-      'Team 1',
-      'Team 2',
-      'Team 3',
-      'Team 4',
-      'Team 5',
-      'Team 6'
-    ];
+    List<int> teams = [1, 2, 3, 4, 5, 6];
 
-    return teams.map((team) {
-      bool isSelected = selectedTeam == team;
+    return teams.map((teamNumber) {
+      bool isSelected = selectedTeam == teamNumber;
 
       return ChoiceChip(
-        label: Text(team),
+        label: Text('Team $teamNumber'),
         selected: isSelected,
         onSelected: (bool value) {
           setState(() {
-            selectedTeam = value ? team : '';
+            selectedTeam = value ? teamNumber : 0;
           });
         },
       );

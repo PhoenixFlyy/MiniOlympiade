@@ -22,15 +22,6 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  Map<String, String> disciplines = {
-    '1': 'Kicker',
-    '2': 'Darts',
-    '3': 'Billard',
-    '4': 'Bierpong',
-    '5': 'Kubb',
-    '6': 'Jenga',
-  };
-
   late Timer _timer;
   String match = '';
   String discipline = '';
@@ -44,7 +35,7 @@ class _MainMenuState extends State<MainMenu> {
   int currentRound = 0;
 
   bool eventStarted = false;
-  String selectedTeam = '';
+  int selectedTeam = 0;
   String selectedTeamName = "";
 
   TimeOfDay _eventStartTime = const TimeOfDay(hour: 0, minute: 0);
@@ -166,15 +157,12 @@ class _MainMenuState extends State<MainMenu> {
       await _loadSelectedTeam();
       futureTeamDetails = getTeamDetails();
 
-      if (selectedTeam.isNotEmpty &&
-          currentRound > 0 &&
-          currentRound <= pairings.length) {
-        var details = getOpponentAndDiscipline(
-            currentRound, int.parse(selectedTeam.split(' ')[1]));
+      if (currentRound > 0 && currentRound <= pairings.length) {
+        var details = getOpponentAndDiscipline(currentRound, selectedTeam);
 
         setState(() {
           match =
-              'Team ${selectedTeam.split(' ')[1]} spielt gegen Team ${details.opponent} in Disziplin ${details.discipline}.';
+              'Team $selectedTeam spielt gegen Team ${details.opponent} in Disziplin ${details.discipline}.';
         });
       }
     });
@@ -193,11 +181,9 @@ class _MainMenuState extends State<MainMenu> {
               }
 
 
-              if (selectedTeam.isNotEmpty &&
-                  currentRound > 0 &&
-                  currentRound <= pairings.length) {
-                var details = getOpponentAndDiscipline(
-                    currentRound, int.parse(selectedTeam.split(' ')[1]));
+              if (currentRound > 0 && currentRound <= pairings.length) {
+                var details =
+                    getOpponentAndDiscipline(currentRound, selectedTeam);
                 setState(() {
                   match = details.opponent;
                   discipline = '${details.discipline}';
@@ -212,7 +198,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Future<void> _loadSelectedTeam() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String storedSelectedTeam = prefs.getString('selectedTeam') ?? '';
+    int storedSelectedTeam = prefs.getInt('selectedTeam') ?? 0;
     String storedTeamName = prefs.getString('teamName') ?? "";
     if (mounted) {
       setState(() {
@@ -235,13 +221,13 @@ class _MainMenuState extends State<MainMenu> {
 
   Future<TeamDetails> getTeamDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String selectedTeam = prefs.getString('selectedTeam') ?? '';
+    int storedSelectedTeam = prefs.getInt('selectedTeam') ?? 0;
     String opponent = prefs.getString('opponent') ?? '';
     int round = prefs.getInt('round') ?? 0;
     int discipline = prefs.getInt('discipline') ?? 0;
 
     return TeamDetails(
-      selectedTeam: selectedTeam,
+      selectedTeam: storedSelectedTeam,
       opponent: opponent,
       round: round,
       discipline: discipline,
@@ -278,23 +264,16 @@ class _MainMenuState extends State<MainMenu> {
 
     // Determine team's match
     String match = '';
-    if (selectedTeam.isNotEmpty &&
-        currentRound > 0 &&
-        currentRound <= pairings.length) {
+    if (currentRound > 0 && currentRound <= pairings.length) {
       List<String> roundPairings = pairings[currentRound - 1];
       for (String pairing in roundPairings) {
         List<String> teams = pairing.split('-');
-        if (teams.contains(selectedTeam.split(' ')[1])) {
-          match = pairing;
-          break;
-        }
+        match = pairing;
       }
     }
 
     String appBarTitle = 'Olympiade';
-    if (selectedTeam.isNotEmpty) {
-      appBarTitle += ' - $selectedTeam';
-    }
+    appBarTitle += ' - Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
       appBarTitle += ' - $selectedTeamName';
     }
@@ -379,7 +358,10 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UploadResults()));
+                                builder: (context) => UploadResults(
+                                    currentRound: currentRound,
+                                    currentGame: discipline,
+                                    teamNumber: selectedTeam)));
                       },
                       child: Text('Ergebnisse eintragen'),
                     ),

@@ -1,5 +1,5 @@
 class TeamDetails {
-  final String selectedTeam;
+  final int selectedTeam;
   final String opponent;
   final int round;
   final int discipline;
