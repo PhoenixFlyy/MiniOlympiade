@@ -37,7 +37,7 @@ class _MainMenuState extends State<MainMenu> {
   final _eventStartTimeController = TextEditingController();
 
   int currentRound = 0;
-  bool isPaused = true;
+  bool isPaused = false;
   int pauseTimeInSeconds = 0;
 
   int selectedTeam = 0;
@@ -68,6 +68,7 @@ class _MainMenuState extends State<MainMenu> {
           stringToDateTime(event.snapshot.value.toString());
       setState(() {
         _eventStartTime = streamEventStartTime;
+        currentRound = calculateCurrentRoundWithDateTime();
       });
     });
   }
@@ -82,6 +83,8 @@ class _MainMenuState extends State<MainMenu> {
 
   void _setUpTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), _updateTimerCallback);
+    _updateCurrentRound();
+    _updateMatchAndDiscipline();
   }
 
   void _updateTimerCallback(Timer timer) {
@@ -159,17 +162,6 @@ class _MainMenuState extends State<MainMenu> {
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
-  void updateEventStartTimeInDatabase(DateTime dateTime) {
-    if (!mounted) return;
-
-    String dateTimeString = dateTimeToString(dateTime);
-    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
-
-    databaseReference.child("time").update({
-      "startTime": dateTimeString,
-    });
-  }
-
   void updateIsPausedInDatabase() {
     if (!mounted) return;
     if (isPaused) {
@@ -199,7 +191,7 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   Color getRoundCircleColor() {
-    if (currentRound > 0 && currentRound < pairings.length) {
+    if (currentRound > 0 && currentRound <= pairings.length) {
       if (calculateRemainingTimeInRound().inSeconds < 60) {
         return Colors.orange;
       } else {
@@ -305,7 +297,12 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-                  if (currentRound <= pairings.length && currentRound > 0)
+                  if (isPaused)
+                    const Icon(
+                      Icons.pause,
+                      size: 300,
+                    )
+                  else if (currentRound <= pairings.length && currentRound > 0)
                     Padding(
                       padding: const EdgeInsets.only(top: 40),
                       child: Container(
@@ -329,8 +326,8 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     )
                   else
-                    SizedBox(height: 400, child: getDisciplineImage()),
-                  if (currentRound + 1 <= pairings.length)
+                    SizedBox(height: 300, child: getDisciplineImage()),
+                  if (currentRound < pairings.length && !isPaused)
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Container(
