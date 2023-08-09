@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/DateTimeUtils.dart';
 import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
+import 'package:winter_olympiade/utils/PlaySounds.dart';
 import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
 import 'Dartsrechner.dart';
@@ -25,6 +27,7 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+  final player = AudioPlayer();
   late Timer _timer;
   String currentMatchUpText = '';
   String nextMatchUpText = '';
@@ -97,6 +100,7 @@ class _MainMenuState extends State<MainMenu> {
 
   void _updateCurrentRound() {
     int newCurrentRound = calculateCurrentRoundWithDateTime();
+    if (newCurrentRound != currentRound) playStartSound();
 
     setState(() {
       currentRound = newCurrentRound;
@@ -160,6 +164,7 @@ class _MainMenuState extends State<MainMenu> {
     int remainingSecondsInCurrentRound =
         roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
+    if (remainingSecondsInCurrentRound == 60) playWhooshSound();
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
