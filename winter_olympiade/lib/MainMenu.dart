@@ -305,43 +305,47 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800],
-                        borderRadius: BorderRadius.circular(10),
+                  if (currentRound <= pairings.length && currentRound > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(currentMatchUpText,
+                                style: const TextStyle(fontSize: 18),
+                                textAlign: TextAlign.center),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: SizedBox(
+                                height: 150, child: getDisciplineImage()),
+                          ),
+                        ]),
                       ),
-                      child: Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(currentMatchUpText,
-                              style: const TextStyle(fontSize: 18),
+                    )
+                  else
+                    SizedBox(height: 400, child: getDisciplineImage()),
+                  if (currentRound + 1 <= pairings.length)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[850],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(nextMatchUpText,
+                              style: const TextStyle(fontSize: 15),
                               textAlign: TextAlign.center),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: SizedBox(
-                              height: 150, child: getDisciplineImage()),
-                        ),
-                      ]),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[850],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(nextMatchUpText,
-                            style: const TextStyle(fontSize: 15),
-                            textAlign: TextAlign.center),
                       ),
                     ),
-                  ),
                 ],
               ),
               Column(
