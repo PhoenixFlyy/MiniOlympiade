@@ -237,7 +237,7 @@ class _MainMenuState extends State<MainMenu> {
                           textAlign: TextAlign.center),
                     ),
                   ),
-                  SizedBox(height: 150, child: getDisciplineImage()),
+                  SizedBox(height: 100, child: getDisciplineImage()),
                   Padding(
                     padding: const EdgeInsets.only(top: 80),
                     child: Padding(
