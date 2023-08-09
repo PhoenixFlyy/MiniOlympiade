@@ -41,6 +41,7 @@ dependencies:
   firebase_core: ^2.15.0
   flutter_launcher_icons: ^0.13.1
   intl: ^0.18.1
+  audioplayers: ^5.1.0
 
 dev_dependencies:
   flutter_test:

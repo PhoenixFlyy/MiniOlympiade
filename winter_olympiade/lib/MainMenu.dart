@@ -85,6 +85,7 @@ class _MainMenuState extends State<MainMenu> {
     _timer = Timer.periodic(const Duration(seconds: 1), _updateTimerCallback);
     _updateCurrentRound();
     _updateMatchAndDiscipline();
+    _updateMatchAndDiscipline();
   }
 
   void _updateTimerCallback(Timer timer) {
@@ -97,11 +98,9 @@ class _MainMenuState extends State<MainMenu> {
   void _updateCurrentRound() {
     int newCurrentRound = calculateCurrentRoundWithDateTime();
 
-    if (newCurrentRound != currentRound) {
-      setState(() {
-        currentRound = newCurrentRound;
-      });
-    }
+    setState(() {
+      currentRound = newCurrentRound;
+    });
   }
 
   void _updateMatchAndDiscipline() {
@@ -122,8 +121,9 @@ class _MainMenuState extends State<MainMenu> {
       setState(() {
         currentMatchUpText =
             'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
-        nextMatchUpText =
-            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
+        nextMatchUpText = currentRound <= 0
+            ? 'Coming up: $disciplineName gegen Team $opponentTeamNumber. $startTeam'
+            : 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
     }
   }
@@ -146,6 +146,7 @@ class _MainMenuState extends State<MainMenu> {
     Duration timeDifference = currentTime.difference(_eventStartTime) -
         Duration(seconds: pauseTimeInSeconds);
     int currentRound = timeDifference.inMinutes ~/ roundTimeDuration.inMinutes;
+    if (timeDifference.isNegative) return 0;
     return currentRound + 1;
   }
 
@@ -326,7 +327,19 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     )
                   else
-                    SizedBox(height: 300, child: getDisciplineImage()),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text(
+                              currentRound > pairings.length
+                                  ? "Die Olympiade ist zu Ende"
+                                  : "Die Olympiade beginnt bald..",
+                              style: const TextStyle(fontSize: 24)),
+                        ),
+                        SizedBox(height: 250, child: getDisciplineImage()),
+                      ],
+                    ),
                   if (currentRound < pairings.length && !isPaused)
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
