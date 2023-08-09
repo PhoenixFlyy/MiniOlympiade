@@ -52,6 +52,7 @@ class _MainMenuState extends State<MainMenu> {
       FirebaseDatabase.instance.ref('/time');
 
   bool isFirstRenderingWhistle = true;
+
   void _activateDatabaseTimeListener() {
     _databaseTime.child("isPaused").onValue.listen((event) {
       final bool streamIsPaused =
@@ -562,6 +563,7 @@ class _MainMenuState extends State<MainMenu> {
                         final DatabaseReference databaseReference =
                             FirebaseDatabase.instance.ref('/time');
                         databaseReference.update({
+                          "pauseTime": 0,
                           "startTime": dateTimeToString(newTime),
                         });
                       })
