@@ -9,6 +9,7 @@ import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/DateTimeUtils.dart';
 import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
+import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
 import 'Dartsrechner.dart';
 import 'Regeln.dart';
@@ -62,6 +63,13 @@ class _MainMenuState extends State<MainMenu> {
         pauseTimeInSeconds = streamPauseTime;
       });
     });
+    _databaseTime.child("startTime").onValue.listen((event) {
+      final DateTime streamEventStartTime =
+          stringToDateTime(event.snapshot.value.toString());
+      setState(() {
+        _eventStartTime = streamEventStartTime;
+      });
+    });
   }
 
   @override
@@ -69,14 +77,7 @@ class _MainMenuState extends State<MainMenu> {
     super.initState();
     _loadSelectedTeam();
     _setUpTimer();
-    _loadData();
     _activateDatabaseTimeListener();
-  }
-
-  void _loadData() async {
-    await getOlympiadeStartDateTime().then((value) {
-      _eventStartTime = value;
-    });
   }
 
   void _setUpTimer() {
@@ -305,42 +306,46 @@ class _MainMenuState extends State<MainMenu> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 50),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(currentMatchUpText,
-                          style: const TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center),
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(currentMatchUpText,
+                              style: const TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: SizedBox(
+                              height: 150, child: getDisciplineImage()),
+                        ),
+                      ]),
                     ),
                   ),
-                  SizedBox(height: 100, child: getDisciplineImage()),
                   Padding(
-                    padding: const EdgeInsets.only(top: 80),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(nextMatchUpText,
-                          style: const TextStyle(fontSize: 15),
-                          textAlign: TextAlign.center),
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(nextMatchUpText,
+                            style: const TextStyle(fontSize: 15),
+                            textAlign: TextAlign.center),
+                      ),
                     ),
                   ),
                 ],
               ),
               Column(
                 children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: FilledButton.tonal(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UploadResults(
-                                    currentRound: currentRound,
-                                    teamNumber: selectedTeam)));
-                      },
-                      child: Text('Ergebnisse eintragen'),
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 20),
                     child: SizedBox(
@@ -392,6 +397,7 @@ class _MainMenuState extends State<MainMenu> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[850],
                               padding: const EdgeInsets.all(16.0),
                             ),
                             onPressed: () {
@@ -400,11 +406,26 @@ class _MainMenuState extends State<MainMenu> {
                                   MaterialPageRoute(
                                       builder: (context) => RulesScreen()));
                             },
-                            child: const Text(
-                              'Regeln',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            child: const Text('Regeln'),
                           ),
+                        ),
+                      ),
+                      Expanded(
+                        child: FilledButton.tonal(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[850],
+                            padding: const EdgeInsets.all(16.0),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UploadResults(
+                                        currentRound: currentRound,
+                                        teamNumber: selectedTeam)));
+                          },
+                          child: const Text('Ergebnisse eintragen',
+                              textAlign: TextAlign.center),
                         ),
                       ),
                       Expanded(
@@ -412,6 +433,7 @@ class _MainMenuState extends State<MainMenu> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[850],
                               padding: const EdgeInsets.all(16.0),
                             ),
                             onPressed: () {
@@ -424,10 +446,7 @@ class _MainMenuState extends State<MainMenu> {
                                             currentRowForColor: currentRound,
                                           )));
                             },
-                            child: const Text(
-                              'Laufplan',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            child: const Text('Laufplan'),
                           ),
                         ),
                       ),
@@ -506,6 +525,15 @@ class _MainMenuState extends State<MainMenu> {
                     onPressed: () => updateIsPausedInDatabase(),
                     child: const Text("Update Pause in Database"),
                   ),
+                if (selectedTeamName == "Felix99" ||
+                    selectedTeamName == "Simon00")
+                  TimePickerWidget(onDateTimeSelected: (newTime) {
+                    final DatabaseReference databaseReference =
+                        FirebaseDatabase.instance.ref('/time');
+                    databaseReference.update({
+                      "startTime": dateTimeToString(newTime),
+                    });
+                  })
               ],
             ),
           ),
