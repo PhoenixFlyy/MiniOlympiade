@@ -353,7 +353,7 @@ class _MainMenuState extends State<MainMenu> {
                                   : "Die Olympiade beginnt bald..",
                               style: const TextStyle(fontSize: 24)),
                         ),
-                        SizedBox(height: 250, child: getDisciplineImage()),
+                        SizedBox(height: 200, child: getDisciplineImage()),
                       ],
                     ),
                   if (currentRound < pairings.length && !isPaused)
