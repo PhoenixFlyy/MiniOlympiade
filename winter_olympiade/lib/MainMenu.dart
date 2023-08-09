@@ -8,7 +8,6 @@ import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/DateTimeUtils.dart';
 import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
-import 'package:winter_olympiade/utils/TeamDetails.dart';
 import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
 import 'Dartsrechner.dart';
@@ -28,7 +27,6 @@ class _MainMenuState extends State<MainMenu> {
   late Timer _timer;
   String currentMatchUpText = '';
   String nextMatchUpText = '';
-  String discipline = '';
 
   Duration maxChessTime = const Duration(minutes: 4);
   Duration roundTimeDuration = const Duration(minutes: 10);
@@ -47,33 +45,33 @@ class _MainMenuState extends State<MainMenu> {
   List<Break> eventBreaks = [];
 
   Widget getDisciplineImage() {
-    switch (discipline) {
-      case "1":
+    switch (getDisciplineName(currentRound, selectedTeam)) {
+      case "Kicker":
         return Image.asset(
           "assets/kicker.png",
           scale: 8,
         );
-      case "2":
+      case "Darts":
         return Image.asset(
           "assets/darts.png",
           scale: 2.5,
         );
-      case "3":
+      case "Billard":
         return Image.asset(
           "assets/billard.png",
           scale: 8,
         );
-      case "4":
+      case "Bierpong":
         return Image.asset(
           "assets/beerpong.png",
           scale: 2.5,
         );
-      case "5":
+      case "Kubb":
         return Image.asset(
           "assets/kubb.png",
           scale: 2.5,
         );
-      case "6":
+      case "Jenga":
         return Image.asset(
           "assets/jenga.png",
           scale: 1,
@@ -155,21 +153,6 @@ class _MainMenuState extends State<MainMenu> {
     Duration timeDifference = currentTime.difference(_eventStartTime);
     int currentRound = timeDifference.inMinutes ~/ roundTimeDuration.inMinutes;
     return currentRound + 1;
-  }
-
-  Future<TeamDetails> getTeamDetails() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int storedSelectedTeam = prefs.getInt('selectedTeam') ?? 0;
-    int round = prefs.getInt('round') ?? 0;
-    int discipline = prefs.getInt('discipline') ?? 0;
-    String opponent = "";
-
-    return TeamDetails(
-      selectedTeam: storedSelectedTeam,
-      opponent: opponent,
-      round: round,
-      discipline: discipline,
-    );
   }
 
   @override
@@ -285,7 +268,7 @@ class _MainMenuState extends State<MainMenu> {
                           ),
                         ],
                       ),
-                      getDisciplineImage()
+                      Expanded(child: getDisciplineImage())
                     ],
                   )
                 ],
@@ -293,7 +276,7 @@ class _MainMenuState extends State<MainMenu> {
               Column(
                 children: [
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment: Alignment.center,
                     child: FilledButton.tonal(
                       onPressed: () {
                         Navigator.push(
@@ -307,7 +290,7 @@ class _MainMenuState extends State<MainMenu> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 10, top: 20),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height / 12,
                       width: double.infinity,
@@ -419,7 +402,7 @@ class _MainMenuState extends State<MainMenu> {
 
   void _openSettings() {
     _maxTimeController.text = maxChessTime.inSeconds.toString();
-    _roundTimeController.text = roundTimeDuration.inSeconds.toString();
+    _roundTimeController.text = roundTimeDuration.inMinutes.toString();
     final breakRoundController = TextEditingController();
     final breakDurationController = TextEditingController();
 
