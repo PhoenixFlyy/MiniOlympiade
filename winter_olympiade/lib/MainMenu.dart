@@ -487,9 +487,12 @@ class _MainMenuState extends State<MainMenu> {
                 const Text("Event Start:"),
                 Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
                     style: const TextStyle(fontSize: 18)),
-                FilledButton.tonal(
+                if (selectedTeamName == "Felix99" ||
+                    selectedTeamName == "Simon00")
+                  FilledButton.tonal(
                     onPressed: () => updateIsPausedInDatabase(),
-                    child: const Text("Update Pause in Database")),
+                    child: const Text("Update Pause in Database"),
+                  ),
               ],
             ),
           ),

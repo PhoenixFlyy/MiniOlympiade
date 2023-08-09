@@ -59,7 +59,7 @@ class _UploadResultsState extends State<UploadResults> {
           getAllTeamPointsInDiscipline(selectedDiscipline, widget.teamNumber),
       builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading...");
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return const Text("An error occurred.");
         } else {
@@ -126,7 +126,7 @@ class _UploadResultsState extends State<UploadResults> {
                 );
               }).toList(),
             ),
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: () {
                 updateScores();
                 setState(() {});
@@ -134,7 +134,7 @@ class _UploadResultsState extends State<UploadResults> {
               child: const Text("Lade deine Punkte für diese Runde hoch"),
             ),
             const Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(color: Colors.white),
             ),
             Column(
