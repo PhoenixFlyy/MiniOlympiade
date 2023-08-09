@@ -21,12 +21,15 @@ class _UploadResultsState extends State<UploadResults> {
   int selectedRound = 1;
   double teamScore = 0.0;
   bool showTeamScore = false;
+  int selectedDiscipline = 1;
 
   @override
   void initState() {
     super.initState();
     if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
       selectedRound = widget.currentRound;
+      selectedDiscipline =
+          getDisciplineNumber(widget.currentRound, widget.teamNumber);
     }
   }
 
@@ -50,25 +53,34 @@ class _UploadResultsState extends State<UploadResults> {
     });
   }
 
-  Widget getTeamScoreText() {
-    if (showTeamScore) {
-      return FutureBuilder<double>(
-        future: getTeamPointsInRound(selectedRound, widget.teamNumber),
-        builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading...");
-          } else if (snapshot.hasError) {
-            return const Text("An error occurred.");
-          } else {
-            return Text(
-                "Dein Team hat für Runde $selectedRound ${snapshot.data} Punkte gemacht!",
-                style: TextStyle(fontSize: 16));
-          }
-        },
-      );
-    } else {
-      return Container();
-    }
+  Widget getTeamScoreForAllRoundsText() {
+    return FutureBuilder<List<double>>(
+      future:
+          getAllTeamPointsInDiscipline(selectedDiscipline, widget.teamNumber),
+      builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Loading...");
+        } else if (snapshot.hasError) {
+          return const Text("An error occurred.");
+        } else {
+          return DataTable(
+            columns: const <DataColumn>[
+              DataColumn(label: Text('Duell')),
+              DataColumn(label: Text('Punkte')),
+            ],
+            rows: List<DataRow>.generate(
+              snapshot.data!.length,
+              (int index) => DataRow(
+                cells: <DataCell>[
+                  DataCell(Text((index + 1).toString())),
+                  DataCell(Text(snapshot.data![index].toString())),
+                ],
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -79,23 +91,27 @@ class _UploadResultsState extends State<UploadResults> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            DropdownButton<int>(
-              value: selectedRound,
-              onChanged: (newValue) {
-                setState(() {
-                  showTeamScore = false;
-                  selectedRound = newValue!;
-                });
-              },
-              items: List<DropdownMenuItem<int>>.generate(
-                60,
-                (index) => DropdownMenuItem<int>(
-                  value: index + 1,
-                  child: Text('Round ${index + 1}'),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              DropdownButton<int>(
+                value: selectedRound,
+                onChanged: (newValue) {
+                  setState(() {
+                    showTeamScore = false;
+                    selectedRound = newValue!;
+                  });
+                },
+                items: List<DropdownMenuItem<int>>.generate(
+                  pairings.length,
+                  (index) => DropdownMenuItem<int>(
+                    value: index + 1,
+                    child: Text('Round ${index + 1}',
+                        style: const TextStyle(fontSize: 22)),
+                  ),
                 ),
               ),
-            ),
-            Text(getDisciplineName(selectedRound, widget.teamNumber)),
+              Text(getDisciplineName(selectedRound, widget.teamNumber),
+                  style: const TextStyle(fontSize: 23)),
+            ]),
             Wrap(
               spacing: 8,
               children: [0.0, 0.5, 1.0].map((value) {
@@ -110,20 +126,39 @@ class _UploadResultsState extends State<UploadResults> {
                 );
               }).toList(),
             ),
-            FilledButton.tonal(
-              onPressed: () {
-                setState(() {
-                  showTeamScore = true;
-                });
-              },
-              child: const Text("Zeige die gesammelten Teampunkte an"),
-            ),
-            getTeamScoreText(),
             ElevatedButton(
               onPressed: () {
                 updateScores();
+                setState(() {});
               },
               child: const Text("Lade deine Punkte für diese Runde hoch"),
+            ),
+            const Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Divider(color: Colors.white),
+            ),
+            Column(
+              children: [
+                DropdownButton<int>(
+                  value: selectedDiscipline,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedDiscipline = newValue!;
+                    });
+                  },
+                  items: disciplines.keys
+                      .map<DropdownMenuItem<int>>((String value) {
+                    return DropdownMenuItem<int>(
+                      value: int.parse(value),
+                      child: Text(disciplines[value]!),
+                    );
+                  }).toList(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: getTeamScoreForAllRoundsText(),
+                ),
+              ],
             ),
           ],
         ),

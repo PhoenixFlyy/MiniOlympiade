@@ -75,6 +75,27 @@ Future<double> getTeamPointsInRound(int round, int teamNumber) async {
   return -2;
 }
 
+Future<List<double>> getAllTeamPointsInDiscipline(
+    int disciplineNumber, int teamNumber) async {
+  List<double> summarizedPointList = [];
+  for (int index = 0; index < pairings.length; index++) {
+    var pairing = pairings[index];
+    var match = pairing[disciplineNumber - 1];
+    if (match.contains(teamNumber.toString())) {
+      var teams = match.split('-');
+      var teamOrderString =
+          teams[0].contains(teamNumber.toString()) ? "team1" : "team2";
+
+      DatabaseReference databaseMatch = FirebaseDatabase.instance.ref(
+          '/results/rounds/$index/matches/${disciplineNumber - 1}/$teamOrderString');
+      DatabaseEvent event = await databaseMatch.once();
+      summarizedPointList
+          .add(double.tryParse(event.snapshot.value.toString()) ?? 0.0);
+    }
+  }
+  return summarizedPointList;
+}
+
 Future<DateTime> getOlympiadeStartDateTime() async {
   DatabaseReference databaseParent =
       FirebaseDatabase.instance.ref('/time/startTime');
