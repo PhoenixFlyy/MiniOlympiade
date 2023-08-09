@@ -14,8 +14,15 @@ class Turn {
   Turn(this.wasPlayerOneTurn, this.turnValue);
 }
 
+class GameState {
+  List<List<dynamic>> history =
+      []; // Speichert die Historie der Würfe. Jede Liste stellt eine Runde von Würfen dar.
+}
+
 class _DartsRechnerState extends State<DartsRechner> {
-  int startNumber = 301;
+  int startNumber = 501; // Standard-Anfangsscore
+  //late int startNumber; // Anfangsscore nciht benötigt...???
+
   bool playerOneTurn = true;
   late int playerOneNumber;
   late int playerTwoNumber;
@@ -34,9 +41,65 @@ class _DartsRechnerState extends State<DartsRechner> {
   List<int> temporaryPlayerOneTurnValues = [];
   List<int> temporaryPlayerTwoTurnValues = [];
 
-  _DartsRechnerState() {
+  var gameState = GameState();
+
+  @override
+  void initState() {
+    super.initState();
     playerOneNumber = startNumber;
     playerTwoNumber = startNumber;
+  }
+
+  //_DartsRechnerState(int initialStartingScore) {
+    //startNumber = initialStartingScore;
+    //playerOneNumber = startNumber;
+    //playerTwoNumber = startNumber;
+  //}
+
+  void addCurrentStateToHistory() {
+    gameState.history.add([
+      playerOneNumber,
+      playerTwoNumber,
+      List.from(playerOneTurnValues),
+      List.from(playerTwoTurnValues),
+      List.from(playerOneScoreHistory),
+      List.from(playerTwoScoreHistory),
+      doubleNextScore,
+      tripleNextScore,
+      playerOneOverthrown,
+      playerTwoOverthrown,
+      temporaryPlayerOneScore,
+      temporaryPlayerTwoScore,
+      List.from(temporaryPlayerOneTurnValues),
+      List.from(temporaryPlayerTwoTurnValues),
+      turnCounter,
+      playerOneTurn,
+    ]);
+  }
+
+  void undoLastEntry() {
+    if (gameState.history.isNotEmpty) {
+      var lastState = gameState.history.removeLast();
+
+      setState(() {
+        playerOneNumber = lastState[0];
+        playerTwoNumber = lastState[1];
+        playerOneTurnValues = List.from(lastState[2]);
+        playerTwoTurnValues = List.from(lastState[3]);
+        playerOneScoreHistory = List.from(lastState[4]);
+        playerTwoScoreHistory = List.from(lastState[5]);
+        doubleNextScore = lastState[6];
+        tripleNextScore = lastState[7];
+        playerOneOverthrown = lastState[8];
+        playerTwoOverthrown = lastState[9];
+        temporaryPlayerOneScore = lastState[10];
+        temporaryPlayerTwoScore = lastState[11];
+        temporaryPlayerOneTurnValues = List.from(lastState[12]);
+        temporaryPlayerTwoTurnValues = List.from(lastState[13]);
+        turnCounter = lastState[14];
+        playerOneTurn = lastState[15];
+      });
+    }
   }
 
   // Function to save the scores temporarily before every throw
@@ -72,6 +135,25 @@ class _DartsRechnerState extends State<DartsRechner> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Darts Rechner'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+
+                if (result != null) {
+                  setState(() {
+                    startNumber = result;
+                    playerOneNumber = startNumber;
+                    playerTwoNumber = startNumber;
+                  });
+                }
+              },
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -101,10 +183,13 @@ class _DartsRechnerState extends State<DartsRechner> {
               flex: 2,
               child: DartsRechnerTastatur(
                 onNumberSelected: (num) {
+
                   setState(() {
                     if (num >= 0) {
+                      addCurrentStateToHistory(); // Zustand speichern
                       turnCounter += 1;
                     }
+
                     if (turnCounter % 3 == 1) {
                       // Wenn es der erste Wurf im Zug ist
                       if (playerOneTurn) {
@@ -128,13 +213,19 @@ class _DartsRechnerState extends State<DartsRechner> {
                       tripleNextScore = false;
                     }
 
+                    if (num == -3) {
+                      undoLastEntry();
+                      return;
+                    }
+
                     // Berechne den neuen Score nach dem Wurf, aber setze ihn noch nicht
                     int newScore = playerOneTurn
                         ? playerOneNumber - num
                         : playerTwoNumber - num;
 
                     if (num >= 0) {
-                      if (newScore < 0) { // Überwurf
+                      if (newScore < 0) {
+                        // Überwurf
                         if (playerOneTurn) {
                           playerOneNumber =
                               startingScore; // Punkte zurücksetzen
@@ -150,8 +241,8 @@ class _DartsRechnerState extends State<DartsRechner> {
                           playerTwoOverthrown = true;
                           endTurn();
                         }
-
-                      } else { //kein Überwurf
+                      } else {
+                        //kein Überwurf
                         if (playerOneTurn) {
                           playerOneNumber = newScore; // Setze den neuen Score
                           playerOneTurnValues.add(num);
@@ -216,6 +307,7 @@ class _DartsRechnerState extends State<DartsRechner> {
                     }
                   });
                 },
+                undoLastEntry: undoLastEntry,
               ),
             ),
           ],
@@ -346,8 +438,10 @@ class _DartsRechnerState extends State<DartsRechner> {
 
 class DartsRechnerTastatur extends StatefulWidget {
   final ValueChanged<int> onNumberSelected;
+  final VoidCallback undoLastEntry;
 
-  DartsRechnerTastatur({required this.onNumberSelected});
+  DartsRechnerTastatur(
+      {required this.onNumberSelected, required this.undoLastEntry});
 
   @override
   _DartsRechnerTastaturState createState() => _DartsRechnerTastaturState();
@@ -446,21 +540,34 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
           buttonBuilder(const Text('0'), 0, Colors.grey[600]!),
           buttonBuilder(const Text('DOUBLE'), -1, Colors.orange),
           buttonBuilder(const Text('TRIPLE'), -2, Colors.orange[700]!),
-          buttonBuilder(const Icon(Icons.arrow_back), -3, Colors.red[900]!),
+          buttonBuilder(
+              const Icon(Icons.arrow_back),
+              -3,
+              Colors.red[900]!,
+              false,
+              widget.undoLastEntry // Zugriff auf die Methode über 'widget'
+              ),
         ],
       ),
     );
   }
 
   Widget buttonBuilder(Widget contentWidget, int returnValue, Color color,
-      [bool isDisabled = false]) {
+      [bool isDisabled = false, VoidCallback? onUndo]) {
     return Expanded(
       child: InkWell(
-        onTap: isDisabled
-            ? null
-            : () {
-                widget.onNumberSelected(returnValue);
-              },
+        onTap: () {
+          if (isDisabled) {
+            return;
+          }
+
+          if (onUndo != null) {
+            onUndo();
+          } else {
+            widget.onNumberSelected(returnValue);
+          }
+        },
+
         child: Padding(
           padding: EdgeInsets.all(buttonPadding),
           child: Container(
@@ -473,3 +580,69 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
     );
   }
 }
+
+
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  int? selectedStartingScore = 501; // Standard-Anfangsscore; wird aber nicht wirksam. Der Standard-Anfangsscore wird oben angegeben.
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Einstellungen'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              Navigator.pop(context, selectedStartingScore);
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            RadioListTile<int>(
+              title: Text('201'),
+              value: 201,
+              groupValue: selectedStartingScore,
+              onChanged: (value) {
+                setState(() {
+                  selectedStartingScore = value;
+                });
+              },
+            ),
+            RadioListTile<int>(
+              title: Text('301'),
+              value: 301,
+              groupValue: selectedStartingScore,
+              onChanged: (value) {
+                setState(() {
+                  selectedStartingScore = value;
+                });
+              },
+            ),
+            RadioListTile<int>(
+              title: Text('501'),
+              value: 501,
+              groupValue: selectedStartingScore,
+              onChanged: (value) {
+                setState(() {
+                  selectedStartingScore = value;
+                });
+              },
+            ),
+            // ... Weitere RadioListTile für andere Anfangsscores
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
