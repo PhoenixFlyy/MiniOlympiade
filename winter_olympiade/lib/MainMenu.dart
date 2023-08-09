@@ -51,13 +51,23 @@ class _MainMenuState extends State<MainMenu> {
   final DatabaseReference _databaseTime =
       FirebaseDatabase.instance.ref('/time');
 
+  bool isFirstRenderingWhistle = true;
   void _activateDatabaseTimeListener() {
     _databaseTime.child("isPaused").onValue.listen((event) {
       final bool streamIsPaused =
           event.snapshot.value.toString().toLowerCase() == 'true';
+      if (!isFirstRenderingWhistle && streamIsPaused) {
+        playWhistleSound();
+      }
+      if (!isFirstRenderingWhistle && !streamIsPaused) {
+        playStartSound();
+      }
       setState(() {
         isPaused = streamIsPaused;
       });
+      if (isFirstRenderingWhistle) {
+        isFirstRenderingWhistle = false;
+      }
     });
     _databaseTime.child("pauseTime").onValue.listen((event) {
       final int streamPauseTime =

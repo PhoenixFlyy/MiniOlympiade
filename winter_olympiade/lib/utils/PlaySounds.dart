@@ -11,3 +11,9 @@ Future<void> playWhooshSound() async {
   player.setVolume(5.0);
   player.play(AssetSource("whoosh.mp3"));
 }
+
+Future<void> playWhistleSound() async {
+  final player = AudioPlayer();
+  player.setVolume(5.0);
+  player.play(AssetSource("whistle.mp3"));
+}
