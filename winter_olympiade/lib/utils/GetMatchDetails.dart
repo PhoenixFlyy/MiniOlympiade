@@ -42,6 +42,24 @@ int getDisciplineNumber(int round, int teamNumber) {
   return 0;
 }
 
+int getOpponentTeamNumber(int round, int teamNumber) {
+  if (round > 0 && round < pairings.length) {
+    var pairing = pairings[round - 1];
+    for (int index = 0; index < pairing.length; index++) {
+      var match = pairing[index];
+      if (match.contains(teamNumber.toString())) {
+        var teams = match.split('-');
+        if (teams[0].contains(teamNumber.toString())) {
+          return int.tryParse(teams[1]) ?? -1;
+        } else {
+          return int.tryParse(teams[0]) ?? -1;
+        }
+      }
+    }
+  }
+  return -2;
+}
+
 Future<double> getTeamPointsInRound(int round, int teamNumber) async {
   if (round > 0 && round <= pairings.length && teamNumber > 0) {
     var teamOrderString = isStartingTeam(round, teamNumber) ? "team1" : "team2";

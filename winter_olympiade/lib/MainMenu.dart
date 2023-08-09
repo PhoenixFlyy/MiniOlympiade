@@ -26,42 +26,25 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<MainMenu> {
   late Timer _timer;
-  String match = '';
+  String currentMatchUpText = '';
+  String nextMatchUpText = '';
   String discipline = '';
 
-  int maxtime = 240;
-
+  Duration maxChessTime = const Duration(minutes: 4);
   Duration roundTimeDuration = const Duration(minutes: 10);
+
   final _roundTimeController = TextEditingController();
+  final _maxTimeController = TextEditingController();
+  final _eventStartTimeController = TextEditingController();
 
   int currentRound = 0;
 
-  bool eventStarted = false;
   int selectedTeam = 0;
   String selectedTeamName = "";
 
   DateTime _eventStartTime = DateTime(2023, 9, 13);
 
-  late Future<TeamDetails> futureTeamDetails;
-
-  final _maxTimeController = TextEditingController();
-  final _eventStartTimeController = TextEditingController();
-
   List<Break> eventBreaks = [];
-
-  MatchDetails getOpponentAndDiscipline(int roundNumber, int teamNumber) {
-    for (var discipline = 0;
-        discipline < pairings[roundNumber - 1].length;
-        discipline++) {
-      var teams = pairings[roundNumber - 1][discipline].split('-');
-      if (teams.contains(teamNumber.toString())) {
-        var opponent =
-            (teams[0] == teamNumber.toString()) ? teams[1] : teams[0];
-        return MatchDetails(opponent: opponent, discipline: discipline + 1);
-      }
-    }
-    return MatchDetails(opponent: 'None', discipline: 0);
-  }
 
   Widget getDisciplineImage() {
     switch (discipline) {
@@ -106,50 +89,52 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
-    getOlympiadeStartDateTime().then((value) {
+    _loadSelectedTeam();
+    _setUpTimer();
+    _loadData();
+  }
+
+  void _loadData() async {
+    await getOlympiadeStartDateTime().then((value) {
       _eventStartTime = value;
-      eventStarted = true;
     });
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await _loadSelectedTeam();
-      futureTeamDetails = getTeamDetails();
+  void _setUpTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), _updateTimerCallback);
+  }
 
-      if (currentRound > 0 && currentRound <= pairings.length) {
-        var details = getOpponentAndDiscipline(currentRound, selectedTeam);
+  void _updateTimerCallback(Timer timer) {
+    _updateCurrentRound();
+    _updateMatchAndDiscipline();
+  }
 
-        setState(() {
-          match =
-              'Team $selectedTeam spielt gegen Team ${details.opponent} in Disziplin ${details.discipline}.';
-        });
-      }
-    });
+  void _updateCurrentRound() {
+    int newCurrentRound = calculateCurrentRoundWithDateTime();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
-        if (mounted) {
-          setState(() {
-            if (eventStarted) {
-              int newCurrentRound = calculateCurrentRoundWithDateTime();
+    if (newCurrentRound != currentRound) {
+      setState(() {
+        currentRound = newCurrentRound;
+      });
+    }
+  }
 
-              if (newCurrentRound != currentRound) {
-                currentRound = newCurrentRound;
-              }
-
-              if (currentRound > 0 && currentRound <= pairings.length) {
-                var details =
-                    getOpponentAndDiscipline(currentRound, selectedTeam);
-                setState(() {
-                  match = details.opponent;
-                  discipline = '${details.discipline}';
-                });
-              }
-            }
-          });
-        }
-      },
-    );
+  void _updateMatchAndDiscipline() {
+    if (currentRound > 0 && currentRound <= pairings.length) {
+      var opponentTeamNumber =
+          getOpponentTeamNumber(currentRound, selectedTeam);
+      var nextOpponentTeamNumber =
+          getOpponentTeamNumber(currentRound + 1, selectedTeam);
+      var disciplineName = getDisciplineName(currentRound, selectedTeam);
+      var nextDisciplineName =
+          getDisciplineName(currentRound + 1, selectedTeam);
+      setState(() {
+        currentMatchUpText =
+            'Aktuell: $disciplineName gegen Team $opponentTeamNumber';
+        nextMatchUpText =
+            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber';
+      });
+    }
   }
 
   Future<void> _loadSelectedTeam() async {
@@ -214,15 +199,6 @@ class _MainMenuState extends State<MainMenu> {
             .first
             .padLeft(8, "0");
 
-    // Determine team's match
-    String match = '';
-    if (currentRound > 0 && currentRound <= pairings.length) {
-      List<String> roundPairings = pairings[currentRound - 1];
-      for (String pairing in roundPairings) {
-        match = pairing;
-      }
-    }
-
     String appBarTitle = 'Olympiade';
     appBarTitle += ' - Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
@@ -269,30 +245,44 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.people),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              ' Matchup: Teams $match in Disziplin $discipline: ${disciplines[discipline]}, Team ${match.split("-")[0]} beginnt',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Row(
                     children: [
                       Column(
                         children: [
                           SizedBox(
-                              width: MediaQuery.of(context).size.width / 2,
-                              child: Text("test")),
-                          Text("test"),
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.people),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(currentMatchUpText),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.people),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(nextMatchUpText),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       getDisciplineImage()
@@ -349,7 +339,7 @@ class _MainMenuState extends State<MainMenu> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SchachUhr(
-                                        maxtime: maxtime,
+                                        maxtime: maxChessTime.inSeconds,
                                       )));
                         },
                         child: const Text(
@@ -407,14 +397,6 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-                  OutlinedButton(
-                    onPressed: () {
-                      //_startEvent();
-                    },
-                    child: Text(eventStarted
-                        ? 'Das Event ist im Gange...'
-                        : 'Event Starten'),
-                  ),
                 ],
               ),
             ],
@@ -436,10 +418,10 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void _openSettings() {
-    _maxTimeController.text = maxtime.toString();
-    _roundTimeController.text = roundTimeDuration.inMinutes.toString();
-    final _breakRoundController = TextEditingController();
-    final _breakDurationController = TextEditingController();
+    _maxTimeController.text = maxChessTime.inSeconds.toString();
+    _roundTimeController.text = roundTimeDuration.inSeconds.toString();
+    final breakRoundController = TextEditingController();
+    final breakDurationController = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -458,7 +440,9 @@ class _MainMenuState extends State<MainMenu> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
-                      maxtime = int.tryParse(value) ?? maxtime;
+                      maxChessTime = Duration(
+                          seconds:
+                              int.tryParse(value) ?? maxChessTime.inSeconds);
                     });
                   },
                 ),
@@ -478,13 +462,13 @@ class _MainMenuState extends State<MainMenu> {
                   },
                 ),
                 TextField(
-                  controller: _breakRoundController,
+                  controller: breakRoundController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: "Pausenrunde"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 TextField(
-                  controller: _breakDurationController,
+                  controller: breakDurationController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                       labelText: "Pausendauer in Minuten"),
@@ -492,13 +476,13 @@ class _MainMenuState extends State<MainMenu> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    int? round = int.tryParse(_breakRoundController.text);
-                    int? duration = int.tryParse(_breakDurationController.text);
+                    int? round = int.tryParse(breakRoundController.text);
+                    int? duration = int.tryParse(breakDurationController.text);
                     if (round != null && duration != null) {
                       eventBreaks
                           .add(Break(roundNumber: round, duration: duration));
-                      _breakRoundController.clear();
-                      _breakDurationController.clear();
+                      breakRoundController.clear();
+                      breakDurationController.clear();
                     }
                   },
                   child: const Text("Pause hinzuf�gen"),
@@ -525,7 +509,7 @@ class _MainMenuState extends State<MainMenu> {
                   },
                 ),
                 const SizedBox(height: 16.0),
-                Text('Pausenkonfiguration',
+                const Text('Pausenkonfiguration',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 ListView.builder(
                   shrinkWrap: true,
