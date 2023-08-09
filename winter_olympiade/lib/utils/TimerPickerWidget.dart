@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TimePickerWidget extends StatefulWidget {
-  final TimeOfDay initialTime;
-  final Function(TimeOfDay) onTimeSelected;
+  final Function(DateTime) onDateTimeSelected;
 
   const TimePickerWidget({
     Key? key,
-    required this.initialTime,
-    required this.onTimeSelected,
+    required this.onDateTimeSelected,
   }) : super(key: key);
 
   @override
@@ -15,32 +14,45 @@ class TimePickerWidget extends StatefulWidget {
 }
 
 class _TimePickerWidgetState extends State<TimePickerWidget> {
-  late TimeOfDay _selectedTime;
+  late DateTime _selectedDateTime;
 
   @override
   void initState() {
     super.initState();
-    _selectedTime = widget.initialTime;
+    _selectedDateTime = DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
+    final formattedDateTime =
+        DateFormat('dd.MM.yyyy HH:mm').format(_selectedDateTime);
+
     return Row(
       children: [
-        Text('Event Startzeit: ${_selectedTime.format(context)}'),
+        Text('Event Startzeit: $formattedDateTime',
+            style: const TextStyle(fontSize: 18)),
         IconButton(
           icon: const Icon(Icons.access_time),
           onPressed: () async {
             final TimeOfDay? pickedTime = await showTimePicker(
               context: context,
-              initialTime: _selectedTime,
+              initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
             );
 
             if (pickedTime != null) {
+              DateTime newDateTime = DateTime(
+                _selectedDateTime.year,
+                _selectedDateTime.month,
+                _selectedDateTime.day,
+                pickedTime.hour,
+                pickedTime.minute,
+              );
+
               setState(() {
-                _selectedTime = pickedTime;
+                _selectedDateTime = newDateTime;
               });
-              widget.onTimeSelected(pickedTime);
+
+              widget.onDateTimeSelected(newDateTime);
             }
           },
         ),

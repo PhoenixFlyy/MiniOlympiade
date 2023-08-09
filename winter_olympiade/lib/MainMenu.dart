@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/uploadresults.dart';
+import 'package:winter_olympiade/utils/DateTimeUtils.dart';
+import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
 import 'package:winter_olympiade/utils/TeamDetails.dart';
 import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
@@ -27,9 +30,8 @@ class _MainMenuState extends State<MainMenu> {
   String discipline = '';
 
   int maxtime = 240;
-  DateTime? eventStartTime;
 
-  int roundTime = 10;
+  Duration roundTimeDuration = const Duration(minutes: 10);
   final _roundTimeController = TextEditingController();
 
   int currentRound = 0;
@@ -38,7 +40,7 @@ class _MainMenuState extends State<MainMenu> {
   int selectedTeam = 0;
   String selectedTeamName = "";
 
-  TimeOfDay _eventStartTime = const TimeOfDay(hour: 0, minute: 0);
+  DateTime _eventStartTime = DateTime(2023, 9, 13);
 
   late Future<TeamDetails> futureTeamDetails;
 
@@ -59,19 +61,6 @@ class _MainMenuState extends State<MainMenu> {
       }
     }
     return MatchDetails(opponent: 'None', discipline: 0);
-  }
-
-  void _startEvent() {
-    eventStartTime = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      _eventStartTime.hour,
-      _eventStartTime.minute,
-    );
-    setState(() {
-      eventStarted = true;
-    });
   }
 
   Widget getDisciplineImage() {
@@ -117,6 +106,10 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
+    getOlympiadeStartDateTime().then((value) {
+      _eventStartTime = value;
+      eventStarted = true;
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _loadSelectedTeam();
@@ -138,10 +131,7 @@ class _MainMenuState extends State<MainMenu> {
         if (mounted) {
           setState(() {
             if (eventStarted) {
-              int elapsedSeconds = DateTime.now()
-                  .difference(eventStartTime ?? DateTime.now())
-                  .inSeconds;
-              int newCurrentRound = calculateCurrentRound(elapsedSeconds);
+              int newCurrentRound = calculateCurrentRoundWithDateTime();
 
               if (newCurrentRound != currentRound) {
                 currentRound = newCurrentRound;
@@ -174,21 +164,17 @@ class _MainMenuState extends State<MainMenu> {
     }
   }
 
-  int calculateCurrentRound(int elapsedSeconds) {
-    int pauseTime = 0;
-    for (Break eventBreak in eventBreaks) {
-      if (elapsedSeconds > eventBreak.roundNumber * roundTime * 60) {
-        pauseTime += eventBreak.duration;
-      }
-    }
-    int adjustedElapsed = elapsedSeconds - pauseTime * 60;
-    return (adjustedElapsed / (roundTime * 60)).ceil();
+  int calculateCurrentRoundWithDateTime() {
+    DateTime currentTime = DateTime.now();
+
+    Duration timeDifference = currentTime.difference(_eventStartTime);
+    int currentRound = timeDifference.inMinutes ~/ roundTimeDuration.inMinutes;
+    return currentRound + 1;
   }
 
   Future<TeamDetails> getTeamDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int storedSelectedTeam = prefs.getInt('selectedTeam') ?? 0;
-    String opponent = prefs.getString('opponent') ?? '';
     int round = prefs.getInt('round') ?? 0;
     int discipline = prefs.getInt('discipline') ?? 0;
 
@@ -211,14 +197,14 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    int elapsedSeconds =
-        DateTime.now().difference(eventStartTime ?? DateTime.now()).inSeconds;
-    int currentRound = calculateCurrentRound(elapsedSeconds);
+    int elapsedSeconds = DateTime.now().difference(_eventStartTime).inSeconds;
+    int currentRound = calculateCurrentRoundWithDateTime();
 
     // Calculate remaining time in the current round
-    int elapsedSecondsInCurrentRound = elapsedSeconds % (roundTime * 60);
+    int elapsedSecondsInCurrentRound =
+        elapsedSeconds % roundTimeDuration.inSeconds;
     int remainingSecondsInCurrentRound =
-        roundTime * 60 - elapsedSecondsInCurrentRound;
+        roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
     String remainingTimeInCurrentRound =
         Duration(seconds: remainingSecondsInCurrentRound)
@@ -232,7 +218,6 @@ class _MainMenuState extends State<MainMenu> {
     if (currentRound > 0 && currentRound <= pairings.length) {
       List<String> roundPairings = pairings[currentRound - 1];
       for (String pairing in roundPairings) {
-        List<String> teams = pairing.split('-');
         match = pairing;
       }
     }
@@ -423,7 +408,7 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   OutlinedButton(
                     onPressed: () {
-                      _startEvent();
+                      //_startEvent();
                     },
                     child: Text(eventStarted
                         ? 'Das Event ist im Gange...'
@@ -438,9 +423,20 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
+  void updateEventStartTimeInDatabase(DateTime dateTime) {
+    if (!mounted) return;
+
+    String dateTimeString = dateTimeToString(dateTime);
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+
+    databaseReference.child("time").update({
+      "startTime": dateTimeString,
+    });
+  }
+
   void _openSettings() {
     _maxTimeController.text = maxtime.toString();
-    _roundTimeController.text = roundTime.toString();
+    _roundTimeController.text = roundTimeDuration.inMinutes.toString();
     final _breakRoundController = TextEditingController();
     final _breakDurationController = TextEditingController();
 
@@ -474,7 +470,9 @@ class _MainMenuState extends State<MainMenu> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
-                      roundTime = int.tryParse(value) ?? roundTime;
+                      roundTimeDuration = Duration(
+                          minutes: int.tryParse(value) ??
+                              roundTimeDuration.inMinutes);
                     });
                   },
                 ),
@@ -518,11 +516,11 @@ class _MainMenuState extends State<MainMenu> {
                 ),
                 const SizedBox(height: 16.0),
                 TimePickerWidget(
-                  initialTime: _eventStartTime,
-                  onTimeSelected: (selectedTime) {
+                  onDateTimeSelected: (selectedDayTime) {
                     setState(() {
-                      _eventStartTime = selectedTime;
+                      _eventStartTime = selectedDayTime;
                     });
+                    updateEventStartTimeInDatabase(selectedDayTime);
                   },
                 ),
                 const SizedBox(height: 16.0),

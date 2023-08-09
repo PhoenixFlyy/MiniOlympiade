@@ -20,6 +20,7 @@ class UploadResults extends StatefulWidget {
 class _UploadResultsState extends State<UploadResults> {
   int selectedRound = 1;
   double teamScore = 0.0;
+  bool showTeamScore = false;
 
   @override
   void initState() {
@@ -34,11 +35,9 @@ class _UploadResultsState extends State<UploadResults> {
 
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
 
-    bool isStarting = isStartingTeam(selectedRound - 1, widget.teamNumber);
+    bool isStarting = isStartingTeam(selectedRound, widget.teamNumber);
     int matchNumber = getDisciplineNumber(selectedRound, widget.teamNumber);
     String teamKey = isStarting ? "team1" : "team2";
-
-    print(matchNumber);
 
     databaseReference
         .child("results")
@@ -51,10 +50,31 @@ class _UploadResultsState extends State<UploadResults> {
     });
   }
 
+  Widget getTeamScoreText() {
+    if (showTeamScore) {
+      return FutureBuilder<double>(
+        future: getTeamPointsInRound(selectedRound, widget.teamNumber),
+        builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Loading...");
+          } else if (snapshot.hasError) {
+            return const Text("An error occurred.");
+          } else {
+            return Text(
+                "Dein Team hat für Runde $selectedRound ${snapshot.data} Punkte gemacht!",
+                style: TextStyle(fontSize: 16));
+          }
+        },
+      );
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Ergebnisse eintragen")),
+      appBar: AppBar(title: const Text("Ergebnisse eintragen")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -63,6 +83,7 @@ class _UploadResultsState extends State<UploadResults> {
               value: selectedRound,
               onChanged: (newValue) {
                 setState(() {
+                  showTeamScore = false;
                   selectedRound = newValue!;
                 });
               },
@@ -89,11 +110,20 @@ class _UploadResultsState extends State<UploadResults> {
                 );
               }).toList(),
             ),
+            FilledButton.tonal(
+              onPressed: () {
+                setState(() {
+                  showTeamScore = true;
+                });
+              },
+              child: const Text("Zeige die gesammelten Teampunkte an"),
+            ),
+            getTeamScoreText(),
             ElevatedButton(
               onPressed: () {
                 updateScores();
               },
-              child: Text("Upload Scores"),
+              child: const Text("Lade deine Punkte für diese Runde hoch"),
             ),
           ],
         ),
