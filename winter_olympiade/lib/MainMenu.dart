@@ -177,6 +177,7 @@ class _MainMenuState extends State<MainMenu> {
     int storedSelectedTeam = prefs.getInt('selectedTeam') ?? 0;
     int round = prefs.getInt('round') ?? 0;
     int discipline = prefs.getInt('discipline') ?? 0;
+    String opponent = "";
 
     return TeamDetails(
       selectedTeam: storedSelectedTeam,
@@ -500,7 +501,7 @@ class _MainMenuState extends State<MainMenu> {
                       _breakDurationController.clear();
                     }
                   },
-                  child: const Text("Pause hinzufügen"),
+                  child: const Text("Pause hinzufï¿½gen"),
                 ),
                 const SizedBox(height: 16.0),
                 FilledButton(
