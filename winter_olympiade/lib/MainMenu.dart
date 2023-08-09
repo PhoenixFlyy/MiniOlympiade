@@ -197,6 +197,18 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
+  Color getRoundCircleColor() {
+    if (currentRound > 0 && currentRound < pairings.length) {
+      if (calculateRemainingTimeInRound().inSeconds < 60) {
+        return Colors.orange;
+      } else {
+        return Colors.green;
+      }
+    } else {
+      return Colors.red;
+    }
+  }
+
   @override
   void dispose() {
     _maxTimeController.dispose();
@@ -278,7 +290,7 @@ class _MainMenuState extends State<MainMenu> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.circle),
+                          Icon(Icons.circle, color: getRoundCircleColor()),
                           Text(' Runde $currentRound',
                               style: const TextStyle(fontSize: 18)),
                         ],
@@ -409,6 +421,7 @@ class _MainMenuState extends State<MainMenu> {
                                       builder: (context) => SchedulePage(
                                             pairings: pairings,
                                             disciplines: disciplines,
+                                            currentRowForColor: currentRound,
                                           )));
                             },
                             child: const Text(

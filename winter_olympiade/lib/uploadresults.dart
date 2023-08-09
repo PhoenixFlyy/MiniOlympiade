@@ -131,7 +131,8 @@ class _UploadResultsState extends State<UploadResults> {
                 updateScores();
                 setState(() {});
               },
-              child: const Text("Lade deine Punkte für diese Runde hoch"),
+              child: const Text("Lade deine Punkte für diese Runde hoch",
+                  style: TextStyle(fontSize: 16)),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),

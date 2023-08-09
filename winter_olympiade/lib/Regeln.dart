@@ -20,14 +20,12 @@ final List<GameRule> gameRules = [
     '• Verlässt der Ball das Spielfeld wird er an der nächstgelegenen Ecke zurück ins Spiel gebracht. Passiert dies in der Mitte des Tischs, wird er in der Mitte neu eingeworfen',
     '• Nach einem erzielten Tor darf der Ball von dem Team in der Mitte eingeworfen werden, das nicht gepunktet hat.',
     '• Ein Torwart-Tor zählt nicht doppelt.',
-    // Add more rules here...
   ]),
   GameRule('Darts', [
     '• Gespielt wird ein klassisches Dartsspiel 301.',
     '• Das Spiel muss nicht mit einem Double beendet werden.',
     '• Es wird sich im Team abgewechselt; die Reihenfolge darf nicht geändert werden.',
     '• Das Spiel endet Unentschieden, wenn bei Gongschlag kein Sieger feststeht.',
-    // Add more rules here...
   ]),
   GameRule('Billard', [
     'Es ist eng. Damit muss jeder leben. Bitte passt auf Queues und das Klavier auf! Im Team wird sich jeweils abgewechselt. Die Reihenfolge darf nicht geändert werden.',
@@ -50,7 +48,6 @@ final List<GameRule> gameRules = [
     '   - Die schwarze Kugel in Verbindung mit einem Foul gelocht wird.',
     '   - Die schwarze Kugel gelocht wird, obwohl noch eigene Kugeln zu lochen sind.',
     '   - Die Acht in eine andere Tasche gespielt wurde als angesagt wurde.',
-    // Add more rules here...
   ]),
   GameRule('Bierpong', [
     'Gespielt wird mit sechs Bechern. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf dennoch ausgiebig getrunken werden!',
@@ -66,7 +63,6 @@ final List<GameRule> gameRules = [
     '• Wer als Team zuerst im Ziel angekommen ist, gewinnt. Gespielt wird immer in denselben Autos...',
     '• Jeder Spieler darf nur sein eigenes Auto fahren. Es werden immer dieselben beiden Strecken gefahren...',
     '• Nach dem Spiel müssen die Strecken neu ausgewählt werden, sodass sofort wieder losgespielt werden kann.',
-    // Add more rules here...
   ]),
   GameRule('Jenga', [
     'Gespielt wird mit Schachuhr. Der Boden ist uneben und leicht zu erschüttern. Damit muss jeder klarkommen.',
@@ -79,7 +75,6 @@ final List<GameRule> gameRules = [
     '• Das Spiel ist verloren, wenn...',
     '   - die Zeit eines Spielers abläuft',
     '   - der Turm umfällt, während die eigene Zeit noch läuft.',
-    // Add more rules here...
   ]),
   GameRule('Bewertung', [
     'Nach jedem Spiel wird das Ergebnis durch die beiden Teams in der ausgehängten Wertungstabelle festgehalten (1 für Sieg; 0 für Niederlage; ½ für Unentschieden) -> Disziplin-Punkte.',
@@ -88,25 +83,12 @@ final List<GameRule> gameRules = [
   ]),
 ];
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Event Rules',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: RulesScreen(),
-    );
-  }
-}
-
 class RulesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Rules'),
+        title: const Text('Regeln'),
       ),
       body: ListView.builder(
         itemCount: gameRules.length,
@@ -117,7 +99,7 @@ class RulesScreen extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.all(0),
                   title: Text(rule),
                 ),
               );
