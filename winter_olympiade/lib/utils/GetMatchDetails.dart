@@ -3,11 +3,21 @@ import 'package:firebase_database/firebase_database.dart';
 import 'DateTimeUtils.dart';
 import 'MatchDetails.dart';
 
+bool isNumberInString(String input, int number) {
+  List<String> parts = input.split("-");
+  for (String part in parts) {
+    if (int.tryParse(part) == number) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool isStartingTeam(int round, int teamNumber) {
   if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (String match in pairing) {
-      if (match.contains(teamNumber.toString())) {
+      if (isNumberInString(match, teamNumber)) {
         var teams = match.split('-');
         return teams[0].contains(teamNumber.toString());
       }
@@ -21,7 +31,7 @@ String getDisciplineName(int round, int teamNumber) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
-      if (match.contains(teamNumber.toString())) {
+      if (isNumberInString(match, teamNumber)) {
         return disciplines[(index + 1).toString()] ?? "Unknown Discipline";
       }
     }
@@ -34,7 +44,7 @@ int getDisciplineNumber(int round, int teamNumber) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
-      if (match.contains(teamNumber.toString())) {
+      if (isNumberInString(match, teamNumber)) {
         return index + 1;
       }
     }
@@ -47,9 +57,9 @@ int getOpponentTeamNumber(int round, int teamNumber) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
-      if (match.contains(teamNumber.toString())) {
+      if (isNumberInString(match, teamNumber)) {
         var teams = match.split('-');
-        if (teams[0].contains(teamNumber.toString())) {
+        if (int.tryParse(teams[0]) == teamNumber) {
           return int.tryParse(teams[1]) ?? -1;
         } else {
           return int.tryParse(teams[0]) ?? -1;
@@ -81,7 +91,7 @@ Future<List<double>> getAllTeamPointsInDiscipline(
   for (int index = 0; index < pairings.length; index++) {
     var pairing = pairings[index];
     var match = pairing[disciplineNumber - 1];
-    if (match.contains(teamNumber.toString())) {
+    if (isNumberInString(match, teamNumber)) {
       var teams = match.split('-');
       var teamOrderString =
           teams[0].contains(teamNumber.toString()) ? "team1" : "team2";

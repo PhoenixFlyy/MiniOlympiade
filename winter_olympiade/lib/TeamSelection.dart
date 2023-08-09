@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/MainMenu.dart';
+import 'package:winter_olympiade/utils/MatchDetails.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});
@@ -73,9 +74,10 @@ class _TeamSelectionState extends State<TeamSelection> {
   }
 
   List<Widget> _buildTeamChips() {
-    List<int> teams = [1, 2, 3, 4, 5, 6];
+    int numberOfTeams = pairings[0].length;
 
-    return teams.map((teamNumber) {
+    return List.generate(numberOfTeams, (teamIndex) {
+      int teamNumber = teamIndex + 1;
       bool isSelected = selectedTeam == teamNumber;
 
       return ChoiceChip(
@@ -87,6 +89,6 @@ class _TeamSelectionState extends State<TeamSelection> {
           });
         },
       );
-    }).toList();
+    });
   }
 }
