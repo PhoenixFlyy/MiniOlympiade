@@ -17,10 +17,6 @@ import 'Schachuhr.dart';
 import 'SchedulePage.dart';
 import 'TeamSelection.dart';
 
-
-
-
-
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
 
@@ -531,13 +527,15 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                 if (selectedTeamName == "Felix99" ||
                     selectedTeamName == "Simon00")
-                  TimePickerWidget(onDateTimeSelected: (newTime) {
-                    final DatabaseReference databaseReference =
-                        FirebaseDatabase.instance.ref('/time');
-                    databaseReference.update({
-                      "startTime": dateTimeToString(newTime),
-                    });
-                  })
+                  TimePickerWidget(
+                      currentEventStartTime: _eventStartTime,
+                      onDateTimeSelected: (newTime) {
+                        final DatabaseReference databaseReference =
+                            FirebaseDatabase.instance.ref('/time');
+                        databaseReference.update({
+                          "startTime": dateTimeToString(newTime),
+                        });
+                      })
               ],
             ),
           ),
@@ -546,6 +544,3 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 }
-
-
-

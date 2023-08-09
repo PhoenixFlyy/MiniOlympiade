@@ -4,7 +4,7 @@ import 'DateTimeUtils.dart';
 import 'MatchDetails.dart';
 
 bool isStartingTeam(int round, int teamNumber) {
-  if (round > 0 && round < pairings.length) {
+  if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (String match in pairing) {
       if (match.contains(teamNumber.toString())) {
@@ -17,7 +17,7 @@ bool isStartingTeam(int round, int teamNumber) {
 }
 
 String getDisciplineName(int round, int teamNumber) {
-  if (round > 0 && round < pairings.length) {
+  if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
@@ -30,7 +30,7 @@ String getDisciplineName(int round, int teamNumber) {
 }
 
 int getDisciplineNumber(int round, int teamNumber) {
-  if (round > 0 && round < pairings.length) {
+  if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
@@ -43,7 +43,7 @@ int getDisciplineNumber(int round, int teamNumber) {
 }
 
 int getOpponentTeamNumber(int round, int teamNumber) {
-  if (round > 0 && round < pairings.length) {
+  if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
       var match = pairing[index];
@@ -61,7 +61,7 @@ int getOpponentTeamNumber(int round, int teamNumber) {
 }
 
 Future<double> getTeamPointsInRound(int round, int teamNumber) async {
-  if (round > 0 && round < pairings.length && teamNumber > 0) {
+  if (round > 0 && round <= pairings.length && teamNumber > 0) {
     var teamOrderString = isStartingTeam(round, teamNumber) ? "team1" : "team2";
     var databaseRound = (round - 1).toString();
     var disciplineNumber =

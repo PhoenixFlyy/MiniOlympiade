@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 
 class TimePickerWidget extends StatefulWidget {
   final Function(DateTime) onDateTimeSelected;
+  final DateTime currentEventStartTime;
 
   const TimePickerWidget({
     Key? key,
     required this.onDateTimeSelected,
+    required this.currentEventStartTime,
   }) : super(key: key);
 
   @override
@@ -19,7 +21,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   @override
   void initState() {
     super.initState();
-    _selectedDateTime = DateTime(2023, 8, 9);
+    _selectedDateTime = widget.currentEventStartTime;
   }
 
   @override
