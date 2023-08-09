@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/DateTimeUtils.dart';
 import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
-import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
 import 'Dartsrechner.dart';
 import 'Regeln.dart';
@@ -36,45 +36,32 @@ class _MainMenuState extends State<MainMenu> {
   final _eventStartTimeController = TextEditingController();
 
   int currentRound = 0;
+  bool isPaused = true;
+  int pauseTimeInSeconds = 0;
 
   int selectedTeam = 0;
   String selectedTeamName = "";
 
-  DateTime _eventStartTime = DateTime(2023, 9, 13);
+  DateTime _eventStartTime = DateTime(2023, 9, 5);
 
-  List<Break> eventBreaks = [];
+  final DatabaseReference _databaseTime =
+      FirebaseDatabase.instance.ref('/time');
 
-  Widget getDisciplineImage() {
-    switch (getDisciplineName(currentRound, selectedTeam)) {
-      case "Kicker":
-        return Image.asset(
-          "assets/kicker.png",
-        );
-      case "Darts":
-        return Image.asset(
-          "assets/darts.png",
-        );
-      case "Billard":
-        return Image.asset(
-          "assets/billard.png",
-        );
-      case "Bierpong":
-        return Image.asset(
-          "assets/beerpong.png",
-        );
-      case "Kubb":
-        return Image.asset(
-          "assets/kubb.png",
-        );
-      case "Jenga":
-        return Image.asset(
-          "assets/jenga.png",
-        );
-      default:
-        return Image.asset(
-          "assets/pokalganz.png",
-        );
-    }
+  void _activateDatabaseTimeListener() {
+    _databaseTime.child("isPaused").onValue.listen((event) {
+      final bool streamIsPaused =
+          event.snapshot.value.toString().toLowerCase() == 'true';
+      setState(() {
+        isPaused = streamIsPaused;
+      });
+    });
+    _databaseTime.child("pauseTime").onValue.listen((event) {
+      final int streamPauseTime =
+          int.tryParse(event.snapshot.value.toString()) ?? 0;
+      setState(() {
+        pauseTimeInSeconds = streamPauseTime;
+      });
+    });
   }
 
   @override
@@ -83,6 +70,7 @@ class _MainMenuState extends State<MainMenu> {
     _loadSelectedTeam();
     _setUpTimer();
     _loadData();
+    _activateDatabaseTimeListener();
   }
 
   void _loadData() async {
@@ -96,8 +84,10 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void _updateTimerCallback(Timer timer) {
-    _updateCurrentRound();
-    _updateMatchAndDiscipline();
+    if (!isPaused) {
+      _updateCurrentRound();
+      _updateMatchAndDiscipline();
+    }
   }
 
   void _updateCurrentRound() {
@@ -149,9 +139,62 @@ class _MainMenuState extends State<MainMenu> {
   int calculateCurrentRoundWithDateTime() {
     DateTime currentTime = DateTime.now();
 
-    Duration timeDifference = currentTime.difference(_eventStartTime);
+    Duration timeDifference = currentTime.difference(_eventStartTime) -
+        Duration(seconds: pauseTimeInSeconds);
     int currentRound = timeDifference.inMinutes ~/ roundTimeDuration.inMinutes;
     return currentRound + 1;
+  }
+
+  Duration calculateRemainingTimeInRound() {
+    DateTime currentTime = DateTime.now();
+
+    int elapsedSeconds =
+        currentTime.difference(_eventStartTime).inSeconds - pauseTimeInSeconds;
+    int elapsedSecondsInCurrentRound =
+        elapsedSeconds % roundTimeDuration.inSeconds;
+    int remainingSecondsInCurrentRound =
+        roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
+
+    return Duration(seconds: remainingSecondsInCurrentRound);
+  }
+
+  void updateEventStartTimeInDatabase(DateTime dateTime) {
+    if (!mounted) return;
+
+    String dateTimeString = dateTimeToString(dateTime);
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+
+    databaseReference.child("time").update({
+      "startTime": dateTimeString,
+    });
+  }
+
+  void updateIsPausedInDatabase() {
+    if (!mounted) return;
+    if (isPaused) {
+      getPauseStartTime().then((value) {
+        int elapsedSeconds = DateTime.now().difference(value).inSeconds;
+        getPauseTime().then((value2) {
+          final DatabaseReference databaseReference =
+              FirebaseDatabase.instance.ref('/time');
+          databaseReference.update({
+            "pauseTime": elapsedSeconds + value2,
+          });
+        });
+      });
+    } else {
+      String dateTimeString = dateTimeToString(DateTime.now());
+      final DatabaseReference databaseReference =
+          FirebaseDatabase.instance.ref('/time');
+      databaseReference.update({
+        "pauseStartTime": dateTimeString,
+      });
+    }
+    final DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('/time');
+    databaseReference.update({
+      "isPaused": !isPaused,
+    });
   }
 
   @override
@@ -163,24 +206,45 @@ class _MainMenuState extends State<MainMenu> {
     super.dispose();
   }
 
+  Widget getDisciplineImage() {
+    switch (getDisciplineName(currentRound, selectedTeam)) {
+      case "Kicker":
+        return Image.asset(
+          "assets/kicker.png",
+        );
+      case "Darts":
+        return Image.asset(
+          "assets/darts.png",
+        );
+      case "Billard":
+        return Image.asset(
+          "assets/billard.png",
+        );
+      case "Bierpong":
+        return Image.asset(
+          "assets/beerpong.png",
+        );
+      case "Kubb":
+        return Image.asset(
+          "assets/kubb.png",
+        );
+      case "Jenga":
+        return Image.asset(
+          "assets/jenga.png",
+        );
+      default:
+        return Image.asset(
+          "assets/pokalganz.png",
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    int elapsedSeconds = DateTime.now().difference(_eventStartTime).inSeconds;
-    int currentRound = calculateCurrentRoundWithDateTime();
-
-    // Calculate remaining time in the current round
-    int elapsedSecondsInCurrentRound =
-        elapsedSeconds % roundTimeDuration.inSeconds;
-    int remainingSecondsInCurrentRound =
-        roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
-
-    String remainingTimeInCurrentRound =
-        Duration(seconds: remainingSecondsInCurrentRound)
-            .toString()
-            .split('.')
-            .first
-            .padLeft(8, "0");
-
+    Duration remainingTime = calculateRemainingTimeInRound();
+    String formattedRemainingTime = isPaused
+        ? "Pause"
+        : '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     String appBarTitle = 'Olympiade';
     appBarTitle += ' - Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
@@ -222,7 +286,7 @@ class _MainMenuState extends State<MainMenu> {
                       Row(
                         children: [
                           const Icon(Icons.timer),
-                          Text(' Zeit: $remainingTimeInCurrentRound',
+                          Text(' Zeit: $formattedRemainingTime',
                               style: const TextStyle(fontSize: 18)),
                         ],
                       ),
@@ -237,7 +301,7 @@ class _MainMenuState extends State<MainMenu> {
                           textAlign: TextAlign.center),
                     ),
                   ),
-                  SizedBox(height: 150, child: getDisciplineImage()),
+                  SizedBox(height: 100, child: getDisciplineImage()),
                   Padding(
                     padding: const EdgeInsets.only(top: 80),
                     child: Padding(
@@ -365,22 +429,9 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  void updateEventStartTimeInDatabase(DateTime dateTime) {
-    if (!mounted) return;
-
-    String dateTimeString = dateTimeToString(dateTime);
-    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
-
-    databaseReference.child("time").update({
-      "startTime": dateTimeString,
-    });
-  }
-
   void _openSettings() {
     _maxTimeController.text = maxChessTime.inSeconds.toString();
     _roundTimeController.text = roundTimeDuration.inMinutes.toString();
-    final breakRoundController = TextEditingController();
-    final breakDurationController = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -420,32 +471,6 @@ class _MainMenuState extends State<MainMenu> {
                     });
                   },
                 ),
-                TextField(
-                  controller: breakRoundController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: "Pausenrunde"),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                TextField(
-                  controller: breakDurationController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: "Pausendauer in Minuten"),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    int? round = int.tryParse(breakRoundController.text);
-                    int? duration = int.tryParse(breakDurationController.text);
-                    if (round != null && duration != null) {
-                      eventBreaks
-                          .add(Break(roundNumber: round, duration: duration));
-                      breakRoundController.clear();
-                      breakDurationController.clear();
-                    }
-                  },
-                  child: const Text("Pause hinzuf�gen"),
-                ),
                 const SizedBox(height: 16.0),
                 FilledButton(
                   onPressed: () {
@@ -459,54 +484,12 @@ class _MainMenuState extends State<MainMenu> {
                   child: const Text('Teamauswahl'),
                 ),
                 const SizedBox(height: 16.0),
-                TimePickerWidget(
-                  onDateTimeSelected: (selectedDayTime) {
-                    setState(() {
-                      _eventStartTime = selectedDayTime;
-                    });
-                    updateEventStartTimeInDatabase(selectedDayTime);
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                const Text('Pausenkonfiguration',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: eventBreaks.length,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                eventBreaks[index].roundNumber =
-                                    int.tryParse(value) ??
-                                        eventBreaks[index].roundNumber;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                                labelText: "Nach welcher Runde"),
-                          ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Expanded(
-                          child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                eventBreaks[index].duration =
-                                    int.tryParse(value) ??
-                                        eventBreaks[index].duration;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                                labelText: "Dauer in Minuten"),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                const Text("Event Start:"),
+                Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
+                    style: const TextStyle(fontSize: 18)),
+                FilledButton.tonal(
+                    onPressed: () => updateIsPausedInDatabase(),
+                    child: const Text("Update Pause in Database")),
               ],
             ),
           ),

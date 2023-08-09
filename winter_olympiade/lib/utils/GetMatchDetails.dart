@@ -81,3 +81,17 @@ Future<DateTime> getOlympiadeStartDateTime() async {
   DatabaseEvent event = await databaseParent.once();
   return stringToDateTime(event.snapshot.value.toString());
 }
+
+Future<DateTime> getPauseStartTime() async {
+  DatabaseReference databaseParent =
+      FirebaseDatabase.instance.ref('/time/pauseStartTime');
+  DatabaseEvent event = await databaseParent.once();
+  return stringToDateTime(event.snapshot.value.toString());
+}
+
+Future<int> getPauseTime() async {
+  DatabaseReference databaseParent =
+      FirebaseDatabase.instance.ref('/time/pauseTime');
+  DatabaseEvent event = await databaseParent.once();
+  return int.tryParse(event.snapshot.value.toString()) ?? 0;
+}
