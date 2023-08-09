@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class DartsRechner extends StatefulWidget {
   const DartsRechner({Key? key}) : super(key: key);
@@ -19,7 +21,8 @@ class GameState {
       []; // Speichert die Historie der Würfe. Jede Liste stellt eine Runde von Würfen dar.
 }
 
-class _DartsRechnerState extends State<DartsRechner> {
+class _DartsRechnerState extends State<DartsRechner>
+    with WidgetsBindingObserver {
   int startNumber = 501; // Standard-Anfangsscore
   //late int startNumber; // Anfangsscore nciht benötigt...???
 
@@ -40,20 +43,41 @@ class _DartsRechnerState extends State<DartsRechner> {
   int startingScore = 0;
   List<int> temporaryPlayerOneTurnValues = [];
   List<int> temporaryPlayerTwoTurnValues = [];
+  List<List<dynamic>> history = [];
 
   var gameState = GameState();
+  List<List<dynamic>> gameStateHistory = [];
+
+  List<dynamic> lastState = [];//unnötig?
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+    _loadGameState();
     playerOneNumber = startNumber;
     playerTwoNumber = startNumber;
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _saveGameState();
+    }
+  }
+
   //_DartsRechnerState(int initialStartingScore) {
-    //startNumber = initialStartingScore;
-    //playerOneNumber = startNumber;
-    //playerTwoNumber = startNumber;
+  //startNumber = initialStartingScore;
+  //playerOneNumber = startNumber;
+  //playerTwoNumber = startNumber;
   //}
 
   void addCurrentStateToHistory() {
@@ -130,161 +154,319 @@ class _DartsRechnerState extends State<DartsRechner> {
     turnCounter = 0;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Darts Rechner'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
-                );
+  void _startNewGame() {
+    setState(() {
+      // Setzen Sie den Zustand zurück
+      startNumber = 501;
+      playerOneNumber = startNumber;
+      playerTwoNumber = startNumber;
+      playerOneTurn = true;
+      turnCounter = 0;
+      playerOneTurnValues.clear();
+      playerTwoTurnValues.clear();
+      playerOneScoreHistory.clear();
+      playerTwoScoreHistory.clear();
+      doubleNextScore = false;
+      tripleNextScore = false;
+      playerOneOverthrown = false;
+      playerTwoOverthrown = false;
+      temporaryPlayerOneScore = 0;
+      temporaryPlayerTwoScore = 0;
+      startingScore = 0;
+      temporaryPlayerOneTurnValues.clear();
+      temporaryPlayerTwoTurnValues.clear();
+      gameState.history.clear();
+      history.clear();
+    });
+  }
 
-                if (result != null) {
-                  setState(() {
-                    startNumber = result;
-                    playerOneNumber = startNumber;
-                    playerTwoNumber = startNumber;
-                  });
-                }
-              },
+  _saveGameState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Alle Zustandsdaten in einer Map
+    Map<String, dynamic> gameState = {
+      'startNumber': startNumber,
+      'playerOneNumber': playerOneNumber,
+      'playerTwoNumber': playerTwoNumber,
+      // ... Sie können hier auch andere Zustandsdaten hinzufügen
+    };
+
+    // Konvertieren Sie die Map in einen JSON-String
+    String gameStateString = jsonEncode(gameState);
+
+
+    String lastStateJson = jsonEncode(lastState); //unnötig?
+    await prefs.setString('lastState', lastStateJson); //unnötig?
+
+    // Speichern Sie den JSON-String
+    await prefs.setString('gameState', gameStateString);
+
+    // Einfache Integers und Booleans
+    await prefs.setInt('startNumber', startNumber);
+    await prefs.setBool('playerOneTurn', playerOneTurn);
+    await prefs.setInt('turnCounter', turnCounter);
+    await prefs.setBool('doubleNextScore', doubleNextScore);
+    await prefs.setBool('tripleNextScore', tripleNextScore);
+    await prefs.setBool('playerOneOverthrown', playerOneOverthrown);
+    await prefs.setBool('playerTwoOverthrown', playerTwoOverthrown);
+    await prefs.setInt('temporaryPlayerOneScore', temporaryPlayerOneScore);
+    await prefs.setInt('temporaryPlayerTwoScore', temporaryPlayerTwoScore);
+    await prefs.setInt('startingScore', startingScore);
+
+    // Listen als Strings speichern
+    await prefs.setString(
+        'playerOneTurnValues', jsonEncode(playerOneTurnValues));
+    await prefs.setString(
+        'playerTwoTurnValues', jsonEncode(playerTwoTurnValues));
+    await prefs.setString(
+        'playerOneScoreHistory', jsonEncode(playerOneScoreHistory));
+    await prefs.setString(
+        'playerTwoScoreHistory', jsonEncode(playerTwoScoreHistory));
+    await prefs.setString('temporaryPlayerOneTurnValues',
+        jsonEncode(temporaryPlayerOneTurnValues));
+    await prefs.setString('temporaryPlayerTwoTurnValues',
+        jsonEncode(temporaryPlayerTwoTurnValues));
+
+    String gameStateHistoryJson = jsonEncode(history);
+    await prefs.setString('gameStateHistory', gameStateHistoryJson);
+
+    // ... Hier können Sie weitere Zustandsdaten hinzufügen ...
+  }
+
+  _loadGameState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? lastStateString = prefs.getString('lastState'); //unnötig?
+    if (lastStateString != null) {//unnötig?
+      lastState = jsonDecode(lastStateString);//unnötig?
+    }//unnötig?
+
+    String? gameStateString = prefs.getString('gameState');
+    if (gameStateString != null) {
+      Map<String, dynamic> gameState = jsonDecode(gameStateString);
+
+      setState(() {
+        startNumber = prefs.getInt('startNumber') ?? 501;
+        playerOneTurn = prefs.getBool('playerOneTurn') ?? true;
+        turnCounter = prefs.getInt('turnCounter') ?? 0;
+        doubleNextScore = prefs.getBool('doubleNextScore') ?? false;
+        tripleNextScore = prefs.getBool('tripleNextScore') ?? false;
+        playerOneOverthrown = prefs.getBool('playerOneOverthrown') ?? false;
+        playerTwoOverthrown = prefs.getBool('playerTwoOverthrown') ?? false;
+        temporaryPlayerOneScore = prefs.getInt('temporaryPlayerOneScore') ?? 0;
+        temporaryPlayerTwoScore = prefs.getInt('temporaryPlayerTwoScore') ?? 0;
+        startingScore = prefs.getInt('startingScore') ?? 0;
+        playerOneNumber = gameState['playerOneNumber'];
+        playerTwoNumber = gameState['playerTwoNumber'];
+
+        // Listen laden
+        playerOneTurnValues =
+            jsonDecode(prefs.getString('playerOneTurnValues') ?? '[]')
+                .cast<int>();
+        playerTwoTurnValues =
+            jsonDecode(prefs.getString('playerTwoTurnValues') ?? '[]')
+                .cast<int>();
+        playerOneScoreHistory =
+            jsonDecode(prefs.getString('playerOneScoreHistory') ?? '[]')
+                .cast<int>();
+        playerTwoScoreHistory =
+            jsonDecode(prefs.getString('playerTwoScoreHistory') ?? '[]')
+                .cast<int>();
+        temporaryPlayerOneTurnValues =
+            jsonDecode(prefs.getString('temporaryPlayerOneTurnValues') ?? '[]')
+                .cast<int>();
+        temporaryPlayerTwoTurnValues =
+            jsonDecode(prefs.getString('temporaryPlayerTwoTurnValues') ?? '[]')
+                .cast<int>();
+
+        List<dynamic> loadedHistory =
+            jsonDecode(prefs.getString('gameStateHistory') ?? '[]');
+        history =
+            loadedHistory.map((dynamicList) => List.from(dynamicList)).toList(); //entweder das oder...
+
+        List<dynamic> loadedGameStateHistory = jsonDecode(prefs.getString('gameStateHistory') ?? '[]'); //... oder das hier ist überflüssig. Sie beziehen sich auf dasselbe
+        gameStateHistory = loadedGameStateHistory.map((dynamicList) => List.from(dynamicList)).toList();
+
+
+        // ... Hier können Sie den geladenen Zustand für weitere Daten hinzufügen ...
+      });
+    }
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Neues Spiel starten'),
+          content: Text('Möchten Sie wirklich ein neues Spiel starten?'),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextButton(
+                  child: Text('Ja'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                TextButton(
+                  child: Text('Abbrechen'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                SizedBox(width: 20),  // Einen kleinen Abstand zwischen den Buttons
+
+              ],
             ),
           ],
-        ),
-        body: Column(
-          children: [
-            Expanded(
-                flex: 4,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      playerCard(
-                          "Player One",
-                          playerOneNumber,
-                          playerOneTurn,
-                          playerOneTurnValues,
-                          playerOneScoreHistory,
-                          playerOneOverthrown),
-                      playerCard(
-                          "Player Two",
-                          playerTwoNumber,
-                          !playerOneTurn,
-                          playerTwoTurnValues,
-                          playerTwoScoreHistory,
-                          playerTwoOverthrown),
-                    ],
-                  ),
-                )),
-            Expanded(
-              flex: 2,
-              child: DartsRechnerTastatur(
-                onNumberSelected: (num) {
+        );
+      },
+    ) ?? false;  // Der `?? false` stellt sicher, dass der Rückgabewert nie null ist.
+  }
 
-                  setState(() {
-                    if (num >= 0) {
-                      addCurrentStateToHistory(); // Zustand speichern
-                      turnCounter += 1;
-                    }
 
-                    if (turnCounter % 3 == 1) {
-                      // Wenn es der erste Wurf im Zug ist
-                      if (playerOneTurn) {
-                        startingScore = playerOneNumber;
-                      } else {
-                        startingScore = playerTwoNumber;
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        _saveGameState();
+        return true; // true erlaubt dem Nutzer, den Bildschirm zu verlassen
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Darts Rechner'),
+            actions: [
+              // Settings Icon
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+
+                  if (result != null) {
+                    setState(() {
+                      startNumber = result;
+                      playerOneNumber = startNumber;
+                      playerTwoNumber = startNumber;
+                    });
+                  }
+                },
+              ),
+              // Reload Icon
+              IconButton(
+                icon: Icon(Icons.replay),
+                onPressed: () async {
+                  bool? confirm = await _showConfirmationDialog(context);
+                  if (confirm == true) {
+                    _startNewGame();
+                  }
+                },
+              ),
+            ],
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                  flex: 4,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        playerCard(
+                            "Player One",
+                            playerOneNumber,
+                            playerOneTurn,
+                            playerOneTurnValues,
+                            playerOneScoreHistory,
+                            playerOneOverthrown),
+                        playerCard(
+                            "Player Two",
+                            playerTwoNumber,
+                            !playerOneTurn,
+                            playerTwoTurnValues,
+                            playerTwoScoreHistory,
+                            playerTwoOverthrown),
+                      ],
+                    ),
+                  )),
+              Expanded(
+                flex: 2,
+                child: DartsRechnerTastatur(
+                  onNumberSelected: (num) {
+                    setState(() {
+                      if (num >= 0) {
+                        addCurrentStateToHistory(); // Zustand speichern
+                        turnCounter += 1;
                       }
-                    }
 
-                    if (num == -1) {
-                      doubleNextScore = true;
-                      tripleNextScore = false;
-                    } else if (num == -2) {
-                      tripleNextScore = true;
-                      doubleNextScore = false;
-                    } else if (doubleNextScore) {
-                      num *= 2;
-                      doubleNextScore = false;
-                    } else if (tripleNextScore) {
-                      num *= 3;
-                      tripleNextScore = false;
-                    }
-
-                    if (num == -3) {
-                      undoLastEntry();
-                      return;
-                    }
-
-                    // Berechne den neuen Score nach dem Wurf, aber setze ihn noch nicht
-                    int newScore = playerOneTurn
-                        ? playerOneNumber - num
-                        : playerTwoNumber - num;
-
-                    if (num >= 0) {
-                      if (newScore < 0) {
-                        // Überwurf
+                      if (turnCounter % 3 == 1) {
+                        // Wenn es der erste Wurf im Zug ist
                         if (playerOneTurn) {
-                          playerOneNumber =
-                              startingScore; // Punkte zurücksetzen
-                          playerOneTurnValues.add(num);
-                          playerOneScoreHistory.add(num);
-                          playerOneOverthrown = true;
-                          endTurn();
+                          startingScore = playerOneNumber;
                         } else {
-                          playerTwoNumber =
-                              startingScore; // Punkte zurücksetzen
-                          playerTwoTurnValues.add(num);
-                          playerTwoScoreHistory.add(num);
-                          playerTwoOverthrown = true;
-                          endTurn();
+                          startingScore = playerTwoNumber;
                         }
-                      } else {
-                        //kein Überwurf
-                        if (playerOneTurn) {
-                          playerOneNumber = newScore; // Setze den neuen Score
-                          playerOneTurnValues.add(num);
-                          playerOneScoreHistory.add(num);
-                          playerOneOverthrown = false;
-                          if (playerOneNumber == 0) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Spielende'),
-                                  content: const Text('Player One wins'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        } else {
-                          if (playerTwoNumber - num < 0) {
-                            playerTwoNumber =
+                      }
+
+                      if (num == -1) {
+                        doubleNextScore = true;
+                        tripleNextScore = false;
+                      } else if (num == -2) {
+                        tripleNextScore = true;
+                        doubleNextScore = false;
+                      } else if (doubleNextScore) {
+                        num *= 2;
+                        doubleNextScore = false;
+                      } else if (tripleNextScore) {
+                        num *= 3;
+                        tripleNextScore = false;
+                      }
+
+                      if (num == -3) {
+                        undoLastEntry();
+                        return;
+                      }
+
+                      // Berechne den neuen Score nach dem Wurf, aber setze ihn noch nicht
+                      int newScore = playerOneTurn
+                          ? playerOneNumber - num
+                          : playerTwoNumber - num;
+
+                      if (num >= 0) {
+                        if (newScore < 0) {
+                          // Überwurf
+                          if (playerOneTurn) {
+                            playerOneNumber =
                                 startingScore; // Punkte zurücksetzen
-                            playerTwoOverthrown = true;
+                            playerOneTurnValues.add(num);
+                            playerOneScoreHistory.add(num);
+                            playerOneOverthrown = true;
                             endTurn();
                           } else {
-                            playerTwoNumber = newScore; // Setze den neuen Score
+                            playerTwoNumber =
+                                startingScore; // Punkte zurücksetzen
                             playerTwoTurnValues.add(num);
                             playerTwoScoreHistory.add(num);
-                            playerTwoOverthrown = false;
-                            if (playerTwoNumber == 0) {
+                            playerTwoOverthrown = true;
+                            endTurn();
+                          }
+                        } else {
+                          //kein Überwurf
+                          if (playerOneTurn) {
+                            playerOneNumber = newScore; // Setze den neuen Score
+                            playerOneTurnValues.add(num);
+                            playerOneScoreHistory.add(num);
+                            playerOneOverthrown = false;
+                            if (playerOneNumber == 0) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('Spielende'),
-                                    content: const Text('Player Two wins'),
+                                    content: const Text('Player One wins'),
                                     actions: <Widget>[
                                       TextButton(
                                         child: const Text('OK'),
@@ -297,21 +479,53 @@ class _DartsRechnerState extends State<DartsRechner> {
                                 },
                               );
                             }
+                          } else {
+                            if (playerTwoNumber - num < 0) {
+                              playerTwoNumber =
+                                  startingScore; // Punkte zurücksetzen
+                              playerTwoOverthrown = true;
+                              endTurn();
+                            } else {
+                              playerTwoNumber =
+                                  newScore; // Setze den neuen Score
+                              playerTwoTurnValues.add(num);
+                              playerTwoScoreHistory.add(num);
+                              playerTwoOverthrown = false;
+                              if (playerTwoNumber == 0) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Spielende'),
+                                      content: const Text('Player Two wins'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            }
                           }
                         }
-                      }
 
-                      if (turnCounter == 3) {
-                        endTurn();
+                        if (turnCounter == 3) {
+                          endTurn();
+                        }
                       }
-                    }
-                  });
-                },
-                undoLastEntry: undoLastEntry,
+                    });
+                  },
+                  undoLastEntry: undoLastEntry,
+                ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 
   Widget playerCard(String playerName, int playerScore, bool isTurn,
@@ -567,7 +781,6 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
             widget.onNumberSelected(returnValue);
           }
         },
-
         child: Padding(
           padding: EdgeInsets.all(buttonPadding),
           child: Container(
@@ -581,14 +794,14 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
   }
 }
 
-
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  int? selectedStartingScore = 501; // Standard-Anfangsscore; wird aber nicht wirksam. Der Standard-Anfangsscore wird oben angegeben.
+  int? selectedStartingScore =
+      501; // Standard-Anfangsscore; wird aber nicht wirksam. Der Standard-Anfangsscore wird oben angegeben.
 
   @override
   Widget build(BuildContext context) {
@@ -644,5 +857,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-
