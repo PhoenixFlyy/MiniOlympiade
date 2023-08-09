@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SchachUhr extends StatefulWidget {
@@ -30,7 +31,6 @@ class _SchachUhrState extends State<SchachUhr> {
     super.initState();
     player1Time = widget.maxtime;
     player2Time = widget.maxtime;
-
   }
 
   @override
@@ -103,37 +103,43 @@ class _SchachUhrState extends State<SchachUhr> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black12,
+        title: const Text("Schachuhr", style: TextStyle(fontSize: 20)),
+      ),
       body: Column(
         children: [
-          GestureDetector(
-            onTap: () {
-              if (isPlayer1Turn && isPlayer1Active) {
-                switchTurns();
-              }
-            },
-            child: Container(
-              color: player1Color,
-              height: MediaQuery.of(context).size.height / 2,
-              alignment: Alignment.center,
-              child: Text(
-                formatTime(player1Time),
-                style: TextStyle(fontSize: 40),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                if (isPlayer1Turn && isPlayer1Active) {
+                  switchTurns();
+                }
+              },
+              child: Container(
+                color: player1Color,
+                alignment: Alignment.center,
+                child: Text(
+                  formatTime(player1Time),
+                  style: const TextStyle(fontSize: 40),
+                ),
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              if (!isPlayer1Turn && isPlayer2Active) {
-                switchTurns();
-              }
-            },
-            child: Container(
-              color: player2Color,
-              height: MediaQuery.of(context).size.height / 2,
-              alignment: Alignment.center,
-              child: Text(
-                formatTime(player2Time),
-                style: TextStyle(fontSize: 40),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                if (!isPlayer1Turn && isPlayer2Active) {
+                  switchTurns();
+                }
+              },
+              child: Container(
+                color: player2Color,
+                alignment: Alignment.center,
+                child: Text(
+                  formatTime(player2Time),
+                  style: const TextStyle(fontSize: 40),
+                ),
               ),
             ),
           ),

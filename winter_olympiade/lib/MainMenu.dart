@@ -49,37 +49,30 @@ class _MainMenuState extends State<MainMenu> {
       case "Kicker":
         return Image.asset(
           "assets/kicker.png",
-          scale: 8,
         );
       case "Darts":
         return Image.asset(
           "assets/darts.png",
-          scale: 2.5,
         );
       case "Billard":
         return Image.asset(
           "assets/billard.png",
-          scale: 8,
         );
       case "Bierpong":
         return Image.asset(
           "assets/beerpong.png",
-          scale: 2.5,
         );
       case "Kubb":
         return Image.asset(
           "assets/kubb.png",
-          scale: 2.5,
         );
       case "Jenga":
         return Image.asset(
           "assets/jenga.png",
-          scale: 1,
         );
       default:
         return Image.asset(
           "assets/pokalganz.png",
-          scale: 7,
         );
     }
   }
@@ -126,11 +119,17 @@ class _MainMenuState extends State<MainMenu> {
       var disciplineName = getDisciplineName(currentRound, selectedTeam);
       var nextDisciplineName =
           getDisciplineName(currentRound + 1, selectedTeam);
+      var startTeam = isStartingTeam(currentRound, selectedTeam)
+          ? "Beginner: Team $selectedTeam"
+          : "Beginner: Team $opponentTeamNumber";
+      var nextStartTeam = isStartingTeam(currentRound + 1, selectedTeam)
+          ? "Beginner: Team $selectedTeam"
+          : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
         currentMatchUpText =
-            'Aktuell: $disciplineName gegen Team $opponentTeamNumber';
+            'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
         nextMatchUpText =
-            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber';
+            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
     }
   }
@@ -206,6 +205,7 @@ class _MainMenuState extends State<MainMenu> {
           padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Column(
                 children: [
@@ -228,49 +228,25 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.people),
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(currentMatchUpText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.people),
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(nextMatchUpText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Expanded(child: getDisciplineImage())
-                    ],
-                  )
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(currentMatchUpText,
+                          style: const TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center),
+                    ),
+                  ),
+                  SizedBox(height: 150, child: getDisciplineImage()),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 80),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(nextMatchUpText,
+                          style: const TextStyle(fontSize: 15),
+                          textAlign: TextAlign.center),
+                    ),
+                  ),
                 ],
               ),
               Column(
