@@ -598,7 +598,7 @@ class _MainMenuState extends State<MainMenu> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Event End:", style: TextStyle(fontSize: 18)),
-                    Text(DateFormat('dd MMMM HH:mm:ss').format(_eventEndTime),
+                    Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
                         style: const TextStyle(fontSize: 18)),
                   ],
                 ),
