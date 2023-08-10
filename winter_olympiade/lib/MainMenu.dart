@@ -42,14 +42,16 @@ class _MainMenuState extends State<MainMenu> {
   int currentRound = 0;
   bool isPaused = false;
   int pauseTimeInSeconds = 0;
+  DateTime pauseStartTime = DateTime.now();
 
   int selectedTeam = 0;
   String selectedTeamName = "";
 
   DateTime _eventStartTime = DateTime.now();
+  DateTime _eventEndTime = DateTime.now();
 
   final DatabaseReference _databaseTime =
-  FirebaseDatabase.instance.ref('/time');
+      FirebaseDatabase.instance.ref('/time');
 
   bool isFirstRenderingWhistle = true;
 
@@ -79,10 +81,17 @@ class _MainMenuState extends State<MainMenu> {
     });
     _databaseTime.child("startTime").onValue.listen((event) {
       final DateTime streamEventStartTime =
-      stringToDateTime(event.snapshot.value.toString());
+          stringToDateTime(event.snapshot.value.toString());
       setState(() {
         _eventStartTime = streamEventStartTime;
         currentRound = calculateCurrentRoundWithDateTime();
+      });
+    });
+    _databaseTime.child("pauseStartTime").onValue.listen((event) {
+      final DateTime streamPauseStartTime =
+          stringToDateTime(event.snapshot.value.toString());
+      setState(() {
+        pauseStartTime = streamPauseStartTime;
       });
     });
   }
@@ -99,7 +108,6 @@ class _MainMenuState extends State<MainMenu> {
     _timer = Timer.periodic(const Duration(seconds: 1), _updateTimerCallback);
     _updateCurrentRound();
     _updateMatchAndDiscipline();
-    _updateMatchAndDiscipline();
   }
 
   void _updateTimerCallback(Timer timer) {
@@ -107,6 +115,19 @@ class _MainMenuState extends State<MainMenu> {
       _updateCurrentRound();
       _updateMatchAndDiscipline();
     }
+    calculateEventEndTime();
+  }
+
+  void calculateEventEndTime() {
+    Duration calculatedDuration =
+        Duration(minutes: pairings.length * roundTimeDuration.inMinutes) +
+            Duration(seconds: pauseTimeInSeconds);
+    if (isPaused) {
+      calculatedDuration += DateTime.now().difference(pauseStartTime);
+    }
+    setState(() {
+      _eventEndTime = _eventStartTime.add(calculatedDuration);
+    });
   }
 
   void _updateCurrentRound() {
@@ -121,12 +142,12 @@ class _MainMenuState extends State<MainMenu> {
   void _updateMatchAndDiscipline() {
     if (currentRound > 0 && currentRound <= pairings.length) {
       var opponentTeamNumber =
-      getOpponentTeamNumber(currentRound, selectedTeam);
+          getOpponentTeamNumber(currentRound, selectedTeam);
       var nextOpponentTeamNumber =
-      getOpponentTeamNumber(currentRound + 1, selectedTeam);
+          getOpponentTeamNumber(currentRound + 1, selectedTeam);
       var disciplineName = getDisciplineName(currentRound, selectedTeam);
       var nextDisciplineName =
-      getDisciplineName(currentRound + 1, selectedTeam);
+          getDisciplineName(currentRound + 1, selectedTeam);
       var startTeam = isStartingTeam(currentRound, selectedTeam)
           ? "Beginner: Team $selectedTeam"
           : "Beginner: Team $opponentTeamNumber";
@@ -135,7 +156,7 @@ class _MainMenuState extends State<MainMenu> {
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
         currentMatchUpText =
-        'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+            'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
         nextMatchUpText = currentRound <= 0
             ? 'Coming up: $disciplineName gegen Team $opponentTeamNumber. $startTeam'
             : 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
@@ -169,8 +190,8 @@ class _MainMenuState extends State<MainMenu> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
 
     String days = duration.inDays != 0 ? '${duration.inDays} d ' : '';
-    String hours = twoDigits(duration.inHours.remainder(24)) + ' h ';
-    String minutes = twoDigits(duration.inMinutes.remainder(60)) + ' Min';
+    String hours = '${twoDigits(duration.inHours.remainder(24))} h ';
+    String minutes = '${twoDigits(duration.inMinutes.remainder(60))} Min';
 
     return days + hours + minutes;
   }
@@ -193,11 +214,6 @@ class _MainMenuState extends State<MainMenu> {
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
-  DateTime calculateEventEndTime() {
-    var calculatedDuration = Duration(minutes:pairings.length * roundTimeDuration.inMinutes) + Duration(seconds:pauseTimeInSeconds);
-    return _eventStartTime.add(calculatedDuration);
-  }
-
   void updateIsPausedInDatabase() {
     if (!mounted) return;
     if (isPaused) {
@@ -205,7 +221,7 @@ class _MainMenuState extends State<MainMenu> {
         int elapsedSeconds = DateTime.now().difference(value).inSeconds;
         getPauseTime().then((value2) {
           final DatabaseReference databaseReference =
-          FirebaseDatabase.instance.ref('/time');
+              FirebaseDatabase.instance.ref('/time');
           databaseReference.update({
             "pauseTime": elapsedSeconds + value2,
           });
@@ -214,13 +230,13 @@ class _MainMenuState extends State<MainMenu> {
     } else {
       String dateTimeString = dateTimeToString(DateTime.now());
       final DatabaseReference databaseReference =
-      FirebaseDatabase.instance.ref('/time');
+          FirebaseDatabase.instance.ref('/time');
       databaseReference.update({
         "pauseStartTime": dateTimeString,
       });
     }
     final DatabaseReference databaseReference =
-    FirebaseDatabase.instance.ref('/time');
+        FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "isPaused": !isPaused,
     });
@@ -285,16 +301,14 @@ class _MainMenuState extends State<MainMenu> {
     String appBarTitle = 'Olympiade';
 
     Duration remainingTime = calculateRemainingTimeInRound();
-
     String formattedRemainingTime;
     if (isPaused) {
       formattedRemainingTime = "Pause";
     } else if (remainingTime.inMinutes > 59) {
-      // Wenn die verbleibende Zeit mehr als 59 Minuten betr�gt, verwenden Sie formatDuration
       formattedRemainingTime = formatDuration(remainingTime);
     } else {
       formattedRemainingTime =
-      '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
+          '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     }
 
     appBarTitle += ' - Team $selectedTeam';
@@ -309,166 +323,149 @@ class _MainMenuState extends State<MainMenu> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: _openSettings,
+            onPressed: () => _openSettings(),
           ),
         ],
       ),
-      body: SingleChildScrollView( // Das SingleChildScrollView wird als Body gesetzt
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.circle, color: getRoundCircleColor()),
-                          Text(' Runde $currentRound',
-                              style: const TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.timer),
-                          Text(' Zeit: $formattedRemainingTime',
-                              style: const TextStyle(fontSize: 18)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (isPaused)
-                    const Icon(
-                      Icons.pause,
-                      size: 300,
-                    )
-                  else if (currentRound <= pairings.length && currentRound > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(currentMatchUpText,
-                                style: const TextStyle(fontSize: 18),
-                                textAlign: TextAlign.center),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: SizedBox(
-                                height: 150, child: getDisciplineImage()),
-                          ),
-                        ]),
-                      ),
-                    )
-                  else
-                    Column(
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Text(
-                              currentRound > pairings.length
-                                  ? "Die Olympiade ist zu Ende"
-                                  : "Die Olympiade beginnt bald..",
-                              style: const TextStyle(fontSize: 24)),
-                        ),
-                        SizedBox(height: 200, child: getDisciplineImage()),
+                        Icon(Icons.circle, color: getRoundCircleColor()),
+                        Text(' Runde $currentRound',
+                            style: const TextStyle(fontSize: 18)),
                       ],
                     ),
-                  if (currentRound < pairings.length && !isPaused)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[850],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(nextMatchUpText,
-                              style: const TextStyle(fontSize: 15),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer),
+                        Text(' Zeit: $formattedRemainingTime',
+                            style: const TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                  ],
+                ),
+                if (isPaused)
+                  const Icon(
+                    Icons.pause,
+                    size: 300,
+                  )
+                else if (currentRound <= pairings.length && currentRound > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(currentMatchUpText,
+                              style: const TextStyle(fontSize: 18),
                               textAlign: TextAlign.center),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10, top: 20),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height / 12,
-                      width: double.infinity,
-                      child: FilledButton.tonal(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const DartsRechner()));
-                        },
-                        child: const Text(
-                          'Dartsrechner',
-                          style: TextStyle(fontSize: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: SizedBox(
+                              height: 150, child: getDisciplineImage()),
                         ),
+                      ]),
+                    ),
+                  )
+                else
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Text(
+                            currentRound > pairings.length
+                                ? "Die Olympiade ist zu Ende"
+                                : "Die Olympiade beginnt bald..",
+                            style: const TextStyle(fontSize: 24)),
+                      ),
+                      SizedBox(height: 200, child: getDisciplineImage()),
+                    ],
+                  ),
+                if (currentRound < pairings.length && !isPaused)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(nextMatchUpText,
+                            style: const TextStyle(fontSize: 15),
+                            textAlign: TextAlign.center),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height / 12,
-                      width: double.infinity,
-                      child: FilledButton.tonal(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16.0),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SchachUhr(
-                                    maxtime: maxChessTime.inSeconds,
-                                  )));
-                        },
-                        child: const Text(
-                          'Schachuhr',
-                          style: TextStyle(fontSize: 20),
-                        ),
+              ],
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10, top: 20),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 12,
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const DartsRechner()));
+                      },
+                      child: const Text(
+                        'Dartsrechner',
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[850],
-                              padding: const EdgeInsets.all(16.0),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RulesScreen()));
-                            },
-                            child: const Text('Regeln'),
-                          ),
-                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 12,
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16.0),
                       ),
-                      Expanded(
-                        child: FilledButton.tonal(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SchachUhr(
+                                      maxtime: maxChessTime.inSeconds,
+                                    )));
+                      },
+                      child: const Text(
+                        'Schachuhr',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[850],
                             padding: const EdgeInsets.all(16.0),
@@ -477,42 +474,57 @@ class _MainMenuState extends State<MainMenu> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => UploadResults(
-                                        currentRound: currentRound,
-                                        teamNumber: selectedTeam)));
+                                    builder: (context) => RulesScreen()));
                           },
-                          child: const Text('Ergebnisse eintragen',
-                              textAlign: TextAlign.center),
+                          child: const Text('Regeln'),
                         ),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[850],
-                              padding: const EdgeInsets.all(16.0),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SchedulePage(
-                                        pairings: pairings,
-                                        disciplines: disciplines,
-                                        currentRowForColor: currentRound,
-                                      )));
-                            },
-                            child: const Text('Laufplan'),
+                    ),
+                    Expanded(
+                      child: FilledButton.tonal(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[850],
+                          padding: const EdgeInsets.all(16.0),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UploadResults(
+                                      currentRound: currentRound,
+                                      teamNumber: selectedTeam)));
+                        },
+                        child: const Text('Ergebnisse eintragen',
+                            textAlign: TextAlign.center),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[850],
+                            padding: const EdgeInsets.all(16.0),
                           ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SchedulePage(
+                                          pairings: pairings,
+                                          disciplines: disciplines,
+                                          currentRowForColor: currentRound,
+                                        )));
+                          },
+                          child: const Text('Laufplan'),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -521,8 +533,6 @@ class _MainMenuState extends State<MainMenu> {
   void _openSettings() {
     _maxTimeController.text = maxChessTime.inSeconds.toString();
     _roundTimeController.text = roundTimeDuration.inMinutes.toString();
-
-    DateTime eventEndTime = calculateEventEndTime();
 
     showModalBottomSheet(
       context: context,
@@ -543,7 +553,7 @@ class _MainMenuState extends State<MainMenu> {
                     setState(() {
                       maxChessTime = Duration(
                           seconds:
-                          int.tryParse(value) ?? maxChessTime.inSeconds);
+                              int.tryParse(value) ?? maxChessTime.inSeconds);
                     });
                   },
                 ),
@@ -552,7 +562,7 @@ class _MainMenuState extends State<MainMenu> {
                   controller: _roundTimeController,
                   keyboardType: TextInputType.number,
                   decoration:
-                  const InputDecoration(labelText: "Rundenzeit in Minuten"),
+                      const InputDecoration(labelText: "Rundenzeit in Minuten"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
@@ -569,7 +579,7 @@ class _MainMenuState extends State<MainMenu> {
                       MaterialPageRoute(
                         builder: (context) => const TeamSelection(),
                       ),
-                          (route) => false,
+                      (route) => false,
                     );
                   },
                   child: const Text('Teamauswahl'),
@@ -578,7 +588,7 @@ class _MainMenuState extends State<MainMenu> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Event Start:",style:  TextStyle(fontSize: 18)),
+                    const Text("Event Start:", style: TextStyle(fontSize: 18)),
                     Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
                         style: const TextStyle(fontSize: 18)),
                   ],
@@ -587,13 +597,11 @@ class _MainMenuState extends State<MainMenu> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Event End:",style:  TextStyle(fontSize: 18)),
-
-                    Text(DateFormat('dd MMMM HH:mm').format(eventEndTime),
+                    const Text("Event End:", style: TextStyle(fontSize: 18)),
+                    Text(DateFormat('dd MMMM HH:mm:ss').format(_eventEndTime),
                         style: const TextStyle(fontSize: 18)),
                   ],
                 ),
-
                 if (selectedTeamName == "Felix99" ||
                     selectedTeamName == "Simon00")
                   FilledButton.tonal(
@@ -606,7 +614,7 @@ class _MainMenuState extends State<MainMenu> {
                       currentEventStartTime: _eventStartTime,
                       onDateTimeSelected: (newTime) {
                         final DatabaseReference databaseReference =
-                        FirebaseDatabase.instance.ref('/time');
+                            FirebaseDatabase.instance.ref('/time');
                         databaseReference.update({
                           "pauseTime": 0,
                           "startTime": dateTimeToString(newTime),
