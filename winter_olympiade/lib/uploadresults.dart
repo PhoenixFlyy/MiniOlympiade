@@ -76,7 +76,7 @@ class _UploadResultsState extends State<UploadResults> {
             snapshot.data!.length,
             (int index) => DataRow(
               cells: <DataCell>[
-                DataCell(Text("Runde ${index + 1}")),
+                DataCell(Text("Match ${index + 1}")),
                 DataCell(Text(
                     "Team ${getOpponentListByDisciplines(selectedDiscipline, widget.teamNumber)[index]}")),
                 DataCell(Text(snapshot.data![index].toString())),
