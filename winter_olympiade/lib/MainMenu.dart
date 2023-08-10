@@ -49,7 +49,7 @@ class _MainMenuState extends State<MainMenu> {
   DateTime _eventStartTime = DateTime.now();
 
   final DatabaseReference _databaseTime =
-      FirebaseDatabase.instance.ref('/time');
+  FirebaseDatabase.instance.ref('/time');
 
   bool isFirstRenderingWhistle = true;
 
@@ -79,7 +79,7 @@ class _MainMenuState extends State<MainMenu> {
     });
     _databaseTime.child("startTime").onValue.listen((event) {
       final DateTime streamEventStartTime =
-          stringToDateTime(event.snapshot.value.toString());
+      stringToDateTime(event.snapshot.value.toString());
       setState(() {
         _eventStartTime = streamEventStartTime;
         currentRound = calculateCurrentRoundWithDateTime();
@@ -121,12 +121,12 @@ class _MainMenuState extends State<MainMenu> {
   void _updateMatchAndDiscipline() {
     if (currentRound > 0 && currentRound <= pairings.length) {
       var opponentTeamNumber =
-          getOpponentTeamNumber(currentRound, selectedTeam);
+      getOpponentTeamNumber(currentRound, selectedTeam);
       var nextOpponentTeamNumber =
-          getOpponentTeamNumber(currentRound + 1, selectedTeam);
+      getOpponentTeamNumber(currentRound + 1, selectedTeam);
       var disciplineName = getDisciplineName(currentRound, selectedTeam);
       var nextDisciplineName =
-          getDisciplineName(currentRound + 1, selectedTeam);
+      getDisciplineName(currentRound + 1, selectedTeam);
       var startTeam = isStartingTeam(currentRound, selectedTeam)
           ? "Beginner: Team $selectedTeam"
           : "Beginner: Team $opponentTeamNumber";
@@ -135,7 +135,7 @@ class _MainMenuState extends State<MainMenu> {
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
         currentMatchUpText =
-            'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+        'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
         nextMatchUpText = currentRound <= 0
             ? 'Coming up: $disciplineName gegen Team $opponentTeamNumber. $startTeam'
             : 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
@@ -197,11 +197,11 @@ class _MainMenuState extends State<MainMenu> {
     DateTime currentTime = DateTime.now();
     int currentRound = calculateCurrentRoundWithDateTime();
     int totalRounds =
-        24; // Das ist nur ein Beispielwert. Ersetze dies durch die tatsächliche Gesamtzahl der Runden, falls sie anders ist.
+    24; // Das ist nur ein Beispielwert. Ersetze dies durch die tatsï¿½chliche Gesamtzahl der Runden, falls sie anders ist.
     int remainingRounds = totalRounds - currentRound;
 
     Duration totalRemainingDuration =
-        Duration(minutes: roundTimeDuration.inMinutes * remainingRounds);
+    Duration(minutes: roundTimeDuration.inMinutes * remainingRounds);
 
     return currentTime.add(totalRemainingDuration);
   }
@@ -213,7 +213,7 @@ class _MainMenuState extends State<MainMenu> {
         int elapsedSeconds = DateTime.now().difference(value).inSeconds;
         getPauseTime().then((value2) {
           final DatabaseReference databaseReference =
-              FirebaseDatabase.instance.ref('/time');
+          FirebaseDatabase.instance.ref('/time');
           databaseReference.update({
             "pauseTime": elapsedSeconds + value2,
           });
@@ -222,13 +222,13 @@ class _MainMenuState extends State<MainMenu> {
     } else {
       String dateTimeString = dateTimeToString(DateTime.now());
       final DatabaseReference databaseReference =
-          FirebaseDatabase.instance.ref('/time');
+      FirebaseDatabase.instance.ref('/time');
       databaseReference.update({
         "pauseStartTime": dateTimeString,
       });
     }
     final DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('/time');
+    FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "isPaused": !isPaused,
     });
@@ -298,11 +298,11 @@ class _MainMenuState extends State<MainMenu> {
     if (isPaused) {
       formattedRemainingTime = "Pause";
     } else if (remainingTime.inMinutes > 59) {
-      // Wenn die verbleibende Zeit mehr als 59 Minuten beträgt, verwenden Sie formatDuration
+      // Wenn die verbleibende Zeit mehr als 59 Minuten betrï¿½gt, verwenden Sie formatDuration
       formattedRemainingTime = formatDuration(remainingTime);
     } else {
       formattedRemainingTime =
-          '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
+      '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     }
 
     appBarTitle += ' - Team $selectedTeam';
@@ -323,7 +323,7 @@ class _MainMenuState extends State<MainMenu> {
       ),
       body: ConstrainedBox(
         constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+        BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -446,8 +446,8 @@ class _MainMenuState extends State<MainMenu> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => SchachUhr(
-                                        maxtime: maxChessTime.inSeconds,
-                                      )));
+                                    maxtime: maxChessTime.inSeconds,
+                                  )));
                         },
                         child: const Text(
                           'Schachuhr',
@@ -508,10 +508,10 @@ class _MainMenuState extends State<MainMenu> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SchedulePage(
-                                            pairings: pairings,
-                                            disciplines: disciplines,
-                                            currentRowForColor: currentRound,
-                                          )));
+                                        pairings: pairings,
+                                        disciplines: disciplines,
+                                        currentRowForColor: currentRound,
+                                      )));
                             },
                             child: const Text('Laufplan'),
                           ),
@@ -553,7 +553,7 @@ class _MainMenuState extends State<MainMenu> {
                     setState(() {
                       maxChessTime = Duration(
                           seconds:
-                              int.tryParse(value) ?? maxChessTime.inSeconds);
+                          int.tryParse(value) ?? maxChessTime.inSeconds);
                     });
                   },
                 ),
@@ -562,7 +562,7 @@ class _MainMenuState extends State<MainMenu> {
                   controller: _roundTimeController,
                   keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(labelText: "Rundenzeit in Minuten"),
+                  const InputDecoration(labelText: "Rundenzeit in Minuten"),
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) {
                     setState(() {
@@ -579,7 +579,7 @@ class _MainMenuState extends State<MainMenu> {
                       MaterialPageRoute(
                         builder: (context) => const TeamSelection(),
                       ),
-                      (route) => false,
+                          (route) => false,
                     );
                   },
                   child: const Text('Teamauswahl'),
@@ -603,7 +603,7 @@ class _MainMenuState extends State<MainMenu> {
                       currentEventStartTime: _eventStartTime,
                       onDateTimeSelected: (newTime) {
                         final DatabaseReference databaseReference =
-                            FirebaseDatabase.instance.ref('/time');
+                        FirebaseDatabase.instance.ref('/time');
                         databaseReference.update({
                           "pauseTime": 0,
                           "startTime": dateTimeToString(newTime),
