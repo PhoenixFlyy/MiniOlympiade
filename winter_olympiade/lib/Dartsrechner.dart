@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class DartsRechner extends StatefulWidget {
   const DartsRechner({Key? key}) : super(key: key);
@@ -23,8 +24,7 @@ class GameState {
 
 class _DartsRechnerState extends State<DartsRechner>
     with WidgetsBindingObserver {
-  int startNumber = 501; // Standard-Anfangsscore
-  //late int startNumber; // Anfangsscore nciht benötigt...???
+  int startNumber = 301;
 
   bool playerOneTurn = true;
   late int playerOneNumber;
@@ -48,7 +48,7 @@ class _DartsRechnerState extends State<DartsRechner>
   var gameState = GameState();
   List<List<dynamic>> gameStateHistory = [];
 
-  List<dynamic> lastState = [];//unnötig?
+  List<dynamic> lastState = []; //unnötig?
 
   @override
   void initState() {
@@ -157,7 +157,7 @@ class _DartsRechnerState extends State<DartsRechner>
   void _startNewGame() {
     setState(() {
       // Setzen Sie den Zustand zurück
-      startNumber = 501;
+      startNumber = 301;
       playerOneNumber = startNumber;
       playerTwoNumber = startNumber;
       playerOneTurn = true;
@@ -193,7 +193,6 @@ class _DartsRechnerState extends State<DartsRechner>
 
     // Konvertieren Sie die Map in einen JSON-String
     String gameStateString = jsonEncode(gameState);
-
 
     String lastStateJson = jsonEncode(lastState); //unnötig?
     await prefs.setString('lastState', lastStateJson); //unnötig?
@@ -237,16 +236,17 @@ class _DartsRechnerState extends State<DartsRechner>
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? lastStateString = prefs.getString('lastState'); //unnötig?
-    if (lastStateString != null) {//unnötig?
-      lastState = jsonDecode(lastStateString);//unnötig?
-    }//unnötig?
+    if (lastStateString != null) {
+      //unnötig?
+      lastState = jsonDecode(lastStateString); //unnötig?
+    } //unnötig?
 
     String? gameStateString = prefs.getString('gameState');
     if (gameStateString != null) {
       Map<String, dynamic> gameState = jsonDecode(gameStateString);
 
       setState(() {
-        startNumber = prefs.getInt('startNumber') ?? 501;
+        startNumber = prefs.getInt('startNumber') ?? 301;
         playerOneTurn = prefs.getBool('playerOneTurn') ?? true;
         turnCounter = prefs.getInt('turnCounter') ?? 0;
         doubleNextScore = prefs.getBool('doubleNextScore') ?? false;
@@ -281,12 +281,16 @@ class _DartsRechnerState extends State<DartsRechner>
 
         List<dynamic> loadedHistory =
             jsonDecode(prefs.getString('gameStateHistory') ?? '[]');
-        history =
-            loadedHistory.map((dynamicList) => List.from(dynamicList)).toList(); //entweder das oder...
+        history = loadedHistory
+            .map((dynamicList) => List.from(dynamicList))
+            .toList(); //entweder das oder...
 
-        List<dynamic> loadedGameStateHistory = jsonDecode(prefs.getString('gameStateHistory') ?? '[]'); //... oder das hier ist überflüssig. Sie beziehen sich auf dasselbe
-        gameStateHistory = loadedGameStateHistory.map((dynamicList) => List.from(dynamicList)).toList();
-
+        List<dynamic> loadedGameStateHistory = jsonDecode(prefs
+                .getString('gameStateHistory') ??
+            '[]'); //... oder das hier ist überflüssig. Sie beziehen sich auf dasselbe
+        gameStateHistory = loadedGameStateHistory
+            .map((dynamicList) => List.from(dynamicList))
+            .toList();
 
         // ... Hier können Sie den geladenen Zustand für weitere Daten hinzufügen ...
       });
@@ -295,37 +299,37 @@ class _DartsRechnerState extends State<DartsRechner>
 
   Future<bool> _showConfirmationDialog(BuildContext context) async {
     return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Neues Spiel starten'),
-          content: Text('Möchten Sie wirklich ein neues Spiel starten?'),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  child: Text('Ja'),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Neues Spiel starten'),
+              content: Text('Möchten Sie wirklich ein neues Spiel starten?'),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextButton(
+                      child: Text('Ja'),
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Abbrechen'),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                    SizedBox(width: 20),
+                    // Einen kleinen Abstand zwischen den Buttons
+                  ],
                 ),
-                TextButton(
-                  child: Text('Abbrechen'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                SizedBox(width: 20),  // Einen kleinen Abstand zwischen den Buttons
-
               ],
-            ),
-          ],
-        );
-      },
-    ) ?? false;  // Der `?? false` stellt sicher, dass der Rückgabewert nie null ist.
+            );
+          },
+        ) ??
+        false; // Der `?? false` stellt sicher, dass der Rückgabewert nie null ist.
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -422,17 +426,14 @@ class _DartsRechnerState extends State<DartsRechner>
                         doubleNextScore = false;
                       } else if (tripleNextScore) {
                         if (num == 25) {
-                         tripleNextScore = false;
-                         turnCounter -= 1;
-                         return;
+                          tripleNextScore = false;
+                          turnCounter -= 1;
+                          return;
                         } else {
                           num *= 3;
                           tripleNextScore = false;
                         }
                       }
-
-
-
 
                       if (num == -3) {
                         undoLastEntry();
@@ -810,16 +811,16 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   int? selectedStartingScore =
-      501; // Standard-Anfangsscore; wird aber nicht wirksam. Der Standard-Anfangsscore wird oben angegeben.
+      301; // Standard-Anfangsscore; wird aber nicht wirksam. Der Standard-Anfangsscore wird oben angegeben.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Einstellungen'),
+        title: const Text('Einstellungen'),
         actions: [
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () {
               Navigator.pop(context, selectedStartingScore);
             },
@@ -830,7 +831,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           children: [
             RadioListTile<int>(
-              title: Text('201'),
+              title: const Text('201'),
               value: 201,
               groupValue: selectedStartingScore,
               onChanged: (value) {
@@ -840,7 +841,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             RadioListTile<int>(
-              title: Text('301'),
+              title: const Text('301'),
               value: 301,
               groupValue: selectedStartingScore,
               onChanged: (value) {
@@ -850,7 +851,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             RadioListTile<int>(
-              title: Text('501'),
+              title: const Text('501'),
               value: 501,
               groupValue: selectedStartingScore,
               onChanged: (value) {
