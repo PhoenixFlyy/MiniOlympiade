@@ -158,9 +158,9 @@ class _MainMenuState extends State<MainMenu> {
   void _updateMatchAndDiscipline() {
     if (currentRound > 0 && currentRound <= pairings.length) {
       var opponentTeamNumber =
-          getOpponentTeamNumber(currentRound, selectedTeam);
+          getOpponentTeamNumberByRound(currentRound, selectedTeam);
       var nextOpponentTeamNumber =
-          getOpponentTeamNumber(currentRound + 1, selectedTeam);
+          getOpponentTeamNumberByRound(currentRound + 1, selectedTeam);
       var disciplineName = getDisciplineName(currentRound, selectedTeam);
       var nextDisciplineName =
           getDisciplineName(currentRound + 1, selectedTeam);

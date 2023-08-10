@@ -78,7 +78,7 @@ class _UploadResultsState extends State<UploadResults> {
               cells: <DataCell>[
                 DataCell(Text("Runde ${index + 1}")),
                 DataCell(Text(
-                    "Team ${getOpponentTeamNumber(index + 1, widget.teamNumber)}")),
+                    "Team ${getOpponentTeamNumberByRound(index + 1, widget.teamNumber)}")),
                 DataCell(Text(snapshot.data![index].toString())),
               ],
             ),
@@ -141,8 +141,8 @@ class _UploadResultsState extends State<UploadResults> {
                         items: List<DropdownMenuItem<int>>.generate(
                           pairings.length,
                           (index) => DropdownMenuItem<int>(
-                            value: index,
-                            child: Text('$index',
+                            value: index + 1,
+                            child: Text('${index + 1}',
                                 style: const TextStyle(fontSize: 22)),
                           ),
                         ),
@@ -212,8 +212,8 @@ class _UploadResultsState extends State<UploadResults> {
                         items: List<DropdownMenuItem<int>>.generate(
                           pairings.length,
                           (index) => DropdownMenuItem<int>(
-                            value: index,
-                            child: Text('$index',
+                            value: index + 1,
+                            child: Text('${index + 1}',
                                 style: const TextStyle(fontSize: 22)),
                           ),
                         ),

@@ -52,7 +52,7 @@ int getDisciplineNumber(int round, int teamNumber) {
   return 0;
 }
 
-int getOpponentTeamNumber(int round, int teamNumber) {
+int getOpponentTeamNumberByRound(int round, int teamNumber) {
   if (round > 0 && round <= pairings.length) {
     var pairing = pairings[round - 1];
     for (int index = 0; index < pairing.length; index++) {
