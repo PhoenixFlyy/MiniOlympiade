@@ -126,3 +126,6 @@ Future<int> getPauseTime() async {
   DatabaseEvent event = await databaseParent.once();
   return int.tryParse(event.snapshot.value.toString()) ?? 0;
 }
+
+double getPointsInList(List<double> pointsList) =>
+    pointsList.fold(0.0, (previousValue, element) => previousValue + element);
