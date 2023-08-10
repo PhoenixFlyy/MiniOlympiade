@@ -194,16 +194,8 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   DateTime calculateEventEndTime() {
-    DateTime currentTime = DateTime.now();
-    int currentRound = calculateCurrentRoundWithDateTime();
-    int totalRounds =
-    24; // Das ist nur ein Beispielwert. Ersetze dies durch die tats�chliche Gesamtzahl der Runden, falls sie anders ist.
-    int remainingRounds = totalRounds - currentRound;
-
-    Duration totalRemainingDuration =
-    Duration(minutes: roundTimeDuration.inMinutes * remainingRounds);
-
-    return currentTime.add(totalRemainingDuration);
+    var calculatedDuration = Duration(minutes:pairings.length * roundTimeDuration.inMinutes) + Duration(seconds:pauseTimeInSeconds);
+    return _eventStartTime.add(calculatedDuration);
   }
 
   void updateIsPausedInDatabase() {
@@ -321,9 +313,7 @@ class _MainMenuState extends State<MainMenu> {
           ),
         ],
       ),
-      body: ConstrainedBox(
-        constraints:
-        BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+      body: SingleChildScrollView( // Das SingleChildScrollView wird als Body gesetzt
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -585,12 +575,25 @@ class _MainMenuState extends State<MainMenu> {
                   child: const Text('Teamauswahl'),
                 ),
                 const SizedBox(height: 16.0),
-                const Text("Event Start:"),
-                Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
-                    style: const TextStyle(fontSize: 18)),
-                const Text("Event End:"),
-                Text(DateFormat('dd MMMM HH:mm').format(eventEndTime),
-                    style: const TextStyle(fontSize: 18)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Event Start:",style:  TextStyle(fontSize: 18)),
+                    Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
+                        style: const TextStyle(fontSize: 18)),
+                  ],
+                ),
+                const SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Event End:",style:  TextStyle(fontSize: 18)),
+
+                    Text(DateFormat('dd MMMM HH:mm').format(eventEndTime),
+                        style: const TextStyle(fontSize: 18)),
+                  ],
+                ),
+
                 if (selectedTeamName == "Felix99" ||
                     selectedTeamName == "Simon00")
                   FilledButton.tonal(
