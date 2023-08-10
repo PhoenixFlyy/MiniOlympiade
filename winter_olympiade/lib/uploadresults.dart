@@ -152,36 +152,43 @@ class _UploadResultsState extends State<UploadResults> {
                     style: const TextStyle(fontSize: 23)),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  spacing: 8,
-                  children: [0.0, 0.5, 1.0].map((value) {
-                    return ChoiceChip(
-                      label: Column(
-                        children: [
-                          Text(value.toString()),
-                          Text(getLabelForScore(value)),
-                        ],
-                      ),
-                      selected: lastRoundTeamScore == value,
-                      onSelected: (selected) {
-                        setState(() {
-                          lastRoundTeamScore = value;
-                        });
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      children: [0.0, 0.5, 1.0].map((value) {
+                        return ChoiceChip(
+                          label: Column(
+                            children: [
+                              Text(value.toString()),
+                              Text(getLabelForScore(value)),
+                            ],
+                          ),
+                          selected: lastRoundTeamScore == value,
+                          onSelected: (selected) {
+                            setState(() {
+                              lastRoundTeamScore = value;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        updateScores(lastSelectedRound, lastRoundTeamScore);
                       },
-                    );
-                  }).toList(),
+                      child:
+                          const Text("Upload", style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    updateScores(lastSelectedRound, lastRoundTeamScore);
-                  },
-                  child: const Text("Upload", style: TextStyle(fontSize: 16)),
-                ),
-              ],
+              ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -216,36 +223,44 @@ class _UploadResultsState extends State<UploadResults> {
                     style: const TextStyle(fontSize: 23)),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Wrap(
-                  spacing: 8,
-                  children: [0.0, 0.5, 1.0].map((value) {
-                    return ChoiceChip(
-                      label: Column(
-                        children: [
-                          Text(value.toString()),
-                          Text(getLabelForScore(value)),
-                        ],
-                      ),
-                      selected: currentRoundTeamScore == value,
-                      onSelected: (selected) {
-                        setState(() {
-                          currentRoundTeamScore = value;
-                        });
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      children: [0.0, 0.5, 1.0].map((value) {
+                        return ChoiceChip(
+                          label: Column(
+                            children: [
+                              Text(value.toString()),
+                              Text(getLabelForScore(value)),
+                            ],
+                          ),
+                          selected: currentRoundTeamScore == value,
+                          onSelected: (selected) {
+                            setState(() {
+                              currentRoundTeamScore = value;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        updateScores(
+                            currentSelectedRound, currentRoundTeamScore);
                       },
-                    );
-                  }).toList(),
+                      child:
+                          const Text("Upload", style: TextStyle(fontSize: 16)),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    updateScores(currentSelectedRound, currentRoundTeamScore);
-                  },
-                  child: const Text("Upload", style: TextStyle(fontSize: 16)),
-                ),
-              ],
+              ),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),

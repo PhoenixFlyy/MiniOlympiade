@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:winter_olympiade/ResultScreen.dart';
 import 'package:winter_olympiade/uploadresults.dart';
 import 'package:winter_olympiade/utils/DateTimeUtils.dart';
 import 'package:winter_olympiade/utils/GetMatchDetails.dart';
@@ -573,12 +574,14 @@ class _MainMenuState extends State<MainMenu> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FilledButton(
                     onPressed: () {
@@ -595,7 +598,8 @@ class _MainMenuState extends State<MainMenu> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Event Start:", style: TextStyle(fontSize: 18)),
+                      const Text("Event Start:",
+                          style: TextStyle(fontSize: 18)),
                       Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
                           style: const TextStyle(fontSize: 18)),
                     ],
@@ -604,7 +608,9 @@ class _MainMenuState extends State<MainMenu> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(child: const Text("Ende (+ zuk. Pausen):", style: TextStyle(fontSize: 18))),
+                      const Flexible(
+                          child: Text("Ende (+ zuk. Pausen):",
+                              style: TextStyle(fontSize: 18))),
                       Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
                           style: const TextStyle(fontSize: 18)),
                     ],
@@ -690,6 +696,17 @@ class _MainMenuState extends State<MainMenu> {
                             "startTime": dateTimeToString(newTime),
                           });
                         }),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResultScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Ergebnisse anschauen'),
+                  ),
                 ],
               ),
             ),

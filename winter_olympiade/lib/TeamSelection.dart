@@ -53,18 +53,18 @@ class _TeamSelectionState extends State<TeamSelection> {
           FilledButton(
             onPressed: teamName.isNotEmpty && selectedTeam != 0
                 ? () async {
-              SharedPreferences prefs =
-              await SharedPreferences.getInstance();
-              prefs.setInt('selectedTeam', selectedTeam);
-              prefs.setString('teamName', teamName);
-              if (context.mounted) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const MainMenu(),
-                  ),
-                );
-              }
-            }
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.setInt('selectedTeam', selectedTeam);
+                    prefs.setString('teamName', teamName);
+                    if (context.mounted) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const MainMenu(),
+                        ),
+                      );
+                    }
+                  }
                 : null,
             child: const Text('Bestätigen'),
           ),
@@ -74,9 +74,7 @@ class _TeamSelectionState extends State<TeamSelection> {
   }
 
   List<Widget> _buildTeamChips() {
-    int numberOfTeams = pairings[0].length;
-
-    return List.generate(numberOfTeams, (teamIndex) {
+    return List.generate(amountOfPlayer, (teamIndex) {
       int teamNumber = teamIndex + 1;
       bool isSelected = selectedTeam == teamNumber;
 
@@ -92,4 +90,3 @@ class _TeamSelectionState extends State<TeamSelection> {
     });
   }
 }
-
