@@ -104,6 +104,17 @@ class _UploadResultsState extends State<UploadResults> {
     );
   }
 
+  String getLabelForScore(double value) {
+    if (value == 0.0) {
+      return "Nied.";
+    } else if (value == 0.5) {
+      return "Unent.";
+    } else if (value == 1.0) {
+      return "Sieg";
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +159,12 @@ class _UploadResultsState extends State<UploadResults> {
                   spacing: 8,
                   children: [0.0, 0.5, 1.0].map((value) {
                     return ChoiceChip(
-                      label: Text(value.toString()),
+                      label: Column(
+                        children: [
+                          Text(value.toString()),
+                          Text(getLabelForScore(value)),
+                        ],
+                      ),
                       selected: lastRoundTeamScore == value,
                       onSelected: (selected) {
                         setState(() {
@@ -207,7 +223,12 @@ class _UploadResultsState extends State<UploadResults> {
                   spacing: 8,
                   children: [0.0, 0.5, 1.0].map((value) {
                     return ChoiceChip(
-                      label: Text(value.toString()),
+                      label: Column(
+                        children: [
+                          Text(value.toString()),
+                          Text(getLabelForScore(value)),
+                        ],
+                      ),
                       selected: currentRoundTeamScore == value,
                       onSelected: (selected) {
                         setState(() {
