@@ -18,25 +18,30 @@ class UploadResults extends StatefulWidget {
 }
 
 class _UploadResultsState extends State<UploadResults> {
-  int selectedRound = 1;
-  double teamScore = 0.0;
-  bool showTeamScore = false;
   int selectedDiscipline = 1;
-  double lastRoundTeamScore = 0.0;
-  double currentRoundTeamScore = 0.0;
 
+  int currentSelectedRound = 1;
+  int lastSelectedRound = 1;
+
+  double currentRoundTeamScore = 0.0;
+  double lastRoundTeamScore = 0.0;
 
   @override
   void initState() {
     super.initState();
-    if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
-      selectedRound = widget.currentRound;
+    if (widget.currentRound > 0 && widget.currentRound < pairings.length) {
+      currentSelectedRound = widget.currentRound;
       selectedDiscipline =
           getDisciplineNumber(widget.currentRound, widget.teamNumber);
+      if (widget.currentRound > 0) {
+        lastSelectedRound = widget.currentRound - 1;
+      } else {
+        lastSelectedRound = widget.currentRound;
+      }
     }
   }
 
-  void updateScores(int roundNumber) {
+  void updateScores(int roundNumber, double teamScore) {
     if (!mounted) return;
 
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
@@ -54,13 +59,13 @@ class _UploadResultsState extends State<UploadResults> {
         .update({
       teamKey: teamScore,
     });
+    setState(() {});
   }
-
 
   Widget getTeamScoreForAllRoundsText() {
     return FutureBuilder<List<double>>(
       future:
-      getAllTeamPointsInDiscipline(selectedDiscipline, widget.teamNumber),
+          getAllTeamPointsInDiscipline(selectedDiscipline, widget.teamNumber),
       builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -69,18 +74,20 @@ class _UploadResultsState extends State<UploadResults> {
         } else {
           return DataTable(
             columns: const <DataColumn>[
-              DataColumn(label: Text('Duell')),
+              DataColumn(label: Text('')),
+              DataColumn(label: Text('Gegner')),
               DataColumn(label: Text('Punkte')),
             ],
             rows: List<DataRow>.generate(
               snapshot.data!.length,
-                  (int index) =>
-                  DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text((index + 1).toString())),
-                      DataCell(Text(snapshot.data![index].toString())),
-                    ],
-                  ),
+              (int index) => DataRow(
+                cells: <DataCell>[
+                  DataCell(Text("Runde ${index + 1}")),
+                  DataCell(Text(
+                      "Team ${getOpponentTeamNumber(index + 1, widget.teamNumber)}")),
+                  DataCell(Text(snapshot.data![index].toString())),
+                ],
+              ),
             ),
           );
         }
@@ -96,38 +103,31 @@ class _UploadResultsState extends State<UploadResults> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-
-            // Dropdown und Text für die Last Round
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 DropdownButton<int>(
-                  value: selectedRound,
+                  value: lastSelectedRound,
                   onChanged: (newValue) {
                     setState(() {
-                      showTeamScore = false;
-                      selectedRound = newValue!;
+                      lastSelectedRound = newValue!;
                     });
                   },
                   items: List<DropdownMenuItem<int>>.generate(
                     pairings.length,
-                        (index) => DropdownMenuItem<int>(
-                      value: index + 1,
-                      child: Text('Last round ${index}',
+                    (index) => DropdownMenuItem<int>(
+                      value: index,
+                      child: Text('Letzte Runde: ${index}',
                           style: const TextStyle(fontSize: 22)),
                     ),
                   ),
                 ),
-                // Hier habe ich `selectedRound - 1` verwendet, um die Disziplin für die vorherige Runde zu erhalten.
-                Text(getDisciplineName(selectedRound - 1, widget.teamNumber),
+                Text(getDisciplineName(lastSelectedRound, widget.teamNumber),
                     style: const TextStyle(fontSize: 23)),
               ],
             ),
-
-
-            // ChoiceChip und Button für die Last Round
             Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Mittig ausrichten
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Wrap(
                   spacing: 8,
@@ -143,51 +143,44 @@ class _UploadResultsState extends State<UploadResults> {
                     );
                   }).toList(),
                 ),
-
-                SizedBox(width: 20), // Ein wenig Abstand hinzufügen
+                const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                    updateScores(selectedRound);
+                    updateScores(lastSelectedRound, lastRoundTeamScore);
                   },
-                  child: const Text("upload", style: TextStyle(fontSize: 16)),
+                  child: const Text("Upload", style: TextStyle(fontSize: 16)),
                 ),
-
               ],
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(color: Colors.white),
             ),
-            // Dropdown und Text für die Current Round
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 DropdownButton<int>(
-                  value: selectedRound,
+                  value: currentSelectedRound,
                   onChanged: (newValue) {
                     setState(() {
-                      showTeamScore = false;
-                      selectedRound = newValue!;
+                      currentSelectedRound = newValue!;
                     });
                   },
                   items: List<DropdownMenuItem<int>>.generate(
                     pairings.length,
-                        (index) =>
-                        DropdownMenuItem<int>(
-                          value: index + 1,
-                          child: Text('Current round ${index + 1}',
-                              style: const TextStyle(fontSize: 22)),
-                        ),
+                    (index) => DropdownMenuItem<int>(
+                      value: index,
+                      child: Text('Aktuelle Runde: ${index}',
+                          style: const TextStyle(fontSize: 22)),
+                    ),
                   ),
                 ),
-                Text(getDisciplineName(selectedRound, widget.teamNumber),
+                Text(getDisciplineName(currentSelectedRound, widget.teamNumber),
                     style: const TextStyle(fontSize: 23)),
               ],
             ),
-
-            // ChoiceChip und Button für die Current Round
             Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Mittig ausrichten
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Wrap(
                   spacing: 8,
@@ -203,19 +196,15 @@ class _UploadResultsState extends State<UploadResults> {
                     );
                   }).toList(),
                 ),
-
-                SizedBox(width: 20), // Ein wenig Abstand hinzufügen
+                const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                    updateScores(selectedRound + 1); // Oder verwenden Sie eine andere Variable, die die nächste Runde repräsentiert.
+                    updateScores(currentSelectedRound, currentRoundTeamScore);
                   },
-                  child: const Text("upload", style: TextStyle(fontSize: 16)),
+                  child: const Text("Upload", style: TextStyle(fontSize: 16)),
                 ),
-
               ],
             ),
-
-            // Der restliche Code bleibt unverändert.
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Divider(color: Colors.white),
