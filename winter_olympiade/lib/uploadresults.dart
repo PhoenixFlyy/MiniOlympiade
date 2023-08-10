@@ -106,22 +106,25 @@ class _UploadResultsState extends State<UploadResults> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DropdownButton<int>(
-                  value: lastSelectedRound,
-                  onChanged: (newValue) {
-                    setState(() {
-                      lastSelectedRound = newValue!;
-                    });
-                  },
-                  items: List<DropdownMenuItem<int>>.generate(
-                    pairings.length,
-                    (index) => DropdownMenuItem<int>(
-                      value: index,
-                      child: Text('Letzte Runde: ${index}',
-                          style: const TextStyle(fontSize: 22)),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Text('Letzte Runde: ', style: const TextStyle(fontSize: 22)),
+                  DropdownButton<int>(
+                    value: lastSelectedRound,
+                    onChanged: (newValue) {
+                      setState(() {
+                        lastSelectedRound = newValue!;
+                      });
+                    },
+                    items: List<DropdownMenuItem<int>>.generate(
+                      pairings.length,
+                          (index) => DropdownMenuItem<int>(
+                        value: index,
+                        child: Text('${index}', style: const TextStyle(fontSize: 22)),
+                      ),
                     ),
                   ),
-                ),
+                ]),
+
                 Text(getDisciplineName(lastSelectedRound, widget.teamNumber),
                     style: const TextStyle(fontSize: 23)),
               ],
@@ -159,22 +162,25 @@ class _UploadResultsState extends State<UploadResults> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DropdownButton<int>(
-                  value: currentSelectedRound,
-                  onChanged: (newValue) {
-                    setState(() {
-                      currentSelectedRound = newValue!;
-                    });
-                  },
-                  items: List<DropdownMenuItem<int>>.generate(
-                    pairings.length,
-                    (index) => DropdownMenuItem<int>(
-                      value: index,
-                      child: Text('Aktuelle Runde: ${index}',
-                          style: const TextStyle(fontSize: 22)),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Text('Aktuelle Runde: ', style: const TextStyle(fontSize: 22)),
+                  DropdownButton<int>(
+                    value: currentSelectedRound,
+                    onChanged: (newValue) {
+                      setState(() {
+                        currentSelectedRound = newValue!;
+                      });
+                    },
+                    items: List<DropdownMenuItem<int>>.generate(
+                      pairings.length,
+                          (index) => DropdownMenuItem<int>(
+                        value: index,
+                        child: Text('${index}', style: const TextStyle(fontSize: 22)),
+                      ),
                     ),
                   ),
-                ),
+                ]),
+
                 Text(getDisciplineName(currentSelectedRound, widget.teamNumber),
                     style: const TextStyle(fontSize: 23)),
               ],

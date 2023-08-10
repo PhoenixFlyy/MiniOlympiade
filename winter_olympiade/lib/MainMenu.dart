@@ -570,124 +570,128 @@ class _MainMenuState extends State<MainMenu> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const TeamSelection(),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  child: const Text('Teamauswahl'),
-                ),
-                const SizedBox(height: 16.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Event Start:", style: TextStyle(fontSize: 18)),
-                    Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
-                        style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-                const SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(child: const Text("Ende (+ zuk. Pausen):", style: TextStyle(fontSize: 18))),
-                    Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
-                        style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-                if (selectedTeamName == "Felix99" ||
-                    selectedTeamName == "Simon00")
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const TeamSelection(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    child: const Text('Teamauswahl'),
+                  ),
+                  const SizedBox(height: 16.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 75,
-                        width: 200,
-                        child: TextField(
-                          controller: _maxTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: "Schachuhr Zeit in Sekunden"),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              maxChessTime = Duration(
-                                  seconds: int.tryParse(value) ??
-                                      maxChessTime.inSeconds);
-                            });
-                          },
-                        ),
-                      ),
-                      FilledButton.tonal(
-                        onPressed: () => updateChessTimeInDatabase(),
-                        child: const Text("Update"),
-                      ),
+                      const Text("Event Start:", style: TextStyle(fontSize: 18)),
+                      Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
+                          style: const TextStyle(fontSize: 18)),
                     ],
                   ),
-                if (selectedTeamName == "Felix99" ||
-                    selectedTeamName == "Simon00")
+                  const SizedBox(height: 10.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 75,
-                        width: 200,
-                        child: TextField(
-                          controller: _roundTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: "Rundenzeit in Minuten"),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              roundTimeDuration = Duration(
-                                  minutes: int.tryParse(value) ??
-                                      roundTimeDuration.inMinutes);
-                            });
-                          },
-                        ),
-                      ),
-                      FilledButton.tonal(
-                        onPressed: () => updateRoundTimeInDatabase(),
-                        child: const Text("Update"),
-                      ),
+                      Flexible(child: const Text("Ende (+ zuk. Pausen):", style: TextStyle(fontSize: 18))),
+                      Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
+                          style: const TextStyle(fontSize: 18)),
                     ],
                   ),
-                const SizedBox(height: 16),
-                if (selectedTeamName == "Felix99" ||
-                    selectedTeamName == "Simon00")
-                  FilledButton.tonal(
-                    onPressed: () => updateIsPausedInDatabase(),
-                    child: const Text("Update Pause in Database"),
-                  ),
-                if (selectedTeamName == "Felix99" ||
-                    selectedTeamName == "Simon00")
-                  TimePickerWidget(
-                      currentEventStartTime: _eventStartTime,
-                      onDateTimeSelected: (newTime) {
-                        final DatabaseReference databaseReference =
-                            FirebaseDatabase.instance.ref('/time');
-                        databaseReference.update({
-                          "pauseTime": 0,
-                          "startTime": dateTimeToString(newTime),
-                        });
-                      }),
-              ],
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          width: 200,
+                          child: TextField(
+                            controller: _maxTimeController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                labelText: "Schachuhr Zeit in Sekunden"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                maxChessTime = Duration(
+                                    seconds: int.tryParse(value) ??
+                                        maxChessTime.inSeconds);
+                              });
+                            },
+                          ),
+                        ),
+                        FilledButton.tonal(
+                          onPressed: () => updateChessTimeInDatabase(),
+                          child: const Text("Update"),
+                        ),
+                      ],
+                    ),
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          width: 200,
+                          child: TextField(
+                            controller: _roundTimeController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                labelText: "Rundenzeit in Minuten"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                roundTimeDuration = Duration(
+                                    minutes: int.tryParse(value) ??
+                                        roundTimeDuration.inMinutes);
+                              });
+                            },
+                          ),
+                        ),
+                        FilledButton.tonal(
+                          onPressed: () => updateRoundTimeInDatabase(),
+                          child: const Text("Update"),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 16),
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    FilledButton.tonal(
+                      onPressed: () => updateIsPausedInDatabase(),
+                      child: const Text("Update Pause in Database"),
+                    ),
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    TimePickerWidget(
+                        currentEventStartTime: _eventStartTime,
+                        onDateTimeSelected: (newTime) {
+                          final DatabaseReference databaseReference =
+                              FirebaseDatabase.instance.ref('/time');
+                          databaseReference.update({
+                            "pauseTime": 0,
+                            "startTime": dateTimeToString(newTime),
+                          });
+                        }),
+                ],
+              ),
             ),
           ),
         );
