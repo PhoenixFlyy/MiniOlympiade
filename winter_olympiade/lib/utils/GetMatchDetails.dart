@@ -73,7 +73,7 @@ int getOpponentTeamNumberByRound(int round, int teamNumber) {
 List<int> getOpponentListByDisciplines(int disciplineNumber, int teamNumber) {
   List<int> opponentsInDiscipline = [];
   for (int index = 0; index < pairings.length; index++) {
-    var match = pairings[index][disciplineNumber -1];
+    var match = pairings[index][disciplineNumber - 1];
     if (isNumberInString(match, teamNumber)) {
       var teams = match.split('-');
       if (int.tryParse(teams[0]) == teamNumber) {
@@ -101,7 +101,7 @@ Future<double> getTeamPointsInRound(int round, int teamNumber) async {
   return -2;
 }
 
-Future<List<double>> getAllTeamPointsInDiscipline(
+Future<List<double>> getAllTeamPointsInDisciplineSortedByMatch(
     int disciplineNumber, int teamNumber) async {
   List<double> summarizedPointList = [];
   for (int index = 0; index < pairings.length; index++) {
@@ -120,6 +120,18 @@ Future<List<double>> getAllTeamPointsInDiscipline(
     }
   }
   return summarizedPointList;
+}
+
+List<double> sortValuesByOrder(List<double> values, List<int> order) {
+  List<MapEntry<int, double>> indexedValues = [];
+
+  for (int i = 0; i < values.length; i++) {
+    indexedValues.add(MapEntry(order[i] - 1, values[i]));
+  }
+
+  indexedValues.sort((a, b) => a.key.compareTo(b.key));
+
+  return indexedValues.map((entry) => entry.value).toList();
 }
 
 Future<DateTime> getOlympiadeStartDateTime() async {

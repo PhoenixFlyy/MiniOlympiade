@@ -64,8 +64,8 @@ class _UploadResultsState extends State<UploadResults> {
 
   Widget getTeamScoreForAllRoundsText() {
     return FutureBuilder<List<double>>(
-      future:
-          getAllTeamPointsInDiscipline(selectedDiscipline, widget.teamNumber),
+      future: getAllTeamPointsInDisciplineSortedByMatch(
+          selectedDiscipline, widget.teamNumber),
       builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();

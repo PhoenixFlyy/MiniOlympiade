@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:winter_olympiade/utils/GetMatchDetails.dart';
 import 'package:winter_olympiade/utils/MatchDetails.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -35,22 +36,57 @@ class _ResultScreenState extends State<ResultScreen> {
                     dataRowMinHeight: 40,
                     dividerThickness: 0,
                     columns: [
-                      DataColumn(label: Text("X")), // Empty column for shifting
+                      const DataColumn(label: Text("")),
                       ...List.generate(
                         amountOfPlayer,
-                        (playerNumber1) =>
-                            DataColumn(label: Text("A ${playerNumber1 + 1}")),
+                        (playerNumber1) => DataColumn(
+                            label: Text("Team ${playerNumber1 + 1}")),
                       )
                     ],
                     rows: List.generate(
                       amountOfPlayer,
                       (playerNumber2) => DataRow(
                         cells: [
-                          DataCell(Text("Y")), // Empty cell for shifting
+                          DataCell(Text("Team ${playerNumber2 + 1}")),
                           ...List.generate(
                             amountOfPlayer,
-                            (playerNumber3) =>
-                                DataCell(Text("B ${playerNumber2 + 1}")),
+                            (playerNumber3) {
+                              if (playerNumber2 == playerNumber3) {
+                                return const DataCell(
+                                    Text("\\", textAlign: TextAlign.center));
+                              }
+                              return DataCell(FutureBuilder(
+                                future:
+                                    getAllTeamPointsInDisciplineSortedByMatch(
+                                        disciplineNumber + 1,
+                                        playerNumber2 + 1),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List<double>> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text("ERROR");
+                                  } else {
+                                    if (snapshot.data != null) {
+                                      int shiftedIndex = playerNumber3;
+                                      if (playerNumber3 >= playerNumber2) {
+                                        shiftedIndex--;
+                                      }
+                                      return Text(sortValuesByOrder(
+                                              snapshot.data!,
+                                              getOpponentListByDisciplines(
+                                                  disciplineNumber + 1,
+                                                  playerNumber2 +
+                                                      1))[shiftedIndex]
+                                          .toString());
+                                    } else {
+                                      return Container();
+                                    }
+                                  }
+                                },
+                              ));
+                            },
                           )
                         ],
                       ),
