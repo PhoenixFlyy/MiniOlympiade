@@ -29,34 +29,48 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
     final formattedDateTime =
         DateFormat('dd.MM.yyyy HH:mm').format(_selectedDateTime);
 
-    return Row(
+    return Column(
       children: [
-        Text('Event Startzeit: $formattedDateTime',
-            style: const TextStyle(fontSize: 18)),
-        IconButton(
-          icon: const Icon(Icons.access_time),
-          onPressed: () async {
-            final TimeOfDay? pickedTime = await showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
-            );
+        Row(
+          children: [
+            Text('Event Startzeit: $formattedDateTime',
+                style: const TextStyle(fontSize: 18)),
+            IconButton(
+              icon: const Icon(Icons.access_time),
+              onPressed: () async {
+                final DateTime? pickedDateTime = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDateTime,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2101),
+                );
 
-            if (pickedTime != null) {
-              DateTime newDateTime = DateTime(
-                _selectedDateTime.year,
-                _selectedDateTime.month,
-                _selectedDateTime.day,
-                pickedTime.hour,
-                pickedTime.minute,
-              );
+                if (pickedDateTime != null) {
+                  if (!mounted) return;
+                  final TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(_selectedDateTime),
+                  );
 
-              setState(() {
-                _selectedDateTime = newDateTime;
-              });
+                  if (pickedTime != null) {
+                    DateTime newDateTime = DateTime(
+                      pickedDateTime.year,
+                      pickedDateTime.month,
+                      pickedDateTime.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
 
-              widget.onDateTimeSelected(newDateTime);
-            }
-          },
+                    setState(() {
+                      _selectedDateTime = newDateTime;
+                    });
+
+                    widget.onDateTimeSelected(newDateTime);
+                  }
+                }
+              },
+            ),
+          ],
         ),
       ],
     );
