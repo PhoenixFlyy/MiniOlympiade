@@ -94,6 +94,21 @@ class _MainMenuState extends State<MainMenu> {
         pauseStartTime = streamPauseStartTime;
       });
     });
+    _databaseTime.child("chessTime").onValue.listen((event) {
+      final Duration streamChessTime = Duration(
+          seconds: int.tryParse(event.snapshot.value.toString()) ?? 240);
+      setState(() {
+        maxChessTime = streamChessTime;
+      });
+    });
+
+    _databaseTime.child("roundTime").onValue.listen((event) {
+      final Duration streamRoundTime = Duration(
+          minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
+      setState(() {
+        roundTimeDuration = streamRoundTime;
+      });
+    });
   }
 
   @override
@@ -239,6 +254,25 @@ class _MainMenuState extends State<MainMenu> {
         FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "isPaused": !isPaused,
+    });
+  }
+
+  void updateChessTimeInDatabase() {
+    if (!mounted) return;
+    final DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('/time');
+    databaseReference.update({
+      "chessTime": maxChessTime.inSeconds,
+    });
+  }
+
+  void updateRoundTimeInDatabase() {
+    if (!mounted) return;
+    if (!mounted) return;
+    final DatabaseReference databaseReference =
+        FirebaseDatabase.instance.ref('/time');
+    databaseReference.update({
+      "roundTime": roundTimeDuration.inMinutes,
     });
   }
 
@@ -543,36 +577,6 @@ class _MainMenuState extends State<MainMenu> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  controller: _maxTimeController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: "Schachuhr Zeit in Sekunden"),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onChanged: (value) {
-                    setState(() {
-                      maxChessTime = Duration(
-                          seconds:
-                              int.tryParse(value) ?? maxChessTime.inSeconds);
-                    });
-                  },
-                ),
-                TextField(
-                  // New TextField for round time
-                  controller: _roundTimeController,
-                  keyboardType: TextInputType.number,
-                  decoration:
-                      const InputDecoration(labelText: "Rundenzeit in Minuten"),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onChanged: (value) {
-                    setState(() {
-                      roundTimeDuration = Duration(
-                          minutes: int.tryParse(value) ??
-                              roundTimeDuration.inMinutes);
-                    });
-                  },
-                ),
-                const SizedBox(height: 16.0),
                 FilledButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -602,6 +606,69 @@ class _MainMenuState extends State<MainMenu> {
                         style: const TextStyle(fontSize: 18)),
                   ],
                 ),
+                if (selectedTeamName == "Felix99" ||
+                    selectedTeamName == "Simon00")
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 75,
+                        width: 200,
+                        child: TextField(
+                          controller: _maxTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              labelText: "Schachuhr Zeit in Sekunden"),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              maxChessTime = Duration(
+                                  seconds: int.tryParse(value) ??
+                                      maxChessTime.inSeconds);
+                            });
+                          },
+                        ),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => updateChessTimeInDatabase(),
+                        child: const Text("Update"),
+                      ),
+                    ],
+                  ),
+                if (selectedTeamName == "Felix99" ||
+                    selectedTeamName == "Simon00")
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 75,
+                        width: 200,
+                        child: TextField(
+                          controller: _roundTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              labelText: "Rundenzeit in Minuten"),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              roundTimeDuration = Duration(
+                                  minutes: int.tryParse(value) ??
+                                      roundTimeDuration.inMinutes);
+                            });
+                          },
+                        ),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => updateRoundTimeInDatabase(),
+                        child: const Text("Update"),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 16),
                 if (selectedTeamName == "Felix99" ||
                     selectedTeamName == "Simon00")
                   FilledButton.tonal(
