@@ -24,54 +24,49 @@ class SchedulePage extends StatelessWidget {
             minHeight: MediaQuery.of(context).size.height,
             minWidth: MediaQuery.of(context).size.width,
           ),
-          child: InteractiveViewer(
-            panEnabled: true,
-            minScale: 0.5,
-            maxScale: 4,
-            child: DataTable(
-              columnSpacing: 12,
-              dataRowMinHeight: 40,
-              headingRowHeight: 50,
-              headingTextStyle: const TextStyle(fontSize: 10),
-              dataTextStyle: const TextStyle(fontSize: 10),
-              dividerThickness: 2,
-              columns: List<DataColumn>.generate(
-                7,
-                (index) {
-                  if (index == 0) {
-                    return const DataColumn(label: Text('Runde'));
-                  }
-                  return DataColumn(
-                    label: Text(
-                      disciplines[index.toString()] ?? 'Disziplin $index',
-                    ),
-                  );
-                },
-              ),
-              rows: List<DataRow>.generate(
-                pairings.length,
-                (rowIndex) {
-                  final isSpecialRow = rowIndex == currentRowForColor - 1;
-                  final backgroundColor =
-                      isSpecialRow ? Colors.blue : Colors.transparent;
+          child: DataTable(
+            columnSpacing: 12,
+            dataRowMinHeight: 40,
+            headingRowHeight: 50,
+            headingTextStyle: const TextStyle(fontSize: 10),
+            dataTextStyle: const TextStyle(fontSize: 10),
+            dividerThickness: 2,
+            columns: List<DataColumn>.generate(
+              7,
+              (index) {
+                if (index == 0) {
+                  return const DataColumn(label: Text('Runde'));
+                }
+                return DataColumn(
+                  label: Text(
+                    disciplines[index.toString()] ?? 'Disziplin $index',
+                  ),
+                );
+              },
+            ),
+            rows: List<DataRow>.generate(
+              pairings.length,
+              (rowIndex) {
+                final isSpecialRow = rowIndex == currentRowForColor - 1;
+                final backgroundColor =
+                    isSpecialRow ? Colors.blue : Colors.transparent;
 
-                  return DataRow(
-                    color: MaterialStateProperty.all<Color>(backgroundColor),
-                    cells: List<DataCell>.generate(
-                      pairings[rowIndex].length + 1,
-                      (cellIndex) {
-                        if (cellIndex == 0) {
-                          return DataCell(Text('Runde ${rowIndex + 1}'));
-                        }
-                        return DataCell(
-                          Text(pairings[rowIndex][cellIndex - 1],
-                              style: const TextStyle(fontSize: 16)),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+                return DataRow(
+                  color: MaterialStateProperty.all<Color>(backgroundColor),
+                  cells: List<DataCell>.generate(
+                    pairings[rowIndex].length + 1,
+                    (cellIndex) {
+                      if (cellIndex == 0) {
+                        return DataCell(Text('Runde ${rowIndex + 1}'));
+                      }
+                      return DataCell(
+                        Text(pairings[rowIndex][cellIndex - 1],
+                            style: const TextStyle(fontSize: 16)),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ),
