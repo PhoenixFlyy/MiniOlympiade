@@ -53,18 +53,18 @@ class _TeamSelectionState extends State<TeamSelection> {
           FilledButton(
             onPressed: teamName.isNotEmpty && selectedTeam != 0
                 ? () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setInt('selectedTeam', selectedTeam);
-                    prefs.setString('teamName', teamName);
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const MainMenu(),
-                        ),
-                      );
-                    }
-                  }
+              SharedPreferences prefs =
+              await SharedPreferences.getInstance();
+              prefs.setInt('selectedTeam', selectedTeam);
+              prefs.setString('teamName', teamName);
+              if (context.mounted) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const MainMenu(),
+                  ),
+                );
+              }
+            }
                 : null,
             child: const Text('Bestätigen'),
           ),
@@ -92,3 +92,4 @@ class _TeamSelectionState extends State<TeamSelection> {
     });
   }
 }
+

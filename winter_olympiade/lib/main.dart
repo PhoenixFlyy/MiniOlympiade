@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
 
           return MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'Mini Olympiade',
+              title: 'Olympiade',
               theme: ThemeData.dark(
                 useMaterial3: true,
               ),

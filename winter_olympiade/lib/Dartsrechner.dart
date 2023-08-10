@@ -421,9 +421,18 @@ class _DartsRechnerState extends State<DartsRechner>
                         num *= 2;
                         doubleNextScore = false;
                       } else if (tripleNextScore) {
-                        num *= 3;
-                        tripleNextScore = false;
+                        if (num == 25) {
+                         tripleNextScore = false;
+                         turnCounter -= 1;
+                         return;
+                        } else {
+                          num *= 3;
+                          tripleNextScore = false;
+                        }
                       }
+
+
+
 
                       if (num == -3) {
                         undoLastEntry();

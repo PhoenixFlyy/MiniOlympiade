@@ -165,8 +165,22 @@ class _MainMenuState extends State<MainMenu> {
     return currentRound + 1;
   }
 
+  String formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+
+    String days = duration.inDays != 0 ? '${duration.inDays} d ' : '';
+    String hours = twoDigits(duration.inHours.remainder(24)) + ' h ';
+    String minutes = twoDigits(duration.inMinutes.remainder(60)) + ' Min';
+
+    return days + hours + minutes;
+  }
+
   Duration calculateRemainingTimeInRound() {
     DateTime currentTime = DateTime.now();
+
+    if (currentTime.isBefore(_eventStartTime)) {
+      return _eventStartTime.difference(currentTime);
+    }
 
     int elapsedSeconds =
         currentTime.difference(_eventStartTime).inSeconds - pauseTimeInSeconds;
@@ -177,6 +191,19 @@ class _MainMenuState extends State<MainMenu> {
 
     if (remainingSecondsInCurrentRound == 60) playWhooshSound();
     return Duration(seconds: remainingSecondsInCurrentRound);
+  }
+
+  DateTime calculateEventEndTime() {
+    DateTime currentTime = DateTime.now();
+    int currentRound = calculateCurrentRoundWithDateTime();
+    int totalRounds =
+        24; // Das ist nur ein Beispielwert. Ersetze dies durch die tatsächliche Gesamtzahl der Runden, falls sie anders ist.
+    int remainingRounds = totalRounds - currentRound;
+
+    Duration totalRemainingDuration =
+        Duration(minutes: roundTimeDuration.inMinutes * remainingRounds);
+
+    return currentTime.add(totalRemainingDuration);
   }
 
   void updateIsPausedInDatabase() {
@@ -263,11 +290,21 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    Duration remainingTime = calculateRemainingTimeInRound();
-    String formattedRemainingTime = isPaused
-        ? "Pause"
-        : '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     String appBarTitle = 'Olympiade';
+
+    Duration remainingTime = calculateRemainingTimeInRound();
+
+    String formattedRemainingTime;
+    if (isPaused) {
+      formattedRemainingTime = "Pause";
+    } else if (remainingTime.inMinutes > 59) {
+      // Wenn die verbleibende Zeit mehr als 59 Minuten beträgt, verwenden Sie formatDuration
+      formattedRemainingTime = formatDuration(remainingTime);
+    } else {
+      formattedRemainingTime =
+          '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
+    }
+
     appBarTitle += ' - Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
       appBarTitle += ' - $selectedTeamName';
@@ -495,6 +532,8 @@ class _MainMenuState extends State<MainMenu> {
     _maxTimeController.text = maxChessTime.inSeconds.toString();
     _roundTimeController.text = roundTimeDuration.inMinutes.toString();
 
+    DateTime eventEndTime = calculateEventEndTime();
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -549,6 +588,9 @@ class _MainMenuState extends State<MainMenu> {
                 const Text("Event Start:"),
                 Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
                     style: const TextStyle(fontSize: 18)),
+                const Text("Event End:"),
+                Text(DateFormat('dd MMMM HH:mm').format(eventEndTime),
+                    style: const TextStyle(fontSize: 18)),
                 if (selectedTeamName == "Felix99" ||
                     selectedTeamName == "Simon00")
                   FilledButton.tonal(
@@ -566,7 +608,7 @@ class _MainMenuState extends State<MainMenu> {
                           "pauseTime": 0,
                           "startTime": dateTimeToString(newTime),
                         });
-                      })
+                      }),
               ],
             ),
           ),
