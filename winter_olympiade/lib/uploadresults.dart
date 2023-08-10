@@ -85,7 +85,7 @@ class _UploadResultsState extends State<UploadResults> {
           );
           dataRows.add(DataRow(
             cells: <DataCell>[
-              const DataCell(Text("Summe")),
+              const DataCell(Text("Summe:")),
               const DataCell(Text("")),
               DataCell(Text(getPointsInList(snapshot.data!).toString())),
             ],
@@ -118,8 +118,8 @@ class _UploadResultsState extends State<UploadResults> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('Letzte Runde: ',
-                          style: const TextStyle(fontSize: 22)),
+                      const Text('Letzte Runde: ',
+                          style: TextStyle(fontSize: 22)),
                       DropdownButton<int>(
                         value: lastSelectedRound,
                         onChanged: (newValue) {
@@ -131,7 +131,7 @@ class _UploadResultsState extends State<UploadResults> {
                           pairings.length,
                           (index) => DropdownMenuItem<int>(
                             value: index,
-                            child: Text('${index}',
+                            child: Text('$index',
                                 style: const TextStyle(fontSize: 22)),
                           ),
                         ),
@@ -177,8 +177,8 @@ class _UploadResultsState extends State<UploadResults> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('Aktuelle Runde: ',
-                          style: const TextStyle(fontSize: 22)),
+                      const Text('Aktuelle Runde: ',
+                          style: TextStyle(fontSize: 22)),
                       DropdownButton<int>(
                         value: currentSelectedRound,
                         onChanged: (newValue) {
@@ -190,7 +190,7 @@ class _UploadResultsState extends State<UploadResults> {
                           pairings.length,
                           (index) => DropdownMenuItem<int>(
                             value: index,
-                            child: Text('${index}',
+                            child: Text('$index',
                                 style: const TextStyle(fontSize: 22)),
                           ),
                         ),
