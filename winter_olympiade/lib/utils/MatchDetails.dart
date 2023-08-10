@@ -41,9 +41,3 @@ List<List<String>> pairings = [
   ['5-3', '4-6', '1-2', '', '', ''],
   ['', '', '', '1-3', '2-6', '5-4']
 ];
-
-class Break {
-  int roundNumber; // nach welcher Runde die Pause beginnt
-  int duration; // Dauer der Pause in Minuten
-  Break({required this.roundNumber, required this.duration});
-}

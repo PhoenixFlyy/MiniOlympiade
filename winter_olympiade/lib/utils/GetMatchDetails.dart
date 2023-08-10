@@ -70,6 +70,22 @@ int getOpponentTeamNumberByRound(int round, int teamNumber) {
   return -2;
 }
 
+List<int> getOpponentListByDisciplines(int disciplineNumber, int teamNumber) {
+  List<int> opponentsInDiscipline = [];
+  for (int index = 0; index < pairings.length; index++) {
+    var match = pairings[index][disciplineNumber];
+    if (isNumberInString(match, teamNumber)) {
+      var teams = match.split('-');
+      if (int.tryParse(teams[0]) == teamNumber) {
+        opponentsInDiscipline.add(int.tryParse(teams[1]) ?? -1);
+      } else {
+        opponentsInDiscipline.add(int.tryParse(teams[0]) ?? -1);
+      }
+    }
+  }
+  return opponentsInDiscipline;
+}
+
 Future<double> getTeamPointsInRound(int round, int teamNumber) async {
   if (round > 0 && round <= pairings.length && teamNumber > 0) {
     var teamOrderString = isStartingTeam(round, teamNumber) ? "team1" : "team2";

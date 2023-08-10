@@ -78,7 +78,7 @@ class _UploadResultsState extends State<UploadResults> {
               cells: <DataCell>[
                 DataCell(Text("Runde ${index + 1}")),
                 DataCell(Text(
-                    "Team ${getOpponentTeamNumberByRound(index + 1, widget.teamNumber)}")),
+                    "Team ${getOpponentListByDisciplines(selectedDiscipline, widget.teamNumber)[index]}")),
                 DataCell(Text(snapshot.data![index].toString())),
               ],
             ),
