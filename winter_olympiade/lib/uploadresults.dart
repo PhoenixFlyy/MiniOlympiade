@@ -121,7 +121,6 @@ class _UploadResultsState extends State<UploadResults> {
       appBar: AppBar(title: const Text("Ergebnisse eintragen")),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -162,19 +161,38 @@ class _UploadResultsState extends State<UploadResults> {
                     Wrap(
                       spacing: 8,
                       children: [0.0, 0.5, 1.0].map((value) {
-                        return ChoiceChip(
+                        return RawChip(
                           label: Column(
                             children: [
-                              Text(value.toString()),
-                              Text(getLabelForScore(value)),
+                              Text(
+                                value.toString(),
+                                style: TextStyle(
+                                  color: lastRoundTeamScore == value
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                getLabelForScore(value),
+                                style: TextStyle(
+                                  color: lastRoundTeamScore == value
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              ),
                             ],
                           ),
                           selected: lastRoundTeamScore == value,
-                          onSelected: (selected) {
+                          onPressed: () {
                             setState(() {
                               lastRoundTeamScore = value;
                             });
                           },
+                          showCheckmark: false,
+                          backgroundColor: Color(0xFF1B191D),
+                          // Hex für nicht ausgewählten Zustand
+                          selectedColor:
+                              Color(0xFF494255), // Hex für ausgewählten Zustand
                         );
                       }).toList(),
                     ),
@@ -191,7 +209,7 @@ class _UploadResultsState extends State<UploadResults> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5.0),
               child: Divider(color: Colors.white),
             ),
             Row(
@@ -233,19 +251,38 @@ class _UploadResultsState extends State<UploadResults> {
                     Wrap(
                       spacing: 8,
                       children: [0.0, 0.5, 1.0].map((value) {
-                        return ChoiceChip(
+                        return RawChip(
                           label: Column(
                             children: [
-                              Text(value.toString()),
-                              Text(getLabelForScore(value)),
+                              Text(
+                                value.toString(),
+                                style: TextStyle(
+                                  color: currentRoundTeamScore == value
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                getLabelForScore(value),
+                                style: TextStyle(
+                                  color: currentRoundTeamScore == value
+                                      ? Colors.white
+                                      : Colors.grey,
+                                ),
+                              ),
                             ],
                           ),
                           selected: currentRoundTeamScore == value,
-                          onSelected: (selected) {
+                          onPressed: () {
                             setState(() {
                               currentRoundTeamScore = value;
                             });
                           },
+                          showCheckmark: false,
+                          backgroundColor: Color(0xFF1B191D),
+                          // Hex für nicht ausgewählten Zustand
+                          selectedColor:
+                              Color(0xFF494255), // Hex für ausgewählten Zustand
                         );
                       }).toList(),
                     ),
@@ -263,7 +300,7 @@ class _UploadResultsState extends State<UploadResults> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5.0),
               child: Divider(color: Colors.white),
             ),
             Column(

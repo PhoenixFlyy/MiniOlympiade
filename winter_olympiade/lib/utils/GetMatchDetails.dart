@@ -73,7 +73,7 @@ int getOpponentTeamNumberByRound(int round, int teamNumber) {
 List<int> getOpponentListByDisciplines(int disciplineNumber, int teamNumber) {
   List<int> opponentsInDiscipline = [];
   for (int index = 0; index < pairings.length; index++) {
-    var match = pairings[index][disciplineNumber];
+    var match = pairings[index][disciplineNumber -1];
     if (isNumberInString(match, teamNumber)) {
       var teams = match.split('-');
       if (int.tryParse(teams[0]) == teamNumber) {
