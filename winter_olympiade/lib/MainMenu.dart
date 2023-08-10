@@ -601,7 +601,7 @@ class _MainMenuState extends State<MainMenu> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Event End:", style: TextStyle(fontSize: 18)),
+                    Flexible(child: const Text("Ende (+ zuk. Pausen):", style: TextStyle(fontSize: 18))),
                     Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
                         style: const TextStyle(fontSize: 18)),
                   ],
