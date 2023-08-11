@@ -44,7 +44,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             amountOfPlayer,
                             (playerNumber1) => DataColumn(
                                 label: Text(
-                              "Team ${playerNumber1 + 1}",
+                              "T ${playerNumber1 + 1}",
                             )),
                           )
                         ],
@@ -52,7 +52,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           amountOfPlayer,
                           (playerNumber2) => DataRow(
                             cells: [
-                              DataCell(Text("Team ${playerNumber2 + 1}")),
+                              DataCell(Text("T ${playerNumber2 + 1}")),
                               ...List.generate(
                                 amountOfPlayer,
                                 (playerNumber3) {
@@ -130,7 +130,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   amountOfPlayer,
                   (columnNumber) => DataRow(
                     cells: [
-                      DataCell(Text("Team ${columnNumber + 1}")),
+                      DataCell(Text("T ${columnNumber + 1}")),
                       ...List.generate(
                         amountOfPlayer,
                         (rowNumber) {

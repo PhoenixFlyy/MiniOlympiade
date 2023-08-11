@@ -41,8 +41,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
                 final DateTime? pickedDateTime = await showDatePicker(
                   context: context,
                   initialDate: _selectedDateTime,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2101),
+                  firstDate: DateTime(2020),
+                  lastDate: DateTime(2030),
                 );
 
                 if (pickedDateTime != null) {
