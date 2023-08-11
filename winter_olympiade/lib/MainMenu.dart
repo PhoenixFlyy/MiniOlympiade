@@ -696,17 +696,19 @@ class _MainMenuState extends State<MainMenu> {
                             "startTime": dateTimeToString(newTime),
                           });
                         }),
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ResultScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('Ergebnisse anschauen'),
-                  ),
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    FilledButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResultScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text('Ergebnisse anschauen'),
+                    ),
                 ],
               ),
             ),
