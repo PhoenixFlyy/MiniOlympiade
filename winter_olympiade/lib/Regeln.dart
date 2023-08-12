@@ -71,7 +71,6 @@ final List<GameRule> gameRules = [
     '• Hat man alle gegnerischen Kubbs umgeworfen, darf man auf den König werfen. Dieser Wurf muss jedoch rückwärts durch die eigenen Beine erfolgen.',
     '• Der Wurfstabwurf darf nur unter Schulterhöhe erfolgen. Der Wurfstab darf sich dabei nur vertikal drehen. Ein waagerecht rotierender Wurf ("Helikopterwurf") und waagerechte Würfe an sich sind verboten.',
     '• Fallen die Kubbs durch Eigenverschulden, gelten sie als vom Gegner umgeworfen.',
-
   ]),
   GameRule('Jenga', [
     'Gespielt wird mit Schachuhr. Der Boden ist uneben und leicht zu erschüttern. Damit muss jeder klarkommen.',
@@ -106,20 +105,17 @@ class RulesScreen extends StatelessWidget {
           return ExpansionTile(
             title: Text(gameRules[index].name),
             children: <Widget>[
-              // Prüfen, ob der aktuelle Abschnitt "Billard" ist, um das Bild hinzuzufügen
               if (gameRules[index].name == 'Billard')
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
                   child: Image.asset('assets/billardaufbau.png'),
                 ),
-              // Prüfen, ob der aktuelle Abschnitt "Kubb" ist, um das Bild hinzuzufügen
               if (gameRules[index].name == 'Kubb')
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 8.0),
-                  child: Image.asset(
-                      'assets/kubbaufbau.png'), // Nehmen Sie an, dass dies der Pfad zum Kubb-Bild ist
+                  child: Image.asset('assets/kubbaufbau.png'),
                 ),
               ...gameRules[index].rules.map((rule) {
                 return Padding(

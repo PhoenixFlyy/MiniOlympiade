@@ -190,9 +190,7 @@ class _UploadResultsState extends State<UploadResults> {
                           },
                           showCheckmark: false,
                           backgroundColor: Color(0xFF1B191D),
-                          // Hex für nicht ausgewählten Zustand
-                          selectedColor:
-                              Color(0xFF494255), // Hex für ausgewählten Zustand
+                          selectedColor: Color(0xFF494255),
                         );
                       }).toList(),
                     ),
@@ -280,9 +278,7 @@ class _UploadResultsState extends State<UploadResults> {
                           },
                           showCheckmark: false,
                           backgroundColor: Color(0xFF1B191D),
-                          // Hex für nicht ausgewählten Zustand
-                          selectedColor:
-                              Color(0xFF494255), // Hex für ausgewählten Zustand
+                          selectedColor: Color(0xFF494255),
                         );
                       }).toList(),
                     ),
