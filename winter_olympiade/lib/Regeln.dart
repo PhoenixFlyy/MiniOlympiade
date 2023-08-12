@@ -8,10 +8,11 @@ class GameRule {
 }
 
 final List<GameRule> gameRules = [
-  GameRule('Allgemeines', [
+  GameRule('Allgemeines, Alkohol', [
     'Gespielt wird in Zweierteams. Es ist nicht erlaubt, dass ein Teampartner aussetzt!',
     'Ist es Zeit, um zu wechseln und ein Ende des Spiels ist nicht in Sicht, wird das Spiel entweder als Unentschieden gewertet (Darts, Jenga) oder das Team gewinnt, das punktemäßig vorne liegt (Bierpong, Kicker, Billard, Kubb).',
     'Bei einer Rundenzeit von nur 10 Minuten darf nicht getrödelt werden. Insbesondere bei Bierpong und Tischkicker muss das Spiel zügig begonnen und durchgeführt werden. Bei Meinungsverschiedenheiten, die sich nicht mithilfe des nachstehenden Regelwerks ausräumen lassen, muss sich schnell geeinigt werden. Wir haben nicht viel Zeit!',
+    'Es muss fleißig getrunken werden. Wer nichts oder nicht ausreichend getrunken hat, wird disqualifiziert!',
   ]),
   GameRule('Kicker', [
     '• Ein Spiel geht bis 10 Punkte.',
@@ -60,12 +61,17 @@ final List<GameRule> gameRules = [
     '• Es gibt keinen Nachwurf!',
   ]),
   GameRule('Kubb', [
-    '• Der Aufbau erfolgt so wie auf dem Bild. Ziel des Spiels ist es, mit den Wurfstöcken alle Kubbs in der geg-nerischen Hälfte umzuwerfen. Gelingt dies in einem Durchgang, darf auf den König geworfen werden. Fällt dieser und hat das werfende Team noch einen Wurfstab übrig, gewinnt es.',
-    '• Wurde ein Kubb im eigenen Feld umgeworfen, muss dieser Kubb vor den eigenen Wurfstabwürfen in das gegnerische Feld geworfen werden. Wenn ein Kubb nicht im gegnerischen Feld liegen bleibt, darf der Wurf einmal wiederholt werden. Beim zweiten fehlgeschlagenen Versuch, den Kubb im Feld zu platzie-ren, darf der Gegner den Kubb selbst platzieren.',
-    '• Trifft man mit einem geworfenen Kubb einen schon im Feld liegenden Kubb ("Feldkubb"; gemeint sind nicht die Linienkubbs des Gegners), werden die Kubbs gestapelt. Es ist auch möglich, dass man in den ersten beiden Würfen zwei Kubbs weit auseinander wirft, dann aber mit dem dritten Wurf die beiden Kubbs berührt. Dann werden alle Kubbs aufeinandergestapelt. Gestapelt wird durch den Gegner. Dieser darf dabei wählen, welchen Kubb er als Basis nimmt; an diesem Ort entsteht dann der Turm.',
-    '• Hat man alle zuvor gefallenen Kubbs geworfen, muss man sie umwerfen, bevor man die Linienkubbs des Gegners umwerfen darf. Fällt ein Linienkubb, bevor nicht alle Feldkubbs umgeworfen wurden, wird die-ser wieder aufgestellt.',
+    '• Der Aufbau erfolgt so wie auf dem Bild. Ziel des Spiels ist es, mit den Wurfstöcken alle Kubbs in der gegnerischen Hälfte umzuwerfen. Gelingt dies, darf - für den Sieg - der König umgeworfen werden.',
+    '• Wurde ein Kubb im eigenen Feld umgeworfen, muss dieser Kubb vor den eigenen Wurfstabwürfen in das gegnerische Feld geworfen werden. Wenn ein Kubb nicht im gegnerischen Feld liegen bleibt, darf der Wurf einmal wiederholt werden. Beim zweiten Fehlversuch darf der Gegner den Kubb selbst platzieren. Diese Kubbs müssen vor einem Wurf auf die Linienkubbs umgeworfen werden.',
+    '• Trifft man mit einem geworfenen Kubb einen schon im Feld liegenden Kubb ("Feldkubb"; gemeint sind nicht die Linienkubbs des Gegners), werden die Kubbs gestapelt. Es ist auch möglich, dass man in den ersten beiden Würfen zwei Kubbs weit auseinander wirft, dann aber mit dem dritten Wurf die beiden Kubbs berührt. Dann werden alle Kubbs aufeinandergestapelt. Gestapelt wird durch den Gegner. Dieser darf dabei wählen, welchen Kubb er als Basis nimmt; an diesem Ort entsteht dann der Turm. Der Basiskubb wird dabei an dem Ort aufgestellt, wo er liegen bleibt. Beim Aufstellen darf dieser in jede Richtung aufgeklappt werden.',
+    '• Hat man alle zuvor gefallenen Kubbs geworfen, muss man sie umwerfen, bevor man die Linienkubbs des Gegners umwerfen darf. Fällt ein Linienkubb bevor nicht alle Feldkubbs umgeworfen wurden, wird dieser wieder aufgestellt.',
+    '• Fällt ein Feldkubb nach einem Wurfstabwurf, wird der jeweilige Feldkubb aus dem Spiel entfernt.',
     '• Hat es ein Spieler nicht geschafft, alle Feldkubbs umzuwerfen, darf der Gegner bis auf die Höhe des jeweiligen Feldkubbs vorrücken und seine nächsten Wurfstabwürfe von dort ausführen. Umgefallene Kubbs müssen weiterhin von der Basislinie geworfen werden.',
-    '• Wird der König umgeworfen, bevor alle gegnerischen Kubbs umgeworfen wurden, gilt das Spiel als verloren. Dasselbe gilt, wenn am Ende nicht noch ein Wurfstab übrig ist.',
+    '• Wird der König umgeworfen bevor alle gegnerischen Kubbs umgeworfen wurden, gilt das Spiel als verloren.',
+    '• Hat man alle gegnerischen Kubbs umgeworfen, darf man auf den König werfen. Dieser Wurf muss jedoch rückwärts durch die eigenen Beine erfolgen.',
+    '• Der Wurfstabwurf darf nur unter Schulterhöhe erfolgen. Der Wurfstab darf sich dabei nur vertikal drehen. Ein waagerecht rotierender Wurf ("Helikopterwurf") und waagerechte Würfe an sich sind verboten.',
+    '• Fallen die Kubbs durch Eigenverschulden, gelten sie als vom Gegner umgeworfen.',
+
   ]),
   GameRule('Jenga', [
     'Gespielt wird mit Schachuhr. Der Boden ist uneben und leicht zu erschüttern. Damit muss jeder klarkommen.',
