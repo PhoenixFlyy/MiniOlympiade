@@ -597,11 +597,10 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   const SizedBox(height: 16.0),
                   Row(
-                    mainAxisAlignment: selectedTeamName == "Felix99" || selectedTeamName == "Simon00"
+                    mainAxisAlignment: selectedTeamName == "Felix99" ||
+                            selectedTeamName == "Simon00"
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
-
-
                     children: [
                       const Text("Beginn:", style: TextStyle(fontSize: 18)),
                       Text(
@@ -625,8 +624,8 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   const SizedBox(height: 10.0),
                   Row(
-
-                    mainAxisAlignment: selectedTeamName == "Felix99" || selectedTeamName == "Simon00"
+                    mainAxisAlignment: selectedTeamName == "Felix99" ||
+                            selectedTeamName == "Simon00"
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
                     children: [
@@ -644,9 +643,9 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-
                   Row(
-                    mainAxisAlignment: (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
+                    mainAxisAlignment: (selectedTeamName == "Felix99" ||
+                            selectedTeamName == "Simon00")
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
                     children: [
@@ -656,7 +655,6 @@ class _MainMenuState extends State<MainMenu> {
                       ),
                     ],
                   ),
-
                   if (selectedTeamName == "Felix99" ||
                       selectedTeamName == "Simon00")
                     Row(
