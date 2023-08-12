@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:835884867331:android:e491b1086da0e88773d336",
+        "android_client_info": {
+          "package_name": "com.advancedentertainment.olympiade"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835884867331-738mfaan0e4jg8r7gafe9k192v17tji2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOXXOq9hSPor886kExWj_-39SO8JNEc0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835884867331-738mfaan0e4jg8r7gafe9k192v17tji2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:835884867331:android:b7632398d638993d73d336",
         "android_client_info": {
           "package_name": "com.example.winter_olympiade"
