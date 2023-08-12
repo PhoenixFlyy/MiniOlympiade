@@ -578,7 +578,7 @@ class _MainMenuState extends State<MainMenu> {
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(30.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -596,25 +596,48 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   const SizedBox(height: 16.0),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Text("Event Start:",
-                          style: TextStyle(fontSize: 18)),
-                      Text(DateFormat('dd MMMM HH:mm').format(_eventStartTime),
+                      const Text("Beginn:", style: TextStyle(fontSize: 18)),
+                      Text(
+                          DateFormat(' dd.MM.yyyy, HH:mm')
+                              .format(_eventStartTime),
                           style: const TextStyle(fontSize: 18)),
+                      Text(" Uhr", style: TextStyle(fontSize: 18)),
+                      if (selectedTeamName == "Felix99" ||
+                          selectedTeamName == "Simon00")
+                        TimePickerWidget(
+                            currentEventStartTime: _eventStartTime,
+                            onDateTimeSelected: (newTime) {
+                              final DatabaseReference databaseReference =
+                                  FirebaseDatabase.instance.ref('/time');
+                              databaseReference.update({
+                                "pauseTime": 0,
+                                "startTime": dateTimeToString(newTime),
+                              });
+                            }),
                     ],
                   ),
                   const SizedBox(height: 10.0),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Flexible(
-                          child: Text("Ende (+ zuk. Pausen):",
-                              style: TextStyle(fontSize: 18))),
-                      Text(DateFormat('dd MMMM HH:mm').format(_eventEndTime),
-                          style: const TextStyle(fontSize: 18)),
+                      const Text(
+                        "Ende:",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        DateFormat(' dd.MM.yyyy, HH:mm').format(_eventEndTime),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      const Text(
+                        " Uhr",
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
+
                   if (selectedTeamName == "Felix99" ||
                       selectedTeamName == "Simon00")
                     Row(
@@ -684,18 +707,6 @@ class _MainMenuState extends State<MainMenu> {
                       onPressed: () => updateIsPausedInDatabase(),
                       child: const Text("Update Pause in Database"),
                     ),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    TimePickerWidget(
-                        currentEventStartTime: _eventStartTime,
-                        onDateTimeSelected: (newTime) {
-                          final DatabaseReference databaseReference =
-                              FirebaseDatabase.instance.ref('/time');
-                          databaseReference.update({
-                            "pauseTime": 0,
-                            "startTime": dateTimeToString(newTime),
-                          });
-                        }),
                   if (selectedTeamName == "Felix99" ||
                       selectedTeamName == "Simon00")
                     FilledButton(

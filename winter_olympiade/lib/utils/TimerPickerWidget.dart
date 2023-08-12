@@ -26,15 +26,15 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDateTime =
+   // final formattedDateTime =
         DateFormat('dd.MM.yyyy HH:mm').format(_selectedDateTime);
 
     return Column(
       children: [
         Row(
           children: [
-            Text('Event Startzeit: $formattedDateTime',
-                style: const TextStyle(fontSize: 18)),
+            //Text('Event Startzeit: $formattedDateTime',
+              //  style: const TextStyle(fontSize: 18)),
             IconButton(
               icon: const Icon(Icons.access_time),
               onPressed: () async {
