@@ -645,6 +645,18 @@ class _MainMenuState extends State<MainMenu> {
                     ],
                   ),
 
+                  Row(
+                    mainAxisAlignment: (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
+                        ? MainAxisAlignment.start
+                        : MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "(zzgl. zukünftige Pausen)",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+
                   if (selectedTeamName == "Felix99" ||
                       selectedTeamName == "Simon00")
                     Row(
