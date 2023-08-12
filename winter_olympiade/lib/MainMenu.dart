@@ -173,9 +173,8 @@ class _MainMenuState extends State<MainMenu> {
       setState(() {
         currentMatchUpText =
             'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
-        nextMatchUpText = currentRound <= 0
-            ? 'Coming up: $disciplineName gegen Team $opponentTeamNumber. $startTeam'
-            : 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
+        nextMatchUpText =
+            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
     }
   }
@@ -431,7 +430,9 @@ class _MainMenuState extends State<MainMenu> {
                       SizedBox(height: 200, child: getDisciplineImage()),
                     ],
                   ),
-                if (currentRound < pairings.length && !isPaused)
+                if (currentRound < pairings.length &&
+                    !isPaused &&
+                    currentRound >= 1)
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Container(
