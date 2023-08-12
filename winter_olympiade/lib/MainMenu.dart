@@ -115,7 +115,7 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
-    print(getPointsForDiscipline([5.0, 1.0, 0.5, 0.0, 0.0, 1.0]));
+    print(getPointsForDiscipline([1.0, 4.0, 0.5, 3.0, 2.5, 1.0]));
     _loadSelectedTeam();
     _setUpTimer();
     _activateDatabaseTimeListener();

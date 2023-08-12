@@ -12,6 +12,7 @@ final List<GameRule> gameRules = [
     'Gespielt wird in Zweierteams. Es ist nicht erlaubt, dass ein Teampartner aussetzt!',
     'Ist es Zeit, um zu wechseln und ein Ende des Spiels ist nicht in Sicht, wird das Spiel entweder als Unentschieden gewertet (Darts, Jenga) oder das Team gewinnt, das punktemäßig vorne liegt (Bierpong, Kicker, Billard, Kubb).',
     'Bei einer Rundenzeit von nur 10 Minuten darf nicht getrödelt werden. Insbesondere bei Bierpong und Tischkicker muss das Spiel zügig begonnen und durchgeführt werden. Bei Meinungsverschiedenheiten, die sich nicht mithilfe des nachstehenden Regelwerks ausräumen lassen, muss sich schnell geeinigt werden. Wir haben nicht viel Zeit!',
+    'Sollte am Ende das Gesamtergebnis nicht eindeutig sein, wird der Gesamtsieg/die Gesamtplatzierung mittels Gummischuss auf die Nase des Holzhampelmanns in der Küche entschieden. Wer die Nase zuerst trifft, ohne dass der Gegner trifft, gewinnt.',
     'Es muss fleißig getrunken werden. Wer nichts oder nicht ausreichend getrunken hat, wird disqualifiziert!',
   ]),
   GameRule('Kicker', [
