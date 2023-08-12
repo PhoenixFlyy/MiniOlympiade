@@ -157,3 +157,38 @@ Future<int> getPauseTime() async {
 
 double getPointsInList(List<double> pointsList) =>
     pointsList.fold(0.0, (previousValue, element) => previousValue + element);
+
+
+
+
+
+
+
+List<double> assignInitialRanks(List<double> numbers) {
+  return List<double>.generate(numbers.length, (index) => index + 1.0);
+}
+
+List<double> adjustRanksForDuplicates(List<double> numbers, List<double> ranks) {
+  int i = 0;
+  while (i < numbers.length) {
+    int count = 1;
+    while (i + count < numbers.length && numbers[i] == numbers[i + count]) {
+      count++;
+    }
+    if (count > 1) {
+      double averageRank = (2 * ranks[i] + count - 1) / 2.0;
+      for (int j = 0; j < count; j++) {
+        ranks[i + j] = averageRank;
+      }
+      i += count;
+    } else {
+      i++;
+    }
+  }
+  return ranks;
+}
+
+List<double> rankToPoints(List<double> ranks) {
+  int maxPoints = ranks.length;
+  return ranks.map((rank) => maxPoints + 1.0 - rank).toList();
+}
