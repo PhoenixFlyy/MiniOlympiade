@@ -173,7 +173,7 @@ class _MainMenuState extends State<MainMenu> {
       setState(() {
         currentMatchUpText =
             'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
-        nextMatchUpText = currentRound <= 0
+        nextMatchUpText = _eventStartTime.difference(DateTime.now()).isNegative
             ? 'Coming up: $disciplineName gegen Team $opponentTeamNumber. $startTeam'
             : 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
@@ -188,6 +188,7 @@ class _MainMenuState extends State<MainMenu> {
       setState(() {
         selectedTeam = storedSelectedTeam;
         selectedTeamName = storedTeamName;
+        _updateMatchAndDiscipline();
       });
     }
   }
