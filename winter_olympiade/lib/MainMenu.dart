@@ -115,7 +115,6 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
-    print(getPointsForDiscipline([5.0, 1.0, 0.5, 0.0, 0.0, 1.0]));
     _loadSelectedTeam();
     _setUpTimer();
     _activateDatabaseTimeListener();
@@ -226,7 +225,9 @@ class _MainMenuState extends State<MainMenu> {
     int remainingSecondsInCurrentRound =
         roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
-    if (remainingSecondsInCurrentRound == 60) playWhooshSound();
+    // TODO: This is Hardcoded to 11 Minutes (10Min PlayTime)
+    if (remainingSecondsInCurrentRound == 120) playWhooshSound();
+    if (remainingSecondsInCurrentRound == 60) playStartSound();
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 

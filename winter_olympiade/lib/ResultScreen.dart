@@ -242,7 +242,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         ...List.generate(
                           amountOfPlayer,
                           (teamNum) =>
-                              DataColumn(label: Text("Team ${teamNum + 1}")),
+                              DataColumn(label: Text("T ${teamNum + 1}")),
                         )
                       ],
                       rows: [
@@ -260,6 +260,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 },
               ),
             ),
+            const SizedBox(height: 25),
           ],
         ),
       ),
