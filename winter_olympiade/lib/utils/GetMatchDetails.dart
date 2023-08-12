@@ -158,17 +158,24 @@ Future<int> getPauseTime() async {
 double getPointsInList(List<double> pointsList) =>
     pointsList.fold(0.0, (previousValue, element) => previousValue + element);
 
+void getPointsForDiscipline(List<double> disciplineList) {
+  disciplineList.sort((a, b) => b.compareTo(a));
 
+  var ranks = assignInitialRanks(disciplineList);
+  ranks = adjustRanksForDuplicates(disciplineList, ranks);
+  var points = rankToPoints(ranks);
 
-
-
-
+  for (int i = 0; i < disciplineList.length; i++) {
+    print('${disciplineList[i]}, ${points[i]}');
+  }
+}
 
 List<double> assignInitialRanks(List<double> numbers) {
   return List<double>.generate(numbers.length, (index) => index + 1.0);
 }
 
-List<double> adjustRanksForDuplicates(List<double> numbers, List<double> ranks) {
+List<double> adjustRanksForDuplicates(
+    List<double> numbers, List<double> ranks) {
   int i = 0;
   while (i < numbers.length) {
     int count = 1;

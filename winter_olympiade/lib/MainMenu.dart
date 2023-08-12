@@ -115,19 +115,6 @@ class _MainMenuState extends State<MainMenu> {
   @override
   void initState() {
     super.initState();
-    List<double> numbers = [4.0, 3.0, 3.0, 3.0, 2.0, 2.0];
-
-    // Sortiert die Liste in absteigender Reihenfolge
-    numbers.sort((a, b) => b.compareTo(a));
-
-    var ranks = assignInitialRanks(numbers);
-    ranks = adjustRanksForDuplicates(numbers, ranks);
-    var points = rankToPoints(ranks);
-
-    for (int i = 0; i < numbers.length; i++) {
-      print('Zahl: ${numbers[i]}, Punkte: ${points[i]}');
-    }
-
     _loadSelectedTeam();
     _setUpTimer();
     _activateDatabaseTimeListener();
