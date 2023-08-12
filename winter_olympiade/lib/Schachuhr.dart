@@ -16,8 +16,8 @@ class _SchachUhrState extends State<SchachUhr> {
   bool isPlayer1Active = true;
   bool isPlayer2Active = false;
   bool isTimerRunning = false;
-  int player1Time = 0; // 4 minutes in seconds
-  int player2Time = 0; // 4 minutes in seconds
+  int player1Time = 0;
+  int player2Time = 0;
   late Timer timer;
   Color player1Color = Colors.green;
   Color player2Color = Colors.grey; // Startet mit Grau
