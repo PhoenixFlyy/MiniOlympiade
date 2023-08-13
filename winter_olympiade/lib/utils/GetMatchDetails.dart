@@ -205,3 +205,36 @@ List<double> rankToPoints(List<double> ranks) {
   int maxPoints = ranks.length;
   return ranks.map((rank) => maxPoints + 1.0 - rank).toList();
 }
+
+Future<List<double>> getListOfPointsForDiscipline(int disciplineNumber) async {
+  List<double> resultList = [];
+
+  for (int i = 1; i <= pairings[0].length; i++) {
+    var value =
+        await getAllTeamPointsInDisciplineSortedByMatch(disciplineNumber, i);
+    resultList.add(getPointsInList(value));
+  }
+
+  return resultList;
+}
+
+Future<List<double>> getWinner() async {
+  List<double> resultList = [];
+
+  for (int j = 1; j <= pairings[0].length; j++) {
+    var getListsOfReachedPoints = await getListOfPointsForDiscipline(j);
+    var getAveragePointsLists = getPointsForDiscipline(getListsOfReachedPoints);
+    resultList.addAll(getAveragePointsLists);
+  }
+
+  List<double> summedList = [];
+  for (int i = 0; i < pairings[0].length; i++) {
+    double sum = 0.0;
+    for (int j = i; j < resultList.length; j += pairings[0].length) {
+      sum += resultList[j];
+    }
+    summedList.add(sum);
+  }
+
+  return summedList;
+}

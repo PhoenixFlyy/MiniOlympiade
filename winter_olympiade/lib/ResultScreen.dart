@@ -107,6 +107,64 @@ class _ResultScreenState extends State<ResultScreen> {
                 );
               })),
             ),
+            const Text("Erreichte Punkte der Teams in allen Disziplinen"),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width,
+                  maxWidth: MediaQuery.of(context).size.width,
+                ),
+                child: DataTable(
+                  columnSpacing: 2,
+                  dataRowMinHeight: 40,
+                  dividerThickness: 0,
+                  columns: [
+                    const DataColumn(label: Text("")),
+                    ...List.generate(
+                      amountOfPlayer,
+                      (disciplineNumber) => DataColumn(
+                          label: Text(
+                              disciplines[(disciplineNumber + 1).toString()]
+                                  .toString())),
+                    )
+                  ],
+                  rows: List.generate(
+                    amountOfPlayer,
+                    (columnNumber) => DataRow(
+                      cells: [
+                        DataCell(Text("T ${columnNumber + 1}")),
+                        ...List.generate(
+                          amountOfPlayer,
+                          (rowNumber) {
+                            return DataCell(FutureBuilder(
+                              future: getAllTeamPointsInDisciplineSortedByMatch(
+                                  rowNumber + 1, columnNumber + 1),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<List<double>> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Text("X");
+                                } else if (snapshot.hasError) {
+                                  return const Text("ERROR");
+                                } else {
+                                  return Text(getPointsInList(snapshot.data!)
+                                      .toString());
+                                }
+                              },
+                            ));
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 25),
+              child: Text("Gemittelte Punkte in allen Disziplinen"),
+            ),
             ConstrainedBox(
               constraints: BoxConstraints(
                 minWidth: MediaQuery.of(context).size.width,
@@ -135,18 +193,18 @@ class _ResultScreenState extends State<ResultScreen> {
                         amountOfPlayer,
                         (rowNumber) {
                           return DataCell(FutureBuilder(
-                            future: getAllTeamPointsInDisciplineSortedByMatch(
-                                rowNumber + 1, columnNumber + 1),
+                            future: getListOfPointsForDiscipline(rowNumber + 1),
                             builder: (BuildContext context,
                                 AsyncSnapshot<List<double>> snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const Text("X");
                               } else if (snapshot.hasError) {
-                                return const Text("ERROR");
+                                return const Text("Error");
                               } else {
-                                return Text(
-                                    getPointsInList(snapshot.data!).toString());
+                                return Text(getPointsForDiscipline(
+                                        snapshot.data!)[columnNumber]
+                                    .toString());
                               }
                             },
                           ));
@@ -157,6 +215,52 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
               ),
             ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 25, top: 25),
+              child: Text("Sieges Tabelle", style: TextStyle(fontSize: 22)),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width,
+                maxWidth: MediaQuery.of(context).size.width,
+              ),
+              child: FutureBuilder<List<double>>(
+                future: getWinner(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<double> winnerList = snapshot.data!;
+                    return DataTable(
+                      columnSpacing: 2,
+                      dataRowMinHeight: 40,
+                      dividerThickness: 0,
+                      columns: [
+                        const DataColumn(label: Text("")),
+                        ...List.generate(
+                          amountOfPlayer,
+                          (teamNum) =>
+                              DataColumn(label: Text("T ${teamNum + 1}")),
+                        )
+                      ],
+                      rows: [
+                        DataRow(cells: [
+                          const DataCell(Text("Punkte:")),
+                          ...List.generate(
+                            amountOfPlayer,
+                            (index) =>
+                                DataCell(Text(winnerList[index].toString())),
+                          ),
+                        ]),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: 25),
           ],
         ),
       ),
