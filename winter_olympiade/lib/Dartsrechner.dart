@@ -17,9 +17,8 @@ class Turn {
   Turn(this.wasPlayerOneTurn, this.turnValue);
 }
 
-class GameState {
-  List<List<dynamic>> history =
-      []; // Speichert die Historie der Würfe. Jede Liste stellt eine Runde von Würfen dar.
+class GameState1 {
+  List<List<dynamic>> history = []; // Speichert die Historie der Würfe.
 }
 
 class _DartsRechnerState extends State<DartsRechner>
@@ -45,15 +44,14 @@ class _DartsRechnerState extends State<DartsRechner>
   List<int> temporaryPlayerTwoTurnValues = [];
   List<List<dynamic>> history = [];
 
-  var gameState = GameState();
-  List<List<dynamic>> gameStateHistory = [];
+  var gameState1 = GameState1();
 
   List<dynamic> lastState = []; //unnötig?
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _loadGameState();
     playerOneNumber = startNumber;
     playerTwoNumber = startNumber;
@@ -61,7 +59,7 @@ class _DartsRechnerState extends State<DartsRechner>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -74,14 +72,8 @@ class _DartsRechnerState extends State<DartsRechner>
     }
   }
 
-  //_DartsRechnerState(int initialStartingScore) {
-  //startNumber = initialStartingScore;
-  //playerOneNumber = startNumber;
-  //playerTwoNumber = startNumber;
-  //}
-
   void addCurrentStateToHistory() {
-    gameState.history.add([
+    var currentState = [
       playerOneNumber,
       playerTwoNumber,
       List.from(playerOneTurnValues),
@@ -98,12 +90,13 @@ class _DartsRechnerState extends State<DartsRechner>
       List.from(temporaryPlayerTwoTurnValues),
       turnCounter,
       playerOneTurn,
-    ]);
+    ];
+    gameState1.history.add(currentState);
   }
 
   void undoLastEntry() {
-    if (gameState.history.isNotEmpty) {
-      var lastState = gameState.history.removeLast();
+    if (gameState1.history.isNotEmpty) {
+      var lastState = gameState1.history.removeLast();
 
       setState(() {
         playerOneNumber = lastState[0];
@@ -175,7 +168,7 @@ class _DartsRechnerState extends State<DartsRechner>
       startingScore = 0;
       temporaryPlayerOneTurnValues.clear();
       temporaryPlayerTwoTurnValues.clear();
-      gameState.history.clear();
+      gameState1.history.clear();
       history.clear();
     });
   }
@@ -194,11 +187,11 @@ class _DartsRechnerState extends State<DartsRechner>
     // Konvertieren Sie die Map in einen JSON-String
     String gameStateString = jsonEncode(gameState);
 
-    String lastStateJson = jsonEncode(lastState); //unnötig?
-    await prefs.setString('lastState', lastStateJson); //unnötig?
-
     // Speichern Sie den JSON-String
     await prefs.setString('gameState', gameStateString);
+
+    String lastStateJson = jsonEncode(lastState); //unnötig?
+    await prefs.setString('lastState', lastStateJson); //unnötig?
 
     // Einfache Integers und Booleans
     await prefs.setInt('startNumber', startNumber);
@@ -226,10 +219,8 @@ class _DartsRechnerState extends State<DartsRechner>
     await prefs.setString('temporaryPlayerTwoTurnValues',
         jsonEncode(temporaryPlayerTwoTurnValues));
 
-    String gameStateHistoryJson = jsonEncode(history);
-    await prefs.setString('gameStateHistory', gameStateHistoryJson);
-
-    // ... Hier können Sie weitere Zustandsdaten hinzufügen ...
+    String historyJson = jsonEncode(gameState1.history);
+    await prefs.setString('gameStateHistory', historyJson);
   }
 
   _loadGameState() async {
@@ -279,20 +270,15 @@ class _DartsRechnerState extends State<DartsRechner>
             jsonDecode(prefs.getString('temporaryPlayerTwoTurnValues') ?? '[]')
                 .cast<int>();
 
-        List<dynamic> loadedHistory =
-            jsonDecode(prefs.getString('gameStateHistory') ?? '[]');
-        history = loadedHistory
-            .map((dynamicList) => List.from(dynamicList))
-            .toList(); //entweder das oder...
-
-        List<dynamic> loadedGameStateHistory = jsonDecode(prefs
-                .getString('gameStateHistory') ??
-            '[]'); //... oder das hier ist überflüssig. Sie beziehen sich auf dasselbe
-        gameStateHistory = loadedGameStateHistory
-            .map((dynamicList) => List.from(dynamicList))
-            .toList();
-
-        // ... Hier können Sie den geladenen Zustand für weitere Daten hinzufügen ...
+        String? historyString = prefs.getString('gameStateHistory');
+        if (historyString != null) {
+          List<dynamic> loadedHistory = jsonDecode(historyString);
+          setState(() {
+            gameState1.history = loadedHistory
+                .map((dynamicList) => List.from(dynamicList))
+                .toList();
+          });
+        }
       });
     }
   }
@@ -321,7 +307,6 @@ class _DartsRechnerState extends State<DartsRechner>
                       },
                     ),
                     SizedBox(width: 20),
-                    // Einen kleinen Abstand zwischen den Buttons
                   ],
                 ),
               ],
