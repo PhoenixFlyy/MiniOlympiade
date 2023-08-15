@@ -225,9 +225,9 @@ class _MainMenuState extends State<MainMenu> {
     int remainingSecondsInCurrentRound =
         roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
-    // TODO: This is Hardcoded to 11 Minutes (10Min PlayTime)
-    if (remainingSecondsInCurrentRound == 120) playWhooshSound();
-    if (remainingSecondsInCurrentRound == 60) playStartSound();
+    // TODO: This is Hardcoded to 12 Minutes (10Min PlayTime)
+    if (remainingSecondsInCurrentRound == 180) playWhooshSound();
+    if (remainingSecondsInCurrentRound == 120) playStartSound();
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
