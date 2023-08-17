@@ -34,9 +34,11 @@ class _MainMenuState extends State<MainMenu> {
   String nextMatchUpText = '';
 
   Duration maxChessTime = const Duration(minutes: 4);
-  Duration roundTimeDuration = const Duration(minutes: 10);
+  Duration roundTimeDuration = const Duration(minutes: 12);
+  Duration playTimeDuration = const Duration(minutes: 10);
 
   final _roundTimeController = TextEditingController();
+  final _playTimeController = TextEditingController();
   final _maxTimeController = TextEditingController();
   final _eventStartTimeController = TextEditingController();
 
@@ -105,9 +107,16 @@ class _MainMenuState extends State<MainMenu> {
 
     _databaseTime.child("roundTime").onValue.listen((event) {
       final Duration streamRoundTime = Duration(
-          minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
+          minutes: int.tryParse(event.snapshot.value.toString()) ?? 12);
       setState(() {
         roundTimeDuration = streamRoundTime;
+      });
+    });
+    _databaseTime.child("playTime").onValue.listen((event) {
+      final Duration streamPlayTime = Duration(
+          minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
+      setState(() {
+        playTimeDuration = streamPlayTime;
       });
     });
   }
@@ -225,9 +234,14 @@ class _MainMenuState extends State<MainMenu> {
     int remainingSecondsInCurrentRound =
         roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
-    // TODO: This is Hardcoded to 12 Minutes (10Min PlayTime)
-    if (remainingSecondsInCurrentRound == 180) playWhooshSound();
-    if (remainingSecondsInCurrentRound == 120) playStartSound();
+    if (remainingSecondsInCurrentRound ==
+        (roundTimeDuration.inSeconds -
+            playTimeDuration.inSeconds +
+            const Duration(seconds: 60).inSeconds)) playWhooshSound();
+    if (remainingSecondsInCurrentRound ==
+        (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+      playStartSound();
+    }
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
@@ -275,12 +289,19 @@ class _MainMenuState extends State<MainMenu> {
         FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "roundTime": roundTimeDuration.inMinutes,
+      "playTime": playTimeDuration.inMinutes,
     });
   }
 
   Color getRoundCircleColor() {
     if (currentRound > 0 && currentRound <= pairings.length) {
-      if (calculateRemainingTimeInRound().inSeconds < 60) {
+      if (calculateRemainingTimeInRound().inSeconds <
+          (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+        return Colors.red;
+      } else if (calculateRemainingTimeInRound().inSeconds <
+          (roundTimeDuration.inSeconds -
+              playTimeDuration.inSeconds +
+              const Duration(seconds: 60).inSeconds)) {
         return Colors.orange;
       } else {
         return Colors.green;
@@ -294,6 +315,7 @@ class _MainMenuState extends State<MainMenu> {
   void dispose() {
     _maxTimeController.dispose();
     _roundTimeController.dispose();
+    _playTimeController.dispose();
     _eventStartTimeController.dispose();
     _timer.cancel();
     super.dispose();
@@ -574,6 +596,7 @@ class _MainMenuState extends State<MainMenu> {
   void _openSettings() {
     _maxTimeController.text = maxChessTime.inSeconds.toString();
     _roundTimeController.text = roundTimeDuration.inMinutes.toString();
+    _playTimeController.text = playTimeDuration.inMinutes.toString();
 
     showModalBottomSheet(
       context: context,
@@ -612,7 +635,7 @@ class _MainMenuState extends State<MainMenu> {
                           DateFormat(' dd.MM.yyyy, HH:mm')
                               .format(_eventStartTime),
                           style: const TextStyle(fontSize: 18)),
-                      Text(" Uhr", style: TextStyle(fontSize: 18)),
+                      const Text(" Uhr", style: TextStyle(fontSize: 18)),
                       if (selectedTeamName == "Felix99" ||
                           selectedTeamName == "Simon00")
                         TimePickerWidget(
@@ -653,8 +676,8 @@ class _MainMenuState extends State<MainMenu> {
                             selectedTeamName == "Simon00")
                         ? MainAxisAlignment.start
                         : MainAxisAlignment.center,
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         "(zzgl. zukünftige Pausen)",
                         style: TextStyle(fontSize: 18),
                       ),
@@ -712,6 +735,37 @@ class _MainMenuState extends State<MainMenu> {
                                 roundTimeDuration = Duration(
                                     minutes: int.tryParse(value) ??
                                         roundTimeDuration.inMinutes);
+                              });
+                            },
+                          ),
+                        ),
+                        FilledButton.tonal(
+                          onPressed: () => updateRoundTimeInDatabase(),
+                          child: const Text("Update"),
+                        ),
+                      ],
+                    ),
+                  if (selectedTeamName == "Felix99" ||
+                      selectedTeamName == "Simon00")
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 75,
+                          width: 200,
+                          child: TextField(
+                            controller: _playTimeController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                labelText: "Spielzeit einer Runde"),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                playTimeDuration = Duration(
+                                    minutes: int.tryParse(value) ??
+                                        playTimeDuration.inMinutes);
                               });
                             },
                           ),
