@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:olympiade/utils/Soundboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ChessClock.dart';
@@ -477,9 +478,28 @@ class _MainMenuState extends State<MainMenu> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 20),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 12,
+                    height: MediaQuery.of(context).size.height / 14,
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SoundBoard()));
+                      },
+                      child: const Text(
+                        'Soundboard',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 14,
                     width: double.infinity,
                     child: FilledButton.tonal(
                       onPressed: () {
@@ -498,7 +518,7 @@ class _MainMenuState extends State<MainMenu> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 12,
+                    height: MediaQuery.of(context).size.height / 14,
                     width: double.infinity,
                     child: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
