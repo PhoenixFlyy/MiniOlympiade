@@ -13,16 +13,15 @@ class SoundBoard extends StatelessWidget {
         child: FilledButton(
           style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              backgroundColor: Colors.blue[800]),
+            borderRadius: BorderRadius.circular(20),
+          )),
           onPressed: onPressed,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.play_arrow),
+              const Icon(Icons.play_arrow, color: Colors.black),
               const SizedBox(width: 10),
-              Text(buttonText),
+              Text(buttonText, style: const TextStyle(color: Colors.black)),
             ],
           ),
         ),
