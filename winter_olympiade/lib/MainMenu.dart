@@ -13,7 +13,7 @@ import 'ResultScreen.dart';
 import 'Rules.dart';
 import 'SchedulePage.dart';
 import 'TeamSelection.dart';
-import 'WinnerScreen.dart';
+import 'UploadPointsScreen.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
@@ -468,7 +468,7 @@ class _MainMenuState extends State<MainMenu> {
                       },
                       child: const Text(
                         'Dartsrechner',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
                   ),
@@ -492,7 +492,7 @@ class _MainMenuState extends State<MainMenu> {
                       },
                       child: const Text(
                         'Schachuhr',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                     ),
                   ),
@@ -514,7 +514,8 @@ class _MainMenuState extends State<MainMenu> {
                                 MaterialPageRoute(
                                     builder: (context) => RulesScreen()));
                           },
-                          child: const Text('Regeln'),
+                          child: const Text('Regeln',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                     ),
@@ -533,7 +534,8 @@ class _MainMenuState extends State<MainMenu> {
                                       teamNumber: selectedTeam)));
                         },
                         child: const Text('Ergebnisse eintragen',
-                            textAlign: TextAlign.center),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                     Expanded(
@@ -554,7 +556,8 @@ class _MainMenuState extends State<MainMenu> {
                                           currentRowForColor: currentRound,
                                         )));
                           },
-                          child: const Text('Laufplan'),
+                          child: const Text('Laufplan',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                     ),
