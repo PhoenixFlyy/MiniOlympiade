@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 
 import 'DateTimeUtils.dart';
-import 'MatchDetails.dart';
+import 'MatchData.dart';
 
 bool isNumberInString(String input, int number) {
   List<String> parts = input.split("-");

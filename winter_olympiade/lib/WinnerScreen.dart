@@ -1,7 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:winter_olympiade/utils/GetMatchDetails.dart';
-import 'package:winter_olympiade/utils/MatchDetails.dart';
+
+import 'utils/MatchData.dart';
+import 'utils/MatchDetailQueries.dart';
 
 class UploadResults extends StatefulWidget {
   final int currentRound;

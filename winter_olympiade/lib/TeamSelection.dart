@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:winter_olympiade/MainMenu.dart';
-import 'package:winter_olympiade/utils/MatchDetails.dart';
+
+import 'MainMenu.dart';
+import 'utils/MatchData.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});

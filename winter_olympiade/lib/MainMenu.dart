@@ -6,19 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:winter_olympiade/ResultScreen.dart';
-import 'package:winter_olympiade/uploadresults.dart';
-import 'package:winter_olympiade/utils/DateTimeUtils.dart';
-import 'package:winter_olympiade/utils/GetMatchDetails.dart';
-import 'package:winter_olympiade/utils/MatchDetails.dart';
-import 'package:winter_olympiade/utils/PlaySounds.dart';
-import 'package:winter_olympiade/utils/TimerPickerWidget.dart';
 
-import 'Dartsrechner.dart';
-import 'Regeln.dart';
-import 'Schachuhr.dart';
+import 'ChessClock.dart';
+import 'DartCalculator.dart';
+import 'ResultScreen.dart';
+import 'Rules.dart';
 import 'SchedulePage.dart';
 import 'TeamSelection.dart';
+import 'WinnerScreen.dart';
+import 'utils/DateTimePicker.dart';
+import 'utils/DateTimeUtils.dart';
+import 'utils/MatchData.dart';
+import 'utils/MatchDetailQueries.dart';
+import 'utils/PlaySounds.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
