@@ -30,7 +30,7 @@ class _UploadResultsState extends State<UploadResults> {
   @override
   void initState() {
     super.initState();
-    if (widget.currentRound > 0 && widget.currentRound < pairings.length) {
+    if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
       currentSelectedRound = widget.currentRound;
       selectedDiscipline =
           getDisciplineNumber(widget.currentRound, widget.teamNumber);
