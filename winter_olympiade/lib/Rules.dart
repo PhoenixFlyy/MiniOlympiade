@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+import 'package:olympiade/utils/Soundboard.dart';
 class GameRule {
   final String name;
   final List<String> rules;
@@ -100,37 +102,56 @@ class RulesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Regeln'),
       ),
-      body: ListView.builder(
-        itemCount: gameRules.length,
-        itemBuilder: (context, index) {
-          return ExpansionTile(
-            title: Text(gameRules[index].name),
-            children: <Widget>[
-              if (gameRules[index].name == 'Billard')
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Image.asset('assets/billardaufbau.png'),
-                ),
-              if (gameRules[index].name == 'Kubb')
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Image.asset('assets/kubbaufbau.png'),
-                ),
-              ...gameRules[index].rules.map((rule) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(0),
-                    title: Text(rule),
-                  ),
+      body: ListView(
+        children: <Widget>[
+          // Button hier einfügen
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: FilledButton.tonal(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SoundBoard()),
                 );
-              }).toList(),
-            ],
-          );
-        },
+              },
+              child: const Text(
+                'Soundeffekte Beispiele',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          ),
+          // ExpansionTiles hier einfügen
+          ...gameRules.map((ruleItem) {
+            return ExpansionTile(
+              title: Text(ruleItem.name),
+              children: <Widget>[
+                if (ruleItem.name == 'Billard')
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Image.asset('assets/billardaufbau.png'),
+                  ),
+                if (ruleItem.name == 'Kubb')
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Image.asset('assets/kubbaufbau.png'),
+                  ),
+                ...ruleItem.rules.map((rule) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(0),
+                      title: Text(rule),
+                    ),
+                  );
+                }).toList(),
+              ],
+            );
+          }).toList(),
+        ],
       ),
     );
   }
 }
+

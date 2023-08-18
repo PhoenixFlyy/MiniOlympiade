@@ -746,7 +746,7 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
     return Expanded(
       child: Row(
         children: [
-          buttonBuilder(const Text('0'), 0, Colors.grey[600]!),
+          buttonBuilder(const Text('0', style: TextStyle(fontSize: 18)), 0, Colors.grey[600]!),
           buttonBuilder(const Text('DOUBLE'), -1, Colors.orange),
           buttonBuilder(const Text('TRIPLE'), -2, Colors.orange[700]!),
           buttonBuilder(

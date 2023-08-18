@@ -181,8 +181,15 @@ class _MainMenuState extends State<MainMenu> {
           ? "Beginner: Team $selectedTeam"
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
-        currentMatchUpText =
-            'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+
+        if (calculateRemainingTimeInRound().inSeconds <=
+            (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+          currentMatchUpText = 'Wechseln. Bitte alles so aufbauen wie es vorher war!';
+        } else {
+          currentMatchUpText =
+          'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+        }
+
         nextMatchUpText =
             'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
@@ -241,7 +248,7 @@ class _MainMenuState extends State<MainMenu> {
             const Duration(seconds: 60).inSeconds)) playWhooshSound();
     if (remainingSecondsInCurrentRound ==
         (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-      playStartSound();
+      playschlagbolzenSound();
     }
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
