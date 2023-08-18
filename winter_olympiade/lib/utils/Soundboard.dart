@@ -38,14 +38,15 @@ class SoundBoard extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Column(
             children: [
-              PlayButton("Start / Ende der Runde", playStartSound),
+              PlayButton("Start der Runde", playStartSound),
+              PlayButton("Ende der Runde", playgongakkuratSound),
               PlayButton("1 Minute übrig", playWhooshSound),
               PlayButton("Pause", playWhistleSound),
               PlayButton("SIUUU", playSiuuuSound),
               PlayButton("Villager", playVillagerSound),
               PlayButton("Yeet", playYeetSound),
               //PlayButton("Schlagbolzen", playschlagbolzenSound),
-              PlayButton("gongakkurat", playgongakkuratSound),
+
               //PlayButton("gonghell", playgonghellSound),
               //PlayButton("gongvoluminös", playgongvoluminoesSound),
             ],
