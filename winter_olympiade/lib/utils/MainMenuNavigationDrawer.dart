@@ -45,10 +45,27 @@ class MainMenuNavigationDrawer extends StatelessWidget {
             ),
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 52,
-                  backgroundImage: AssetImage("assets/pokalganz.png"),
+                Container(
+                  width: 124, // 2 * 52 (Radius)
+                  height: 124, // 2 * 52 (Radius)
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800], // Hier kannst du jede gewünschte Farbe setzen
+                    shape: BoxShape.circle,
+                  ),
+                  child: Align(
+                    alignment: Alignment(0, -0.9), // Hier kannst du die Y-Position anpassen. -1 ist ganz oben, 1 ist ganz unten.
+                    child: Image.asset(
+                      "assets/pokalganz.png",
+                      fit: BoxFit.scaleDown,
+                      width: 105,  // Zum Beispiel die Hälfte der Containergröße
+                      height: 105,
+                    ),
+                  ),
                 ),
+
+
+
+
                 const SizedBox(height: 8),
                 const Text("Olympiade 2023", style: TextStyle(fontSize: 16)),
                 const SizedBox(height: 12),
