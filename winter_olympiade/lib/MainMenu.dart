@@ -13,7 +13,6 @@ import 'DartCalculator.dart';
 import 'ResultScreen.dart';
 import 'Rules.dart';
 import 'SchedulePage.dart';
-import 'TeamSelection.dart';
 import 'UploadPointsScreen.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
@@ -40,8 +39,7 @@ class _MainMenuState extends State<MainMenu> {
 
   final _roundTimeController = TextEditingController();
   final _playTimeController = TextEditingController();
-  final _maxTimeController = TextEditingController();
-  final _eventStartTimeController = TextEditingController();
+  final _maxChessTimeController = TextEditingController();
 
   int currentRound = 0;
   bool isPaused = false;
@@ -181,13 +179,13 @@ class _MainMenuState extends State<MainMenu> {
           ? "Beginner: Team $selectedTeam"
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
-
         if (calculateRemainingTimeInRound().inSeconds <=
             (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-          currentMatchUpText = 'Wechseln. Bitte alles so aufbauen wie es vorher war!';
+          currentMatchUpText =
+              'Wechseln. Bitte alles so aufbauen wie es vorher war!';
         } else {
           currentMatchUpText =
-          'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+              'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
         }
 
         nextMatchUpText =
@@ -321,10 +319,9 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   void dispose() {
-    _maxTimeController.dispose();
+    _maxChessTimeController.dispose();
     _roundTimeController.dispose();
     _playTimeController.dispose();
-    _eventStartTimeController.dispose();
     _timer.cancel();
     super.dispose();
   }
@@ -387,10 +384,11 @@ class _MainMenuState extends State<MainMenu> {
         backgroundColor: Colors.black12,
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => _openSettings(),
-          ),
+          if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => _openSettings(),
+            ),
         ],
       ),
       drawer: MainMenuNavigationDrawer(
@@ -398,7 +396,8 @@ class _MainMenuState extends State<MainMenu> {
           selectedRound: currentRound,
           teamNumber: selectedTeam,
           eventStartTime: _eventStartTime,
-          eventEndTime: _eventEndTime),
+          eventEndTime: _eventEndTime,
+          maxChessTime: maxChessTime.inSeconds),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -488,8 +487,8 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 80.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 80.0),
               child: Divider(color: Colors.grey, thickness: 1.0, height: 20.0),
             ),
             Column(
@@ -612,7 +611,7 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void _openSettings() {
-    _maxTimeController.text = maxChessTime.inSeconds.toString();
+    _maxChessTimeController.text = maxChessTime.inSeconds.toString();
     _roundTimeController.text = roundTimeDuration.inMinutes.toString();
     _playTimeController.text = playTimeDuration.inMinutes.toString();
 
@@ -630,23 +629,8 @@ class _MainMenuState extends State<MainMenu> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (context) => const TeamSelection(),
-                        ),
-                        (route) => false,
-                      );
-                    },
-                    child: const Text('Teamauswahl'),
-                  ),
-                  const SizedBox(height: 16.0),
                   Row(
-                    mainAxisAlignment: selectedTeamName == "Felix99" ||
-                            selectedTeamName == "Simon00"
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Text("Beginn:", style: TextStyle(fontSize: 18)),
                       Text(
@@ -654,166 +638,121 @@ class _MainMenuState extends State<MainMenu> {
                               .format(_eventStartTime),
                           style: const TextStyle(fontSize: 18)),
                       const Text(" Uhr", style: TextStyle(fontSize: 18)),
-                      if (selectedTeamName == "Felix99" ||
-                          selectedTeamName == "Simon00")
-                        TimePickerWidget(
-                            currentEventStartTime: _eventStartTime,
-                            onDateTimeSelected: (newTime) {
-                              final DatabaseReference databaseReference =
-                                  FirebaseDatabase.instance.ref('/time');
-                              databaseReference.update({
-                                "pauseTime": 0,
-                                "startTime": dateTimeToString(newTime),
-                              });
-                            }),
+                      TimePickerWidget(
+                          currentEventStartTime: _eventStartTime,
+                          onDateTimeSelected: (newTime) {
+                            final DatabaseReference databaseReference =
+                                FirebaseDatabase.instance.ref('/time');
+                            databaseReference.update({
+                              "pauseTime": 0,
+                              "startTime": dateTimeToString(newTime),
+                            });
+                          }),
                     ],
                   ),
-                  const SizedBox(height: 10.0),
                   Row(
-                    mainAxisAlignment: selectedTeamName == "Felix99" ||
-                            selectedTeamName == "Simon00"
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Ende:",
-                        style: TextStyle(fontSize: 18),
+                      SizedBox(
+                        height: 75,
+                        width: 200,
+                        child: TextField(
+                          controller: _maxChessTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              labelText: "Schachuhr Zeit in Sekunden"),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              maxChessTime = Duration(
+                                  seconds: int.tryParse(value) ??
+                                      maxChessTime.inSeconds);
+                            });
+                          },
+                        ),
                       ),
-                      Text(
-                        DateFormat(' dd.MM.yyyy, HH:mm').format(_eventEndTime),
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const Text(
-                        " Uhr",
-                        style: TextStyle(fontSize: 18),
+                      FilledButton.tonal(
+                        onPressed: () => updateChessTimeInDatabase(),
+                        child: const Text("Update"),
                       ),
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: (selectedTeamName == "Felix99" ||
-                            selectedTeamName == "Simon00")
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "(zzgl. zukünftige Pausen)",
-                        style: TextStyle(fontSize: 18),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 75,
+                        width: 200,
+                        child: TextField(
+                          controller: _roundTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              labelText: "Rundenzeit in Minuten"),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              roundTimeDuration = Duration(
+                                  minutes: int.tryParse(value) ??
+                                      roundTimeDuration.inMinutes);
+                            });
+                          },
+                        ),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => updateRoundTimeInDatabase(),
+                        child: const Text("Update"),
                       ),
                     ],
                   ),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 75,
-                          width: 200,
-                          child: TextField(
-                            controller: _maxTimeController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                                labelText: "Schachuhr Zeit in Sekunden"),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                maxChessTime = Duration(
-                                    seconds: int.tryParse(value) ??
-                                        maxChessTime.inSeconds);
-                              });
-                            },
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 75,
+                        width: 200,
+                        child: TextField(
+                          controller: _playTimeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              labelText: "Spielzeit einer Runde"),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              playTimeDuration = Duration(
+                                  minutes: int.tryParse(value) ??
+                                      playTimeDuration.inMinutes);
+                            });
+                          },
                         ),
-                        FilledButton.tonal(
-                          onPressed: () => updateChessTimeInDatabase(),
-                          child: const Text("Update"),
-                        ),
-                      ],
-                    ),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 75,
-                          width: 200,
-                          child: TextField(
-                            controller: _roundTimeController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                                labelText: "Rundenzeit in Minuten"),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                roundTimeDuration = Duration(
-                                    minutes: int.tryParse(value) ??
-                                        roundTimeDuration.inMinutes);
-                              });
-                            },
-                          ),
-                        ),
-                        FilledButton.tonal(
-                          onPressed: () => updateRoundTimeInDatabase(),
-                          child: const Text("Update"),
-                        ),
-                      ],
-                    ),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 75,
-                          width: 200,
-                          child: TextField(
-                            controller: _playTimeController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                                labelText: "Spielzeit einer Runde"),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                playTimeDuration = Duration(
-                                    minutes: int.tryParse(value) ??
-                                        playTimeDuration.inMinutes);
-                              });
-                            },
-                          ),
-                        ),
-                        FilledButton.tonal(
-                          onPressed: () => updateRoundTimeInDatabase(),
-                          child: const Text("Update"),
-                        ),
-                      ],
-                    ),
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () => updateRoundTimeInDatabase(),
+                        child: const Text("Update"),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 16),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    FilledButton.tonal(
-                      onPressed: () => updateIsPausedInDatabase(),
-                      child: const Text("Update Pause in Database"),
-                    ),
-                  if (selectedTeamName == "Felix99" ||
-                      selectedTeamName == "Simon00")
-                    FilledButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ResultScreen(),
-                          ),
-                        );
-                      },
-                      child: const Text('Ergebnisse anschauen'),
-                    ),
+                  FilledButton.tonal(
+                    onPressed: () => updateIsPausedInDatabase(),
+                    child: const Text("Update Pause in Database"),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResultScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Ergebnisse anschauen'),
+                  ),
                 ],
               ),
             ),

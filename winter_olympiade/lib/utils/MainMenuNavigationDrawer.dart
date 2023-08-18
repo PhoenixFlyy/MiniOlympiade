@@ -1,7 +1,10 @@
+import 'dart:math';
+
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:olympiade/ChessClock.dart';
 import 'package:olympiade/DartCalculator.dart';
-import 'package:olympiade/MainMenu.dart';
 import 'package:olympiade/Rules.dart';
 import 'package:olympiade/SchedulePage.dart';
 import 'package:olympiade/TeamSelection.dart';
@@ -9,28 +12,66 @@ import 'package:olympiade/UploadPointsScreen.dart';
 import 'package:olympiade/utils/MatchData.dart';
 import 'package:olympiade/utils/Soundboard.dart';
 
-class MainMenuNavigationDrawer extends StatelessWidget {
+class MainMenuNavigationDrawer extends StatefulWidget {
   final int currentRound;
   final int selectedRound;
   final int teamNumber;
+  final int maxChessTime;
   final DateTime eventStartTime;
   final DateTime eventEndTime;
+
   const MainMenuNavigationDrawer(
-      {super.key,
+      {Key? key,
       required this.currentRound,
       required this.selectedRound,
       required this.teamNumber,
+      required this.maxChessTime,
       required this.eventStartTime,
-      required this.eventEndTime});
+      required this.eventEndTime})
+      : super(key: key);
+
+  @override
+  State<MainMenuNavigationDrawer> createState() =>
+      _MainMenuNavigationDrawerState();
+}
+
+class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController =
+        ConfettiController(duration: const Duration(milliseconds: 1));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Drawer(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildHeader(context),
-              buildMenuItems(context),
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  buildHeader(context),
+                  buildMenuItems(context),
+                ],
+              ),
+              Center(
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  shouldLoop: false,
+                  blastDirection: pi / 2,
+                  emissionFrequency: 0.6,
+                  numberOfParticles: 15,
+                ),
+              ),
             ],
           ),
         ),
@@ -38,7 +79,7 @@ class MainMenuNavigationDrawer extends StatelessWidget {
 
   Widget buildHeader(BuildContext context) => Material(
         child: InkWell(
-          onTap: () {},
+          onTap: () => _confettiController.play(),
           child: Container(
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
@@ -46,39 +87,36 @@ class MainMenuNavigationDrawer extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  width: 124, // 2 * 52 (Radius)
-                  height: 124, // 2 * 52 (Radius)
+                  width: 124,
+                  height: 124,
                   decoration: BoxDecoration(
-                    color: Colors.grey[800], // Hier kannst du jede gewünschte Farbe setzen
+                    color: Colors.grey[800],
                     shape: BoxShape.circle,
                   ),
                   child: Align(
-                    alignment: Alignment(0, -0.9), // Hier kannst du die Y-Position anpassen. -1 ist ganz oben, 1 ist ganz unten.
+                    alignment: const Alignment(0, -0.9),
                     child: Image.asset(
                       "assets/pokalganz.png",
                       fit: BoxFit.scaleDown,
-                      width: 105,  // Zum Beispiel die Hälfte der Containergröße
+                      width: 105,
                       height: 105,
                     ),
                   ),
                 ),
-
-
-
-
                 const SizedBox(height: 8),
                 const Text("Olympiade 2023", style: TextStyle(fontSize: 16)),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(DateFormat(' dd.MM. HH:mm').format(eventStartTime),
+                    Text(
+                        DateFormat(' dd.MM. HH:mm')
+                            .format(widget.eventStartTime),
                         style: const TextStyle(fontSize: 16)),
-                    const Text(" bis ", style: TextStyle(fontSize: 16)),
-                    Text(DateFormat('HH:mm').format(eventEndTime),
+                    const Text(" bis ca. ", style: TextStyle(fontSize: 16)),
+                    Text(DateFormat('HH:mm').format(widget.eventEndTime),
                         style: const TextStyle(fontSize: 16)),
-                    Text(' Uhr', style: const TextStyle(fontSize: 16)),
-
+                    const Text(' Uhr', style: TextStyle(fontSize: 16)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -96,8 +134,6 @@ class MainMenuNavigationDrawer extends StatelessWidget {
             title: const Text('Home'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const MainMenu()));
             },
           ),
           ListTile(
@@ -107,7 +143,8 @@ class MainMenuNavigationDrawer extends StatelessWidget {
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => UploadResults(
-                      currentRound: currentRound, teamNumber: teamNumber)));
+                      currentRound: widget.currentRound,
+                      teamNumber: widget.teamNumber)));
             },
           ),
           ListTile(
@@ -124,8 +161,9 @@ class MainMenuNavigationDrawer extends StatelessWidget {
             title: const Text('Schachuhr'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const MainMenu()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      SchachUhr(maxtime: widget.maxChessTime)));
             },
           ),
           ListTile(
@@ -146,7 +184,7 @@ class MainMenuNavigationDrawer extends StatelessWidget {
                   builder: (context) => SchedulePage(
                       pairings: pairings,
                       disciplines: disciplines,
-                      currentRowForColor: currentRound)));
+                      currentRowForColor: widget.currentRound)));
             },
           ),
           ListTile(

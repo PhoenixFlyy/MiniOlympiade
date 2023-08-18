@@ -17,6 +17,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   intl: ^0.18.1
   audioplayers: ^5.1.0
+  confetti: ^0.7.0
 
 dev_dependencies:
   flutter_test:
