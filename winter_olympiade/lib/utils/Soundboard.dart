@@ -41,7 +41,7 @@ class SoundBoard extends StatelessWidget {
               PlayButton("Start / Ende der Runde", playStartSound),
               PlayButton("1 Minute übrig", playWhooshSound),
               PlayButton("Pause", playWhistleSound),
-              PlayButton("SIUUU 1", playSiuuuSound),
+              PlayButton("SIUUU", playSiuuuSound),
               PlayButton("Villager", playVillagerSound),
               PlayButton("Yeet", playYeetSound),
             ],
