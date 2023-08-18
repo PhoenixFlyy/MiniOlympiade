@@ -232,6 +232,9 @@ class _MainMenuState extends State<MainMenu> {
     if (currentTime.isBefore(_eventStartTime)) {
       return _eventStartTime.difference(currentTime);
     }
+    if (currentTime.isAfter(_eventEndTime)) {
+      return currentTime.difference(_eventEndTime);
+    }
 
     int elapsedSeconds =
         currentTime.difference(_eventStartTime).inSeconds - pauseTimeInSeconds;
@@ -412,7 +415,8 @@ class _MainMenuState extends State<MainMenu> {
                     Row(
                       children: [
                         Icon(Icons.circle, color: getRoundCircleColor()),
-                        Text(' Runde $currentRound',
+                        Text(
+                            currentRound > 30 ? "Ende" : ' Runde $currentRound',
                             style: const TextStyle(fontSize: 18)),
                       ],
                     ),
