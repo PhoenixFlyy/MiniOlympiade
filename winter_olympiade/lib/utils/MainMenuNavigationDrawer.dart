@@ -55,11 +55,13 @@ class MainMenuNavigationDrawer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(DateFormat(' dd.MM HH:mm').format(eventStartTime),
+                    Text(DateFormat(' dd.MM. HH:mm').format(eventStartTime),
                         style: const TextStyle(fontSize: 16)),
                     const Text(" bis ", style: TextStyle(fontSize: 16)),
                     Text(DateFormat('HH:mm').format(eventEndTime),
                         style: const TextStyle(fontSize: 16)),
+                    Text(' Uhr', style: const TextStyle(fontSize: 16)),
+
                   ],
                 ),
                 const SizedBox(height: 12),
