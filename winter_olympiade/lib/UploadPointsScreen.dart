@@ -34,7 +34,7 @@ class _UploadResultsState extends State<UploadResults> {
       currentSelectedRound = widget.currentRound;
       selectedDiscipline =
           getDisciplineNumber(widget.currentRound, widget.teamNumber);
-      if (widget.currentRound > 0) {
+      if (widget.currentRound > 1) {
         lastSelectedRound = widget.currentRound - 1;
       } else {
         lastSelectedRound = widget.currentRound;
