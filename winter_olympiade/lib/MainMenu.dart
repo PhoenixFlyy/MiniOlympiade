@@ -248,7 +248,7 @@ class _MainMenuState extends State<MainMenu> {
             const Duration(seconds: 60).inSeconds)) playWhooshSound();
     if (remainingSecondsInCurrentRound ==
         (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-      playschlagbolzenSound();
+      playgongakkuratSound();
     }
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
@@ -364,7 +364,7 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   Widget build(BuildContext context) {
-    String appBarTitle = 'Olympiade';
+    String appBarTitle = '';
 
     Duration remainingTime = calculateRemainingTimeInRound();
     String formattedRemainingTime;
@@ -377,7 +377,7 @@ class _MainMenuState extends State<MainMenu> {
           '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     }
 
-    appBarTitle += ' - Team $selectedTeam';
+    appBarTitle += 'Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
       appBarTitle += ' - $selectedTeamName';
     }

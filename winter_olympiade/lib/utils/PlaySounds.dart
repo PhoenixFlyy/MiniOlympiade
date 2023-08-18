@@ -36,16 +36,19 @@ Future<void> playYeetSound() async {
   player.play(AssetSource("yeet.mp3"));
 }
 
-Future<void> playschlagbolzenSound() async {
-  final player = AudioPlayer();
-  player.setVolume(5.0);
-  player.play(AssetSource("schlagbolzen.mp3"));
-}
+
 
 Future<void> playgongakkuratSound() async {
   final player = AudioPlayer();
   player.setVolume(5.0);
   player.play(AssetSource("gongakkurat.mp3"));
+}
+
+/*
+Future<void> playschlagbolzenSound() async {
+  final player = AudioPlayer();
+  player.setVolume(5.0);
+  player.play(AssetSource("schlagbolzen.mp3"));
 }
 
 Future<void> playgonghellSound() async {
@@ -59,3 +62,4 @@ Future<void> playgongvoluminoesSound() async {
   player.setVolume(5.0);
   player.play(AssetSource("gongvoluminoes.mp3"));
 }
+ */
