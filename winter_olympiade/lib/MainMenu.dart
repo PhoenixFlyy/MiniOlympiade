@@ -488,6 +488,10 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 80.0),
+              child: Divider(color: Colors.grey, thickness: 1.0, height: 20.0),
+            ),
             Column(
               children: [
                 Padding(
