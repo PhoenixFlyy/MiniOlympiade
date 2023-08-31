@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -677,19 +677,31 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
         children: List<int>.generate(end - start + 1, (index) => start + index)
             .map((number) {
           return Expanded(
-            child: InkWell(
-              onTap: () {
-                widget.onNumberSelected(number);
-              },
-              child: Padding(
-                padding: EdgeInsets.all(buttonPadding),
-                child: Container(
+            child: Padding(
+              padding: EdgeInsets.all(buttonPadding),
+              child: Material(
+                color: Colors.transparent,
+                child: Ink(
                   color: Colors.grey[600],
-                  alignment: Alignment.center,
-                  child: Text('$number', style: const TextStyle(fontSize: 18)),
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.heavyImpact();
+                      widget.onNumberSelected(number);
+                    },
+                    overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return Colors.black.withOpacity(0.5); // Farbe beim Drücken
+                      }
+                      return Colors.transparent; // Transparent wenn nicht gedrückt.
+                    }),
+                    child: Center(
+                      child: Text('$number', style: const TextStyle(fontSize: 18)),
+                    ),
+                  ),
                 ),
               ),
             ),
+
           );
         }).toList(),
       ),
@@ -700,38 +712,62 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
     List<Widget> children =
         List<int>.generate(20 - 15 + 1, (index) => 15 + index).map((number) {
       return Expanded(
-        child: InkWell(
-          onTap: () {
-            widget.onNumberSelected(number);
-          },
-          child: Padding(
-            padding: EdgeInsets.all(buttonPadding),
-            child: Container(
+        child: Padding(
+          padding: EdgeInsets.all(buttonPadding),
+          child: Material(
+            color: Colors.transparent,
+            child: Ink(
               color: Colors.grey[600],
-              alignment: Alignment.center,
-              child: Text('$number', style: const TextStyle(fontSize: 18)),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  widget.onNumberSelected(number);
+                },
+                overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.pressed)) {
+                    return Colors.black.withOpacity(0.5); // Farbe beim Drücken
+                  }
+                  return Colors.transparent; // Transparent wenn nicht gedrückt.
+                }),
+                child: Center(
+                  child: Text('$number', style: const TextStyle(fontSize: 18)),
+                ),
+              ),
             ),
           ),
         ),
+
       );
     }).toList();
 
     // add the last button with the value 25
     children.add(
       Expanded(
-        child: InkWell(
-          onTap: () {
-            widget.onNumberSelected(25);
-          },
-          child: Padding(
-            padding: EdgeInsets.all(buttonPadding),
-            child: Container(
+        child: Padding(
+          padding: EdgeInsets.all(buttonPadding),
+          child: Material(
+            color: Colors.transparent,
+            child: Ink(
               color: Colors.grey[600],
-              alignment: Alignment.center,
-              child: const Text('25', style: TextStyle(fontSize: 18)),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  widget.onNumberSelected(25);
+                },
+                overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.pressed)) {
+                    return Colors.black.withOpacity(0.5); // Farbe beim Drücken
+                  }
+                  return Colors.transparent; // Transparent wenn nicht gedrückt.
+                }),
+                child: Center(
+                  child: const Text('25', style: TextStyle(fontSize: 18)),
+                ),
+              ),
             ),
           ),
         ),
+
       ),
     );
 
@@ -764,27 +800,40 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
   Widget buttonBuilder(Widget contentWidget, int returnValue, Color color,
       [bool isDisabled = false, VoidCallback? onUndo]) {
     return Expanded(
-      child: InkWell(
-        onTap: () {
-          if (isDisabled) {
-            return;
-          }
-
-          if (onUndo != null) {
-            onUndo();
-          } else {
-            widget.onNumberSelected(returnValue);
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.all(buttonPadding),
-          child: Container(
+      child: Padding(
+        padding: EdgeInsets.all(buttonPadding),
+        child: Material(
+          color: Colors.transparent,
+          child: Ink(
             color: color,
-            alignment: Alignment.center,
-            child: contentWidget,
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.heavyImpact();
+                if (isDisabled) {
+                  return;
+                }
+
+                if (onUndo != null) {
+                  onUndo();
+                } else {
+                  widget.onNumberSelected(returnValue);
+                }
+              },
+              overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+                if (states.contains(MaterialState.pressed)) {
+                  return Colors.black.withOpacity(0.5); // Farbe beim Drücken
+                }
+                return Colors.transparent; // Transparent wenn nicht gedrückt.
+              }),
+              splashColor: Colors.transparent,
+              child: Center(
+                child: contentWidget,
+              ),
+            ),
           ),
         ),
       ),
+
     );
   }
 }
