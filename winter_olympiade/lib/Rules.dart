@@ -29,6 +29,7 @@ final List<GameRule> gameRules = [
     '• Das Spiel muss nicht mit einem Double beendet werden.',
     '• Es wird sich im Team abgewechselt; die Reihenfolge darf nicht geändert werden.',
     '• Das Spiel endet Unentschieden, wenn bei Rundenwechsel kein Sieger feststeht.',
+    '• Eigene Dartspfeile können mitgebracht werden, wenn sie allen zur Verfügung gestellt werden. Wer eigen Pfeile benutzt und dies nicht tut, wird disqualifiziert.',
   ]),
   GameRule('Billard', [
     'Es ist eng. Damit muss jeder leben. Bitte passt auf Queues und das Klavier auf! Im Team wird sich jeweils abgewechselt. Die Reihenfolge darf nicht geändert werden.',
@@ -52,7 +53,7 @@ final List<GameRule> gameRules = [
     '   - Die Acht in eine andere Tasche gespielt wurde als angesagt wurde.',
   ]),
   GameRule('Bierpong', [
-    'Gespielt wird mit sechs Bechern. Die letzten drei Becher befinden sich jeweils an der hinteren Kante des Tisches, die anderen beiden pyramidenförmig davor. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf dennoch ausgiebig getrunken werden!',
+    'Gespielt wird mit sechs Bechern. Die letzten drei Becher befinden sich jeweils an der hinteren Kante des Tisches, die anderen beiden pyramidenförmig davor. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf bzw. muss dennoch ausgiebig getrunken werden!',
     '• Die Ellenbogen müssen hinter dem Tisch bleiben. Ist dies nicht der Fall, ist der Wurf zwar getan, jedoch ungültig.',
     '• Ist der Ball bereits einmal auf der Platte aufgekommen, kann er weggeschlagen werden. Trifft ein so gespielter Ball dennoch, müssen zwei Becher vom Tisch. Diesen darf das getroffene Team wählen.',
     '• Das Herauspusten des Balls ist nicht erlaubt.',
@@ -86,6 +87,7 @@ final List<GameRule> gameRules = [
     '• Das Spiel ist verloren, wenn...',
     '   - die Zeit eines Spielers abläuft',
     '   - der Turm umfällt, während die eigene Zeit noch läuft.',
+    '• Bei Jenga gibt es kein Unentschieden. Es gibt immer einen Verlierer durch die Schachuhr. Die Teams können auf das Spiel verzichten, erhalten dann aber jeweils 0 Punkte.',
   ]),
   GameRule('Bewertung', [
     'Nach jedem Spiel wird das Ergebnis durch die beiden Teams in der ausgehängten Wertungstabelle festgehalten und in der App eingetragen (1 für Sieg; 0 für Niederlage; ½ für Unentschieden) -> Disziplin-Punkte.',
