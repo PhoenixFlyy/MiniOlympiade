@@ -78,7 +78,7 @@ final List<GameRule> gameRules = [
     'Gespielt wird mit Schachuhr. Der Boden ist uneben und leicht zu erschüttern. Damit muss jeder klarkommen.',
     'Der Boden um den Turm herum soll mit Decken ausgelegt werden, um den Boden zu schützen.',
     'Gespielt wird mit vier Minuten pro Spieler.',
-    'Nach dem Spiel müssen der Turm wieder aufgebaut und die Decken wieder hingelegt werden. Beim Wiederaufbau des Turms ist zu beachten, dass die Ausrichtung der Steine übereinstimmt. Die breitere Seite muss nach oben zeigen.',
+    'Nach dem Spiel müssen der Turm wieder aufgebaut und die Decken wieder hingelegt werden. Beim Wiederaufbau des Turms ist darauf zu achten, dass die Ausrichtung der Steine übereinstimmt. Die breitere Seite muss nach oben zeigen.',
     '• Es muss ein Stein aus dem Turm gezogen werden und oben auf dem Turm platziert werden.',
     '• Es darf nur mit einer Hand gespielt werden!',
     '• Ein Stein darf erst aus dem Turm gezogen werden, wenn mindestens drei Steine über ihm liegen.',
