@@ -25,7 +25,7 @@ final List<GameRule> gameRules = [
     '• Ein Torwart-Tor zählt nicht doppelt.',
   ]),
   GameRule('Darts', [
-    '• Gespielt wird ein klassisches Dartsspiel 501.',
+    '• Gespielt wird ein klassisches Dartsspiel 301.',
     '• Das Spiel muss nicht mit einem Double beendet werden.',
     '• Es wird sich im Team abgewechselt; die Reihenfolge darf nicht geändert werden.',
     '• Das Spiel endet Unentschieden, wenn bei Rundenwechsel kein Sieger feststeht.',
