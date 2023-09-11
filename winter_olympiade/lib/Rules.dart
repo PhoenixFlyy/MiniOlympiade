@@ -46,7 +46,6 @@ final List<GameRule> gameRules = [
     '   - Eine Kugel beim Stoß noch in Bewegung ist.',
     '   - Nicht mindestens ein Bein auf dem Boden ist.',
     '   - Eine Kugel vom Tisch springt (Kugel wird dann auf dem Punkt neu eingesetzt).',
-    '   - (Die weiße Kugel zwar eine eigene Kugel trifft, danach aber weder eine Bande berührt, noch eine eigene Kugel versenkt wird.)',
     '• Das Spiel ist verloren, wenn...',
     '   - Die schwarze Kugel in Verbindung mit einem Foul gelocht wird.',
     '   - Die schwarze Kugel gelocht wird, obwohl noch eigene Kugeln zu lochen sind.',
