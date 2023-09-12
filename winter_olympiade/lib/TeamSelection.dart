@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'MainMenu.dart';
@@ -59,6 +60,7 @@ class _TeamSelectionState extends State<TeamSelection> {
                     prefs.setInt('selectedTeam', selectedTeam);
                     prefs.setString('teamName', teamName);
                     if (context.mounted) {
+                      HapticFeedback.heavyImpact();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => const MainMenu(),
@@ -83,6 +85,7 @@ class _TeamSelectionState extends State<TeamSelection> {
         label: Text('Team $teamNumber'),
         selected: isSelected,
         onSelected: (bool value) {
+          HapticFeedback.lightImpact();
           setState(() {
             selectedTeam = value ? teamNumber : 0;
           });

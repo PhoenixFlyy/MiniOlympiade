@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'utils/MatchData.dart';
 import 'utils/MatchDetailQueries.dart';
@@ -134,6 +135,7 @@ class _UploadResultsState extends State<UploadResults> {
                       DropdownButton<int>(
                         value: lastSelectedRound,
                         onChanged: (newValue) {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             lastSelectedRound = newValue!;
                           });
@@ -185,19 +187,21 @@ class _UploadResultsState extends State<UploadResults> {
                           ),
                           selected: lastRoundTeamScore == value,
                           onPressed: () {
+                            HapticFeedback.lightImpact();
                             setState(() {
                               lastRoundTeamScore = value;
                             });
                           },
                           showCheckmark: false,
-                          backgroundColor: Color(0xFF1B191D),
-                          selectedColor: Color(0xFF494255),
+                          backgroundColor: const Color(0xFF1B191D),
+                          selectedColor: const Color(0xFF494255),
                         );
                       }).toList(),
                     ),
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
+                        HapticFeedback.heavyImpact();
                         updateScores(lastSelectedRound, lastRoundTeamScore);
                       },
                       child:
@@ -222,6 +226,7 @@ class _UploadResultsState extends State<UploadResults> {
                       DropdownButton<int>(
                         value: currentSelectedRound,
                         onChanged: (newValue) {
+                          HapticFeedback.lightImpact();
                           setState(() {
                             currentSelectedRound = newValue!;
                           });
@@ -273,19 +278,21 @@ class _UploadResultsState extends State<UploadResults> {
                           ),
                           selected: currentRoundTeamScore == value,
                           onPressed: () {
+                            HapticFeedback.lightImpact();
                             setState(() {
                               currentRoundTeamScore = value;
                             });
                           },
                           showCheckmark: false,
-                          backgroundColor: Color(0xFF1B191D),
-                          selectedColor: Color(0xFF494255),
+                          backgroundColor: const Color(0xFF1B191D),
+                          selectedColor: const Color(0xFF494255),
                         );
                       }).toList(),
                     ),
                     const SizedBox(width: 20),
                     ElevatedButton(
                       onPressed: () {
+                        HapticFeedback.heavyImpact();
                         updateScores(
                             currentSelectedRound, currentRoundTeamScore);
                       },
@@ -305,6 +312,7 @@ class _UploadResultsState extends State<UploadResults> {
                 DropdownButton<int>(
                   value: selectedDiscipline,
                   onChanged: (newValue) {
+                    HapticFeedback.lightImpact();
                     setState(() {
                       selectedDiscipline = newValue!;
                     });

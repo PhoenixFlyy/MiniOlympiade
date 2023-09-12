@@ -504,6 +504,7 @@ class _MainMenuState extends State<MainMenu> {
                     width: double.infinity,
                     child: FilledButton.tonal(
                       onPressed: () {
+                        HapticFeedback.mediumImpact();
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -526,6 +527,7 @@ class _MainMenuState extends State<MainMenu> {
                         padding: const EdgeInsets.all(16.0),
                       ),
                       onPressed: () {
+                        HapticFeedback.mediumImpact();
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -552,6 +554,7 @@ class _MainMenuState extends State<MainMenu> {
                             padding: const EdgeInsets.all(16.0),
                           ),
                           onPressed: () {
+                            HapticFeedback.mediumImpact();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -569,6 +572,7 @@ class _MainMenuState extends State<MainMenu> {
                           padding: const EdgeInsets.all(16.0),
                         ),
                         onPressed: () {
+                          HapticFeedback.mediumImpact();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -590,6 +594,7 @@ class _MainMenuState extends State<MainMenu> {
                             padding: const EdgeInsets.all(16.0),
                           ),
                           onPressed: () {
+                            HapticFeedback.mediumImpact();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

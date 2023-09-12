@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/ChessClock.dart';
 import 'package:olympiade/DartCalculator.dart';
@@ -133,6 +134,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
             },
           ),
@@ -140,6 +142,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.upload_outlined),
             title: const Text('Ergebnisse eintragen'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => UploadResults(
@@ -151,6 +154,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.bolt_outlined),
             title: const Text('Dartsrechner'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const DartsRechner()));
@@ -160,6 +164,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.access_time_outlined),
             title: const Text('Schachuhr'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
@@ -170,6 +175,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.rule_outlined),
             title: const Text('Regeln'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => RulesScreen()));
@@ -179,6 +185,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.next_plan_outlined),
             title: const Text('Laufplan'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => SchedulePage(
@@ -191,6 +198,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.music_note_outlined),
             title: const Text('Soundboard'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const SoundBoard()));
@@ -200,6 +208,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             leading: const Icon(Icons.change_circle_outlined),
             title: const Text('Team Auswahl'),
             onTap: () {
+              HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => const TeamSelection()));

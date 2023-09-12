@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-
 import 'package:olympiade/utils/Soundboard.dart';
+
 class GameRule {
   final String name;
   final List<String> rules;
@@ -29,7 +28,7 @@ final List<GameRule> gameRules = [
     '• Das Spiel muss nicht mit einem Double beendet werden.',
     '• Es wird sich im Team abgewechselt; die Reihenfolge darf nicht geändert werden.',
     '• Das Spiel endet Unentschieden, wenn bei Rundenwechsel kein Sieger feststeht.',
-    '• Eigene Dartspfeile können mitgebracht werden, wenn sie allen zur Verfügung gestellt werden. Wer eigen Pfeile benutzt und dies nicht tut, wird disqualifiziert.',
+    '• Eigene Dartspfeile können mitgebracht werden, wenn sie allen zur Verfügung gestellt werden. Wer eigene Pfeile benutzt und dies nicht tut, wird disqualifiziert.',
   ]),
   GameRule('Billard', [
     'Es ist eng. Damit muss jeder leben. Bitte passt auf Queues und das Klavier auf! Im Team wird sich jeweils abgewechselt. Die Reihenfolge darf nicht geändert werden.',
@@ -107,7 +106,8 @@ class RulesScreen extends StatelessWidget {
         children: <Widget>[
           // Button hier einfügen
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: FilledButton.tonal(
               onPressed: () {
                 Navigator.push(
@@ -116,7 +116,7 @@ class RulesScreen extends StatelessWidget {
                 );
               },
               child: const Text(
-                'Soundeffekte Beispiele',
+                'Soundeffekt Beispiele',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
@@ -155,4 +155,3 @@ class RulesScreen extends StatelessWidget {
     );
   }
 }
-

@@ -113,6 +113,7 @@ class _SchachUhrState extends State<SchachUhr> {
             child: GestureDetector(
               onTap: () {
                 if (isPlayer1Turn && isPlayer1Active) {
+                  HapticFeedback.heavyImpact();
                   switchTurns();
                 }
               },
@@ -130,6 +131,7 @@ class _SchachUhrState extends State<SchachUhr> {
             child: GestureDetector(
               onTap: () {
                 if (!isPlayer1Turn && isPlayer2Active) {
+                  HapticFeedback.heavyImpact();
                   switchTurns();
                 }
               },
