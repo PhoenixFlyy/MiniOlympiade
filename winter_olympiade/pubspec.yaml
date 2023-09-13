@@ -16,9 +16,7 @@ dependencies:
   firebase_core: ^2.15.0
   flutter_launcher_icons: ^0.13.1
   intl: ^0.18.1
-  audioplayers: ^5.1.0
   confetti: ^0.7.0
-  audioplayers_darwin: ^5.0.1
 
 dev_dependencies:
   flutter_test:

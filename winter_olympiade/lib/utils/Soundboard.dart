@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'PlaySounds.dart';
-
 class SoundBoard extends StatelessWidget {
   const SoundBoard({super.key});
 
@@ -38,13 +36,13 @@ class SoundBoard extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Column(
             children: [
-              PlayButton("Start der Runde", playStartSound),
-              PlayButton("Ende der Runde", playgongakkuratSound),
-              PlayButton("1 Minute übrig", playWhooshSound),
-              PlayButton("Pause", playWhistleSound),
-              PlayButton("SIUUU", playSiuuuSound),
-              PlayButton("Villager", playVillagerSound),
-              PlayButton("Yeet", playYeetSound),
+              PlayButton("Start der Runde", () => {}),
+              PlayButton("Ende der Runde", () => {}),
+              PlayButton("1 Minute übrig", () => {}),
+              PlayButton("Pause", () => {}),
+              PlayButton("SIUUU", () => {}),
+              PlayButton("Villager", () => {}),
+              PlayButton("Yeet", () => {}),
               //PlayButton("Schlagbolzen", playschlagbolzenSound),
 
               //PlayButton("gonghell", playgonghellSound),

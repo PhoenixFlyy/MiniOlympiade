@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,6 @@ import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
 import 'utils/MatchDetailQueries.dart';
-import 'utils/PlaySounds.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -28,7 +26,6 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  final player = AudioPlayer();
   late Timer _timer;
   String currentMatchUpText = '';
   String nextMatchUpText = '';
@@ -61,12 +58,6 @@ class _MainMenuState extends State<MainMenu> {
     _databaseTime.child("isPaused").onValue.listen((event) {
       final bool streamIsPaused =
           event.snapshot.value.toString().toLowerCase() == 'true';
-      if (!isFirstRenderingWhistle && streamIsPaused) {
-        playWhistleSound();
-      }
-      if (!isFirstRenderingWhistle && !streamIsPaused) {
-        playStartSound();
-      }
       setState(() {
         isPaused = streamIsPaused;
       });
@@ -156,7 +147,6 @@ class _MainMenuState extends State<MainMenu> {
 
   void _updateCurrentRound() {
     int newCurrentRound = calculateCurrentRoundWithDateTime();
-    if (newCurrentRound != currentRound) playStartSound();
 
     setState(() {
       currentRound = newCurrentRound;
@@ -243,14 +233,6 @@ class _MainMenuState extends State<MainMenu> {
     int remainingSecondsInCurrentRound =
         roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
-    if (remainingSecondsInCurrentRound ==
-        (roundTimeDuration.inSeconds -
-            playTimeDuration.inSeconds +
-            const Duration(seconds: 60).inSeconds)) playWhooshSound();
-    if (remainingSecondsInCurrentRound ==
-        (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-      playgongakkuratSound();
-    }
     return Duration(seconds: remainingSecondsInCurrentRound);
   }
 
