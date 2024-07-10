@@ -357,7 +357,7 @@ class _MainMenuState extends State<MainMenu> {
         );
       default:
         return Image.asset(
-          "assets/pokalganz.png",
+          "assets/Trophy.png",
         );
     }
   }
@@ -491,9 +491,12 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
+            const Text("Bisherige Gewinner:", style: TextStyle(fontSize: 20, color: Colors.white)),
+            const Text("Wenzel + Daniel:", style: TextStyle(fontSize: 22, color: Colors.amber)),
+            const Text("Simon B. + Felix", style: TextStyle(fontSize: 22, color: Colors.amber)),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 80.0),
-              child: Divider(color: Colors.grey, thickness: 1.0, height: 20.0),
+              child: Divider(color: Colors.white, thickness: 1.0, height: 20.0),
             ),
             Column(
               children: [

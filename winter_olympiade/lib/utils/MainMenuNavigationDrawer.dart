@@ -97,16 +97,19 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
                     color: Colors.grey[800],
                     shape: BoxShape.circle,
                   ),
-                  child: Image.asset(
-                    "assets/NewLogo.png",
-                    fit: BoxFit.scaleDown,
-                    width: 40,
-                    height: 40,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.asset(
+                      "assets/NewLogo.png",
+                      fit: BoxFit.scaleDown,
+                      width: 40,
+                      height: 40,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text("Olympiade ${DateTime.now().year}",
-                    style: const TextStyle(fontSize: 16, color: Colors.white)),
+                    style: const TextStyle(fontSize: 22, color: Colors.amber)),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
