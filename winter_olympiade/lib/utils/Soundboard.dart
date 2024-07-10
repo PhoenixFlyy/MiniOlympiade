@@ -7,13 +7,14 @@ class SoundBoard extends StatelessWidget {
 
   Widget PlayButton(String buttonText, void Function() onPressed) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 20),
       child: SizedBox(
-        height: 75,
+        height: 50,
         child: FilledButton(
           style: FilledButton.styleFrom(
+            backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
           )),
           onPressed: onPressed,
           child: Row(

@@ -39,24 +39,49 @@ class _TeamSelectionState extends State<TeamSelection> {
       appBar: AppBar(
         title: const Text('Team Auswahl'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          Wrap(
-            spacing: 8.0,
-            children: _buildTeamChips(),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: TextField(
-              controller: teamNameController,
+          Positioned.fill(
+            child: Image.asset(
+              'assets/background1.png',
+              fit: BoxFit.cover,
             ),
           ),
-          FilledButton(
-            onPressed: teamName.isNotEmpty && selectedTeam != 0
-                ? () async {
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Wrap(
+                spacing: 8.0,
+                children: _buildTeamChips(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: TextField(
+                  controller: teamNameController,
+                  decoration: InputDecoration(
+                    hintText: 'Gebe deinen (Team) Namen ein',
+                    filled: true,
+                    fillColor: Colors.black,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    padding: const EdgeInsets.all(16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: teamName.isNotEmpty && selectedTeam != 0
+                      ? () async {
                     SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                    await SharedPreferences.getInstance();
                     prefs.setInt('selectedTeam', selectedTeam);
                     prefs.setString('teamName', teamName);
                     if (context.mounted) {
@@ -68,8 +93,19 @@ class _TeamSelectionState extends State<TeamSelection> {
                       );
                     }
                   }
-                : null,
-            child: const Text('Bestätigen'),
+                      : null,
+                  child: const Text(
+                    'Bestätigen',
+                    style: TextStyle(
+                      color: Colors.white, // Text color
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+              ),
+            ],
           ),
         ],
       ),

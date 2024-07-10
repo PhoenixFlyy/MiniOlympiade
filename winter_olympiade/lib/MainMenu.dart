@@ -503,6 +503,12 @@ class _MainMenuState extends State<MainMenu> {
                     height: MediaQuery.of(context).size.height / 14,
                     width: double.infinity,
                     child: FilledButton.tonal(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                       onPressed: () {
                         HapticFeedback.mediumImpact();
                         Navigator.push(
@@ -512,7 +518,7 @@ class _MainMenuState extends State<MainMenu> {
                       },
                       child: const Text(
                         'Dartsrechner',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                   ),
@@ -524,6 +530,10 @@ class _MainMenuState extends State<MainMenu> {
                     width: double.infinity,
                     child: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         padding: const EdgeInsets.all(16.0),
                       ),
                       onPressed: () {
@@ -537,7 +547,7 @@ class _MainMenuState extends State<MainMenu> {
                       },
                       child: const Text(
                         'Schachuhr',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                   ),
@@ -550,8 +560,11 @@ class _MainMenuState extends State<MainMenu> {
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[850],
+                            backgroundColor: Colors.white70,
                             padding: const EdgeInsets.all(16.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           onPressed: () {
                             HapticFeedback.mediumImpact();
@@ -561,15 +574,18 @@ class _MainMenuState extends State<MainMenu> {
                                     builder: (context) => RulesScreen()));
                           },
                           child: const Text('Regeln',
-                              style: TextStyle(color: Colors.white)),
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ),
                     ),
                     Expanded(
                       child: FilledButton.tonal(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[850],
+                          backgroundColor: Colors.white,
                           padding: const EdgeInsets.all(16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         onPressed: () {
                           HapticFeedback.mediumImpact();
@@ -582,7 +598,7 @@ class _MainMenuState extends State<MainMenu> {
                         },
                         child: const Text('Ergebnisse eintragen',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white)),
+                            style: TextStyle(color: Colors.black)),
                       ),
                     ),
                     Expanded(
@@ -590,8 +606,11 @@ class _MainMenuState extends State<MainMenu> {
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[850],
+                            backgroundColor: Colors.white70,
                             padding: const EdgeInsets.all(16.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           onPressed: () {
                             HapticFeedback.mediumImpact();
@@ -605,7 +624,7 @@ class _MainMenuState extends State<MainMenu> {
                                         )));
                           },
                           child: const Text('Laufplan',
-                              style: TextStyle(color: Colors.white)),
+                              style: TextStyle(color: Colors.black)),
                         ),
                       ),
                     ),

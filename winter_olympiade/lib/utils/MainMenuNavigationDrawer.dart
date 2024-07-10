@@ -87,25 +87,26 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             ),
             child: Column(
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  width: 124,
-                  height: 124,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                     color: Colors.grey[800],
                     shape: BoxShape.circle,
                   ),
-                  child: Align(
-                    alignment: const Alignment(0, -0.9),
-                    child: Image.asset(
-                      "assets/pokalganz.png",
-                      fit: BoxFit.scaleDown,
-                      width: 105,
-                      height: 105,
-                    ),
+                  child: Image.asset(
+                    "assets/NewLogo.png",
+                    fit: BoxFit.scaleDown,
+                    width: 40,
+                    height: 40,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text("Olympiade 2023", style: TextStyle(fontSize: 16)),
+                Text("Olympiade ${DateTime.now().year}",
+                    style: const TextStyle(fontSize: 16, color: Colors.white)),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -113,11 +114,15 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
                     Text(
                         DateFormat(' dd.MM. HH:mm')
                             .format(widget.eventStartTime),
-                        style: const TextStyle(fontSize: 16)),
-                    const Text(" bis ca. ", style: TextStyle(fontSize: 16)),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white)),
+                    const Text(" bis ca. ",
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                     Text(DateFormat('HH:mm').format(widget.eventEndTime),
-                        style: const TextStyle(fontSize: 16)),
-                    const Text(' Uhr', style: TextStyle(fontSize: 16)),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white)),
+                    const Text(' Uhr',
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -131,16 +136,17 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         runSpacing: 16,
         children: [
           ListTile(
-            leading: const Icon(Icons.home_outlined),
-            title: const Text('Home'),
+            leading: const Icon(Icons.home_outlined, color: Colors.white),
+            title: const Text('Home', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.upload_outlined),
-            title: const Text('Ergebnisse eintragen'),
+            leading: const Icon(Icons.upload_outlined, color: Colors.white),
+            title: const Text('Ergebnisse eintragen',
+                style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -151,8 +157,9 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.bolt_outlined),
-            title: const Text('Dartsrechner'),
+            leading: const Icon(Icons.bolt_outlined, color: Colors.white),
+            title: const Text('Dartsrechner',
+                style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -161,8 +168,10 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.access_time_outlined),
-            title: const Text('Schachuhr'),
+            leading:
+                const Icon(Icons.access_time_outlined, color: Colors.white),
+            title:
+                const Text('Schachuhr', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -172,8 +181,8 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.rule_outlined),
-            title: const Text('Regeln'),
+            leading: const Icon(Icons.rule_outlined, color: Colors.white),
+            title: const Text('Regeln', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -182,8 +191,9 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.next_plan_outlined),
-            title: const Text('Laufplan'),
+            leading: const Icon(Icons.next_plan_outlined, color: Colors.white),
+            title:
+                const Text('Laufplan', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -195,8 +205,9 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.music_note_outlined),
-            title: const Text('Soundboard'),
+            leading: const Icon(Icons.music_note_outlined, color: Colors.white),
+            title:
+                const Text('Soundboard', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
@@ -205,8 +216,10 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.change_circle_outlined),
-            title: const Text('Team Auswahl'),
+            leading:
+                const Icon(Icons.change_circle_outlined, color: Colors.white),
+            title: const Text('Team Auswahl',
+                style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);

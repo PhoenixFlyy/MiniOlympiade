@@ -109,6 +109,12 @@ class RulesScreen extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: FilledButton.tonal(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -117,7 +123,7 @@ class RulesScreen extends StatelessWidget {
               },
               child: const Text(
                 'Soundeffekt Beispiele',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
           ),
