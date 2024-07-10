@@ -383,8 +383,9 @@ class _MainMenuState extends State<MainMenu> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black12,
+        backgroundColor: Colors.black,
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
           if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
@@ -647,6 +648,7 @@ class _MainMenuState extends State<MainMenu> {
     _playTimeController.text = playTimeDuration.inMinutes.toString();
 
     showModalBottomSheet(
+      backgroundColor: Colors.black,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -705,6 +707,11 @@ class _MainMenuState extends State<MainMenu> {
                         ),
                       ),
                       FilledButton.tonal(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                         onPressed: () => updateChessTimeInDatabase(),
                         child: const Text("Update"),
                       ),
@@ -734,6 +741,11 @@ class _MainMenuState extends State<MainMenu> {
                         ),
                       ),
                       FilledButton.tonal(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                         onPressed: () => updateRoundTimeInDatabase(),
                         child: const Text("Update"),
                       ),
@@ -763,6 +775,11 @@ class _MainMenuState extends State<MainMenu> {
                         ),
                       ),
                       FilledButton.tonal(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                         onPressed: () => updateRoundTimeInDatabase(),
                         child: const Text("Update"),
                       ),
@@ -770,10 +787,20 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                   const SizedBox(height: 16),
                   FilledButton.tonal(
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () => updateIsPausedInDatabase(),
                     child: const Text("Update Pause in Database"),
                   ),
                   FilledButton(
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,

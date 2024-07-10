@@ -120,7 +120,11 @@ class _UploadResultsState extends State<UploadResults> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Ergebnisse eintragen")),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("Ergebnisse eintragen"),
+        backgroundColor: Colors.black,
+      ),
       body: Center(
         child: Column(
           children: [
@@ -200,12 +204,18 @@ class _UploadResultsState extends State<UploadResults> {
                     ),
                     const SizedBox(width: 20),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                       onPressed: () {
                         HapticFeedback.heavyImpact();
                         updateScores(lastSelectedRound, lastRoundTeamScore);
                       },
-                      child:
-                          const Text("Upload", style: TextStyle(fontSize: 16)),
+                      child: const Text("Upload",
+                          style: TextStyle(fontSize: 16, color: Colors.black)),
                     ),
                   ],
                 ),
@@ -291,13 +301,19 @@ class _UploadResultsState extends State<UploadResults> {
                     ),
                     const SizedBox(width: 20),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                       onPressed: () {
                         HapticFeedback.heavyImpact();
                         updateScores(
                             currentSelectedRound, currentRoundTeamScore);
                       },
-                      child:
-                          const Text("Upload", style: TextStyle(fontSize: 16)),
+                      child: const Text("Upload",
+                          style: TextStyle(fontSize: 16, color: Colors.black)),
                     ),
                   ],
                 ),

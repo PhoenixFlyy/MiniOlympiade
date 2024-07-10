@@ -103,8 +103,9 @@ class _SchachUhrState extends State<SchachUhr> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black12,
+        backgroundColor: Colors.black,
         title: const Text("Schachuhr", style: TextStyle(fontSize: 20)),
       ),
       body: Column(

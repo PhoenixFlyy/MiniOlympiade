@@ -36,9 +36,7 @@ class _TeamSelectionState extends State<TeamSelection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Team Auswahl'),
-      ),
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           Positioned.fill(

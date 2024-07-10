@@ -14,8 +14,9 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black12,
+        backgroundColor: Colors.black,
         title: const Text("Ergebnis", style: TextStyle(fontSize: 20)),
       ),
       body: SingleChildScrollView(

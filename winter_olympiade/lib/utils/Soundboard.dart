@@ -12,10 +12,10 @@ class SoundBoard extends StatelessWidget {
         height: 50,
         child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: Colors.white,
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          )),
+                borderRadius: BorderRadius.circular(10),
+              )),
           onPressed: onPressed,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +33,11 @@ class SoundBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Soundboard")),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("Soundboard"),
+        backgroundColor: Colors.black,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25),

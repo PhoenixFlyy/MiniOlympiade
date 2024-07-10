@@ -93,8 +93,8 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
                 Container(
                   width: 100,
                   height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
                     shape: BoxShape.circle,
                   ),
                   child: ClipRRect(

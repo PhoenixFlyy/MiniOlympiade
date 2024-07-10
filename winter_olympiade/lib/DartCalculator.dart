@@ -324,7 +324,9 @@ class _DartsRechnerState extends State<DartsRechner>
         return true; // true erlaubt dem Nutzer, den Bildschirm zu verlassen
       },
       child: Scaffold(
+          backgroundColor: Colors.black,
           appBar: AppBar(
+            backgroundColor: Colors.black,
             title: const Text('Darts Rechner'),
             actions: [
               // Settings Icon
@@ -850,7 +852,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Einstellungen'),
         actions: [
           IconButton(
