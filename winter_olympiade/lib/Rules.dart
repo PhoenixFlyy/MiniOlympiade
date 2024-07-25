@@ -96,6 +96,8 @@ final List<GameRule> gameRules = [
 ];
 
 class RulesScreen extends StatelessWidget {
+  const RulesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

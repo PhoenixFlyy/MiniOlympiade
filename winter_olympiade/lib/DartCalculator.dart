@@ -288,25 +288,25 @@ class _DartsRechnerState extends State<DartsRechner>
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Neues Spiel starten'),
-              content: Text('Möchten Sie wirklich ein neues Spiel starten?'),
+              title: const Text('Neues Spiel starten'),
+              content: const Text('Möchten Sie wirklich ein neues Spiel starten?'),
               actions: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextButton(
-                      child: Text('Ja'),
+                      child: const Text('Ja'),
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
                     ),
                     TextButton(
-                      child: Text('Abbrechen'),
+                      child: const Text('Abbrechen'),
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                   ],
                 ),
               ],
@@ -331,11 +331,11 @@ class _DartsRechnerState extends State<DartsRechner>
             actions: [
               // Settings Icon
               IconButton(
-                icon: Icon(Icons.settings),
+                icon: const Icon(Icons.settings),
                 onPressed: () async {
                   final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                    MaterialPageRoute(builder: (context) => const SettingsPage()),
                   );
 
                   if (result != null) {
@@ -349,7 +349,7 @@ class _DartsRechnerState extends State<DartsRechner>
               ),
               // Reload Icon
               IconButton(
-                icon: Icon(Icons.replay),
+                icon: const Icon(Icons.replay),
                 onPressed: () async {
                   bool? confirm = await _showConfirmationDialog(context);
                   if (confirm == true) {
@@ -651,8 +651,8 @@ class DartsRechnerTastatur extends StatefulWidget {
   final ValueChanged<int> onNumberSelected;
   final VoidCallback undoLastEntry;
 
-  DartsRechnerTastatur(
-      {required this.onNumberSelected, required this.undoLastEntry});
+  const DartsRechnerTastatur(
+      {super.key, required this.onNumberSelected, required this.undoLastEntry});
 
   @override
   _DartsRechnerTastaturState createState() => _DartsRechnerTastaturState();
@@ -762,8 +762,8 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
                   }
                   return Colors.transparent; // Transparent wenn nicht gedrückt.
                 }),
-                child: Center(
-                  child: const Text('25', style: TextStyle(fontSize: 18)),
+                child: const Center(
+                  child: Text('25', style: TextStyle(fontSize: 18)),
                 ),
               ),
             ),
@@ -841,6 +841,8 @@ class _DartsRechnerTastaturState extends State<DartsRechnerTastatur> {
 }
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
