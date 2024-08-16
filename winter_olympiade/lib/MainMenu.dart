@@ -598,7 +598,7 @@ class _MainMenuState extends State<MainMenu> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RulesScreen()));
+                                    builder: (context) => const RulesScreen()));
                           },
                           child: const Text('Regeln',
                               style: TextStyle(color: Colors.black)),

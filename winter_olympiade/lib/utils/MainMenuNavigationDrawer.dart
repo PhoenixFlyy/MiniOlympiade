@@ -190,7 +190,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => RulesScreen()));
+                  .push(MaterialPageRoute(builder: (context) => const RulesScreen()));
             },
           ),
           ListTile(

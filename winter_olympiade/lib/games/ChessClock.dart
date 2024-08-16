@@ -56,7 +56,7 @@ class _SchachUhrState extends State<SchachUhr> {
 
   void startTimer() {
     isTimerRunning = true;
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
         if (isPlayer1Active) {
           player1Time--;
@@ -88,7 +88,7 @@ class _SchachUhrState extends State<SchachUhr> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Zeit abgelaufen"),
+        title: const Text("Zeit abgelaufen"),
         content: Text("$loser's Zeit ist abgelaufen!"),
       ),
     );
