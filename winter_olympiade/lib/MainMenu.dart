@@ -5,11 +5,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:olympiade/games/Moelkky/MoelkkyGameScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ChessClock.dart';
-import 'DartCalculator.dart';
+import 'games/ChessClock.dart';
+import 'games/DartCalculator.dart';
 import 'ResultScreen.dart';
 import 'Rules.dart';
 import 'SchedulePage.dart';
@@ -493,18 +494,14 @@ class _MainMenuState extends State<MainMenu> {
               ],
             ),
             const Text("Bisherige Gewinner:", style: TextStyle(fontSize: 20, color: Colors.white)),
-            const Text("Wenzel + Daniel:", style: TextStyle(fontSize: 22, color: Colors.amber)),
-            const Text("Simon B. + Felix", style: TextStyle(fontSize: 22, color: Colors.amber)),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 80.0),
-              child: Divider(color: Colors.white, thickness: 1.0, height: 20.0),
-            ),
+            const Text("Wenzel & Daniel", style: TextStyle(fontSize: 22, color: Colors.amber)),
+            const Text("Simon B. & Felix", style: TextStyle(fontSize: 22, color: Colors.amber)),
             Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 14,
+                    height: MediaQuery.of(context).size.height / 15,
                     width: double.infinity,
                     child: FilledButton.tonal(
                       style: FilledButton.styleFrom(
@@ -528,9 +525,9 @@ class _MainMenuState extends State<MainMenu> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 14,
+                    height: MediaQuery.of(context).size.height / 15,
                     width: double.infinity,
                     child: FilledButton.tonal(
                       style: ElevatedButton.styleFrom(
@@ -551,6 +548,32 @@ class _MainMenuState extends State<MainMenu> {
                       },
                       child: const Text(
                         'Schachuhr',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 15,
+                    width: double.infinity,
+                    child: FilledButton.tonal(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MoelkkyGameScreen()));
+                      },
+                      child: const Text(
+                        'Mölkky',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
