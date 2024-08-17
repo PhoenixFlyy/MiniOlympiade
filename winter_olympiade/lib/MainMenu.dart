@@ -9,12 +9,12 @@ import 'package:olympiade/games/Moelkky/MoelkkyGameScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'games/ChessClock.dart';
-import 'games/DartCalculator.dart';
 import 'ResultScreen.dart';
 import 'Rules.dart';
 import 'SchedulePage.dart';
 import 'UploadPointsScreen.dart';
+import 'games/ChessClock.dart';
+import 'games/DartCalculator.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
@@ -358,7 +358,7 @@ class _MainMenuState extends State<MainMenu> {
         );
       default:
         return Image.asset(
-          "assets/Trophy.png",
+          "assets/pokalganz.png",
         );
     }
   }
@@ -493,9 +493,16 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
-            const Text("Bisherige Gewinner:", style: TextStyle(fontSize: 20, color: Colors.white)),
-            const Text("Wenzel & Daniel", style: TextStyle(fontSize: 22, color: Colors.amber)),
-            const Text("Simon B. & Felix", style: TextStyle(fontSize: 22, color: Colors.amber)),
+            const Column(
+              children: [
+                Text("Bisherige Gewinner:",
+                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                Text("Wenzel & Daniel",
+                    style: TextStyle(fontSize: 22, color: Colors.amber)),
+                Text("Simon B. & Felix",
+                    style: TextStyle(fontSize: 22, color: Colors.amber)),
+              ],
+            ),
             Column(
               children: [
                 Padding(
@@ -570,7 +577,8 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MoelkkyGameScreen()));
+                                builder: (context) =>
+                                    const MoelkkyGameScreen()));
                       },
                       child: const Text(
                         'Mölkky',
