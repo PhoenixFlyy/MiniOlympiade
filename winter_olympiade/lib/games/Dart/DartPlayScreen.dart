@@ -23,16 +23,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   List<PlayerTurn> turnHistory = [];
 
   void nextPlayer() {
-    setState(() =>
-    currentPlayerIndex = (currentPlayerIndex + 1) % widget.playerList.length);
-  }
-
-  void recordTurn(List<Throw> throws) {
-    final currentPlayer = widget.playerList[currentPlayerIndex];
-    final playerTurn = PlayerTurn(player: currentPlayer, throws: throws);
-
     setState(() {
-      turnHistory.add(playerTurn);
+      currentPlayerIndex = (currentPlayerIndex + 1) % widget.playerList.length;
+      turnHistory.add(PlayerTurn(player: widget.playerList[currentPlayerIndex], throws: []));
     });
   }
 
@@ -44,6 +37,19 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
     }
 
     return score >= 0 ? score : 0;
+  }
+
+  void onScoreSelected(int score, Multiplier multiplier) {
+    setState(() {
+      if (turnHistory.isEmpty || turnHistory.last.player != widget.playerList[currentPlayerIndex]) {
+        turnHistory.add(PlayerTurn(player: widget.playerList[currentPlayerIndex], throws: [Throw(score: score, multiplier: multiplier)]));
+      } else {
+        turnHistory.last.throws.add(Throw(score: score, multiplier: multiplier));
+      }
+      if (turnHistory.last.throws.length == 3 || turnHistory.last.overthrown) {
+        nextPlayer();
+      }
+    });
   }
 
   @override
@@ -63,7 +69,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             ),
           ),
           // DartsKeyboard at the bottom
-          const DartsKeyboard(),
+          DartsKeyboard(onScoreSelected: onScoreSelected),
         ],
       ),
     );
@@ -71,7 +77,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
 
   Widget currentScore(Player playerInCard) {
     return Expanded(
-      flex: 3,
+      flex: 2,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -91,6 +97,8 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget currentThrowScores(List<PlayerTurn> playerTurns) {
+    List<Throw> lastThrows = playerTurns.isNotEmpty ? playerTurns.last.throws : [];
+
     return Expanded(
       flex: 2,
       child: Column(
@@ -102,14 +110,14 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
               children: List.generate(
                 3,
                     (index) {
-                  if (playerTurns.isNotEmpty && index < playerTurns.length) {
+                  if (index < lastThrows.length) {
                     return Expanded(
                       child: Container(
                         color: Colors.black,
                         margin: const EdgeInsets.all(2),
                         child: Center(
                           child: Text(
-                            playerTurns[index].turnSum.toString(),
+                            lastThrows[index].calculateScore().toString(),
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),
@@ -136,7 +144,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 15),
             child: Text(
-              "${playerTurns.isNotEmpty ? playerTurns.map((e) => e.turnSum).reduce((a, b) => a + b) : 0}",
+              lastThrows.isNotEmpty ? lastThrows.map((e) => e.calculateScore()).reduce((a, b) => a + b).toString() : '0',
               style: const TextStyle(color: Colors.white, fontSize: 16),
               textAlign: TextAlign.center,
             ),
@@ -147,12 +155,10 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget currentStatistics(List<PlayerTurn> playerTurns) {
-    int lastThrow = 0;
-    if (playerTurns.isNotEmpty) {
-      PlayerTurn lastTurn = playerTurns.last;
-      if (lastTurn.throws.isNotEmpty) {
-        lastThrow = lastTurn.throws.last.calculateScore();
-      }
+    int lastTurnSum = 0;
+
+    if (playerTurns.length > 1) {
+      lastTurnSum = playerTurns[playerTurns.length - 2].turnSum;
     }
 
     double avgScore = playerTurns.isNotEmpty
@@ -173,7 +179,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
               children: [
                 const Text("Zuletzt:"),
                 Text(
-                  " $lastThrow",
+                  " $lastTurnSum",
                   style: const TextStyle(
                       color: Colors.white, fontSize: 16),
                 ),

@@ -83,6 +83,9 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
   }
 
   Widget _buildSideButton(String label, Color? buttonColor, VoidCallback onPressed) {
+    bool isSelected = (label == "D" && selectedMultiplier == Multiplier.double) ||
+        (label == "T" && selectedMultiplier == Multiplier.triple);
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing),
       child: ElevatedButton(
@@ -92,6 +95,8 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           minimumSize: Size.fromHeight((size.height * 5) / 4),
+          shadowColor: isSelected ? Colors.yellowAccent : Colors.transparent,
+          elevation: isSelected ? 10 : 0,
         ),
         onPressed: onPressed,
         child: Text(
