@@ -39,16 +39,31 @@ class Player {
   }
 }
 
-class DartThrow {
-  final Player player;
+class Throw {
   final int score;
   final Multiplier multiplier;
 
-  DartThrow({required this.player, required this.score, this.multiplier = Multiplier.single});
+  Throw({required this.score, this.multiplier = Multiplier.single});
+
+  int calculateScore() => score * (multiplier.index + 1);
 }
 
 enum Multiplier {
   single,
   double,
   triple,
+}
+
+class PlayerTurn {
+  final Player player;
+  final List<Throw> throws;
+  final bool overthrown;
+
+  PlayerTurn({
+    required this.player,
+    required this.throws,
+    this.overthrown = false,
+  });
+
+  int get turnSum => throws.fold(0, (sum, t) => sum + t.calculateScore());
 }
