@@ -20,6 +20,7 @@ dependencies:
   confetti: ^0.7.0
   audioplayers_darwin: ^6.0.0
   image_picker: ^1.1.2
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:

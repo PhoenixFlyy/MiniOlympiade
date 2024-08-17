@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utils/ImageConverter.dart';
 import 'DartConstants.dart';
+import 'DartPlayScreen.dart';
 
 class DartStartScreen extends StatefulWidget {
   const DartStartScreen({super.key});
@@ -15,7 +18,67 @@ class DartStartScreen extends StatefulWidget {
 class _DartStartScreenState extends State<DartStartScreen> {
   int _selectedGameType = DartConstants.gameTypes[2];
   GameEndRule _selectedGameEndRule = GameEndRule.doubleOut;
+
   final List<Player> _players = [];
+  final List<Player> _availablePlayers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAvailablePlayers();
+  }
+
+  void _loadAvailablePlayers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? playerData = prefs.getStringList('players');
+    if (playerData != null) {
+      setState(() => _availablePlayers.addAll(
+        playerData.map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
+      ));
+    }
+  }
+
+  void _savePlayer(Player player) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? playerData = prefs.getStringList('players') ?? [];
+    playerData.add(jsonEncode(player.toJson()));
+    await prefs.setStringList('players', playerData);
+  }
+
+  void _removePlayerFromAvailable(int index) async {
+    bool confirmed = await _showConfirmationDialog(context, "Spieler löschen", "Möchtest du diesen Spieler wirklich löschen?");
+    if (confirmed) {
+      setState(() => _availablePlayers.removeAt(index));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? playerData = prefs.getStringList('players');
+      if (playerData != null) {
+        playerData.removeAt(index);
+        await prefs.setStringList('players', playerData);
+      }
+    }
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context, String title, String content) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text('Löschen', style: TextStyle(color: Colors.white)),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
 
   void _removePlayer(int index) =>
       setState(() => _players.removeAt(index));
@@ -34,6 +97,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
             gameRulesSetup(),
             const SizedBox(height: 20),
             playerSetupList(),
+            const SizedBox(height: 20),
+            availablePlayersList(),
             const SizedBox(height: 40),
             startSetup(),
           ],
@@ -70,11 +135,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
                 child: Text(DartConstants.gameEndRuleToString(rule)),
               );
             }).toList(),
-            onChanged: (newValue) {
-              setState(() {
-                _selectedGameEndRule = newValue!;
-              });
-            },
+            onChanged: (newValue) =>
+                setState(() => _selectedGameEndRule = newValue!),
           ),
         ),
       ],
@@ -130,6 +192,63 @@ class _DartStartScreenState extends State<DartStartScreen> {
     );
   }
 
+  Widget availablePlayersList() {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Text(
+              "Verfügbare Spieler",
+              style: TextStyle(
+                fontSize: 22,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _availablePlayers.length,
+              itemBuilder: (context, index) {
+                final player = _availablePlayers[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: player.image,
+                      ),
+                      Text(
+                        player.name,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add_circle),
+                            onPressed: () => setState(() => _players.add(player)),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _removePlayerFromAvailable(index),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget startSetup() {
     bool canStartGame = _players.length >= 2;
 
@@ -167,14 +286,21 @@ class _DartStartScreenState extends State<DartStartScreen> {
 
   Future<void> _addNewPlayer() async {
     TextEditingController nameController = TextEditingController();
-    ImageProvider<Object> playerImage = const AssetImage("assets/darts.png"); // Default image
     FocusNode nameFocusNode = FocusNode();
+
+    File dartsImageFile = await getImageFileFromAssets('darts.png');
+    FileImage playerImage = FileImage(dartsImageFile);
+
+    if (!mounted) return;
 
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) =>
-            FocusScope.of(context).requestFocus(nameFocusNode));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            FocusScope.of(context).requestFocus(nameFocusNode);
+          }
+        });
 
         return StatefulBuilder(
           builder: (context, setStateDialog) {
@@ -245,19 +371,19 @@ class _DartStartScreenState extends State<DartStartScreen> {
               actions: <Widget>[
                 TextButton(
                   child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
                   child: const Text('Spieler hinzufügen', style: TextStyle(color: Colors.white)),
                   onPressed: () {
                     if (nameController.text.isNotEmpty) {
+                      final newPlayer = Player(
+                        name: nameController.text,
+                        image: playerImage,
+                      );
                       setState(() {
-                        _players.add(Player(
-                          name: nameController.text,
-                          image: playerImage,
-                        ));
+                        _availablePlayers.add(newPlayer);
+                        _savePlayer(newPlayer);
                       });
                       Navigator.of(context).pop();
                     } else {
@@ -276,13 +402,22 @@ class _DartStartScreenState extends State<DartStartScreen> {
   }
 
   void _startGame() {
-    List<String> playerNames = _players.map((player) => player.name).toList();
-
-    if (playerNames.any((name) => name.isEmpty)) {
+    if (_players.map((player) => player.name).toList().any((name) => name.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a name for every player')),
       );
       return;
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DartPlayScreen(
+          gameEndRule: _selectedGameEndRule,
+          gameType: _selectedGameType,
+          playerList: _players,
+        ),
+      ),
+    );
   }
 }
