@@ -111,13 +111,27 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                 3,
                     (index) {
                   if (index < lastThrows.length) {
+                    String displayValue;
+                    if (lastThrows[index].multiplier == Multiplier.single && lastThrows[index].score == 25) {
+                      displayValue = 'SB';
+                    } else if (lastThrows[index].multiplier == Multiplier.double && lastThrows[index].score == 25) {
+                      displayValue = 'DB';
+                    } else {
+                      String prefix = '';
+                      if (lastThrows[index].multiplier == Multiplier.double) {
+                        prefix = 'D';
+                      } else if (lastThrows[index].multiplier == Multiplier.triple) {
+                        prefix = 'T';
+                      }
+                      displayValue = '$prefix${lastThrows[index].score}';
+                    }
                     return Expanded(
                       child: Container(
                         color: Colors.black,
                         margin: const EdgeInsets.all(2),
                         child: Center(
                           child: Text(
-                            lastThrows[index].calculateScore().toString(),
+                            displayValue,
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),
@@ -156,16 +170,26 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
 
   Widget currentStatistics(List<PlayerTurn> playerTurns) {
     int lastTurnSum = 0;
+    double avgScore = 0;
+    int totalDarts = 0;
 
     if (playerTurns.length > 1) {
       lastTurnSum = playerTurns[playerTurns.length - 2].turnSum;
     }
 
-    double avgScore = playerTurns.isNotEmpty
-        ? playerTurns.fold(0, (sum, t) => sum + t.turnSum) / playerTurns.length
-        : 0;
+    if (playerTurns.isNotEmpty) {
+      int turnsToConsider = playerTurns.length;
 
-    int totalDarts = playerTurns.fold(0, (sum, t) => sum + t.throws.length);
+      if (playerTurns.last.player == widget.playerList[currentPlayerIndex] && playerTurns.last.throws.length < 3) {
+        turnsToConsider -= 1;
+      }
+
+
+      if (turnsToConsider > 0) {
+        avgScore = playerTurns.sublist(0, turnsToConsider).fold(0, (sum, t) => sum + t.turnSum) / turnsToConsider;
+        totalDarts = playerTurns.sublist(0, turnsToConsider).fold(0, (sum, t) => sum + t.throws.length);
+      }
+    }
 
     return Expanded(
       flex: 2,

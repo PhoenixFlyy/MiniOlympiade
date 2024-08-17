@@ -23,6 +23,16 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
     setState(() => selectedMultiplier = Multiplier.single);
   }
 
+  void _toggleMultiplier(Multiplier multiplier) {
+    setState(() {
+      if (selectedMultiplier == multiplier) {
+        selectedMultiplier = Multiplier.single;
+      } else {
+        selectedMultiplier = multiplier;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -72,8 +82,8 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
               children: [
                 _buildSideButton("0", backgroundColor, () => _onScorePressed(0)),
                 _buildSideButton("SB", Colors.red[700], () => _onScorePressed(25)),
-                _buildSideButton("D", Colors.orange, () => setState(() => selectedMultiplier = Multiplier.double)),
-                _buildSideButton("T", Colors.orange[700], () => setState(() => selectedMultiplier = Multiplier.triple)),
+                _buildSideButton("D", Colors.orange, () => _toggleMultiplier(Multiplier.double)),
+                _buildSideButton("T", Colors.orange[700], () => _toggleMultiplier(Multiplier.triple)),
               ],
             ),
           ),
@@ -86,11 +96,13 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
     bool isSelected = (label == "D" && selectedMultiplier == Multiplier.double) ||
         (label == "T" && selectedMultiplier == Multiplier.triple);
 
+    bool isDisabled = label == "SB" && selectedMultiplier == Multiplier.triple;
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: buttonColor,
+          backgroundColor: isDisabled ? Colors.grey : buttonColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -98,7 +110,7 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
           shadowColor: isSelected ? Colors.yellowAccent : Colors.transparent,
           elevation: isSelected ? 10 : 0,
         ),
-        onPressed: onPressed,
+        onPressed: isDisabled ? null : onPressed,
         child: Text(
           label,
           style: TextStyle(color: Colors.white, fontSize: textSize),
