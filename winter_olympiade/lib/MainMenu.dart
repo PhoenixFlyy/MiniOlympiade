@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/games/Moelkky/MoelkkyGameScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +15,6 @@ import 'Rules.dart';
 import 'SchedulePage.dart';
 import 'UploadPointsScreen.dart';
 import 'games/ChessClock.dart';
-import 'games/DartCalculator.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
@@ -522,7 +522,7 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const DartsRechner()));
+                                builder: (context) => const DartStartScreen()));
                       },
                       child: const Text(
                         'Dartsrechner',

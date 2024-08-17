@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/games/ChessClock.dart';
-import 'package:olympiade/games/DartCalculator.dart';
 import 'package:olympiade/Rules.dart';
 import 'package:olympiade/SchedulePage.dart';
 import 'package:olympiade/TeamSelection.dart';
 import 'package:olympiade/UploadPointsScreen.dart';
 import 'package:olympiade/utils/MatchData.dart';
 import 'package:olympiade/utils/Soundboard.dart';
+
+import '../games/Dart/DartStartScreen.dart';
 
 class MainMenuNavigationDrawer extends StatefulWidget {
   final int currentRound;
@@ -167,7 +168,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const DartsRechner()));
+                  builder: (context) => const DartStartScreen()));
             },
           ),
           ListTile(
