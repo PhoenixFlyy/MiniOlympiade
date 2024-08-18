@@ -25,7 +25,22 @@ class _DartStartScreenState extends State<DartStartScreen> {
   @override
   void initState() {
     super.initState();
+    _loadGameSettings();
     _loadAvailablePlayers();
+  }
+
+  Future<void> _loadGameSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedGameType = prefs.getInt('selectedGameType') ?? DartConstants.gameTypes[2];
+      _selectedGameEndRule = GameEndRule.values[prefs.getInt('selectedGameEndRule') ?? GameEndRule.doubleOut.index];
+    });
+  }
+
+  Future<void> _saveGameSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('selectedGameType', _selectedGameType);
+    await prefs.setInt('selectedGameEndRule', _selectedGameEndRule.index);
   }
 
   void _loadAvailablePlayers() async {
@@ -121,7 +136,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
               );
             }).toList(),
             onChanged: (newValue) =>
-                setState(() => _selectedGameType = newValue!),
+                setState(() {
+                  _selectedGameType = newValue!;
+                  _saveGameSettings();
+                }),
           ),
         ),
         const SizedBox(width: 20),
@@ -136,7 +154,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
               );
             }).toList(),
             onChanged: (newValue) =>
-                setState(() => _selectedGameEndRule = newValue!),
+                setState(() {
+                  _selectedGameEndRule = newValue!;
+                  _saveGameSettings();
+                }),
           ),
         ),
       ],
