@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,6 +42,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('selectedGameType', _selectedGameType);
     await prefs.setInt('selectedGameEndRule', _selectedGameEndRule.index);
+    HapticFeedback.lightImpact();
   }
 
   void _loadAvailablePlayers() async {

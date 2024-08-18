@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartConstants.dart';
 
 class DartsKeyboard extends StatefulWidget {
@@ -54,16 +55,21 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
                         padding: EdgeInsets.symmetric(horizontal: spacing),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: backgroundColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(borderRadius),
-                            ),
-                            minimumSize: size
+                              backgroundColor: backgroundColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    borderRadius),
+                              ),
+                              minimumSize: size
                           ),
-                          onPressed: () => _onScorePressed(buttonNumber),
+                          onPressed: () {
+                            _onScorePressed(buttonNumber);
+                            HapticFeedback.lightImpact();
+                          },
                           child: Text(
                             buttonNumber.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: textSize),
+                            style: TextStyle(
+                                color: Colors.white, fontSize: textSize),
                           ),
                         ),
                       ),
@@ -80,10 +86,14 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
             padding: const EdgeInsets.only(left: 2),
             child: Column(
               children: [
-                _buildSideButton("0", backgroundColor, () => _onScorePressed(0)),
-                _buildSideButton("SB", Colors.red[700], () => _onScorePressed(25)),
-                _buildSideButton("D", Colors.orange, () => _toggleMultiplier(Multiplier.double)),
-                _buildSideButton("T", Colors.orange[700], () => _toggleMultiplier(Multiplier.triple)),
+                _buildSideButton(
+                    "0", backgroundColor, () => _onScorePressed(0)),
+                _buildSideButton(
+                    "SB", Colors.red[700], () => _onScorePressed(25)),
+                _buildSideButton("D", Colors.orange, () =>
+                    _toggleMultiplier(Multiplier.double)),
+                _buildSideButton("T", Colors.orange[700], () =>
+                    _toggleMultiplier(Multiplier.triple)),
               ],
             ),
           ),
@@ -92,8 +102,10 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
     );
   }
 
-  Widget _buildSideButton(String label, Color? buttonColor, VoidCallback onPressed) {
-    bool isSelected = (label == "D" && selectedMultiplier == Multiplier.double) ||
+  Widget _buildSideButton(String label, Color? buttonColor,
+      VoidCallback onPressed) {
+    bool isSelected = (label == "D" &&
+        selectedMultiplier == Multiplier.double) ||
         (label == "T" && selectedMultiplier == Multiplier.triple);
 
     bool isDisabled = label == "SB" && selectedMultiplier == Multiplier.triple;
@@ -110,12 +122,18 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
           shadowColor: isSelected ? Colors.yellowAccent : Colors.transparent,
           elevation: isSelected ? 10 : 0,
         ),
-        onPressed: isDisabled ? null : onPressed,
+        onPressed: isDisabled
+            ? null
+            : () {
+          HapticFeedback.lightImpact();
+          onPressed();
+        },
         child: Text(
           label,
           style: TextStyle(color: Colors.white, fontSize: textSize),
         ),
       ),
     );
+
   }
 }
