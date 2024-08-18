@@ -115,7 +115,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const DartAnalyticsScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => DartAnalyticsScreen(
+                            turnHistory: turnHistory,
+                            playerList: widget.playerList,
+                          ),
+                        ),
                       );
                     },
                   ),
