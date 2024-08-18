@@ -1,3 +1,4 @@
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
@@ -23,6 +24,7 @@ class DartPlayScreen extends StatefulWidget {
 class _DartPlayScreenState extends State<DartPlayScreen> {
   int currentPlayerIndex = 0;
   List<PlayerTurn> turnHistory = [];
+  Duration flipDuration = const Duration(milliseconds: 250);
 
   double getAvgScore(List<PlayerTurn> playerTurns) {
     if (playerTurns.isEmpty) return 0;
@@ -147,10 +149,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "${calculatePlayerScore(playerInCard)}",
-            style: const TextStyle(fontSize: 40, color: Colors.white),
-            textAlign: TextAlign.center,
+          AnimatedFlipCounter(
+            duration: flipDuration,
+            value: calculatePlayerScore(playerInCard),
+            textStyle: const TextStyle(fontSize: 40, color: Colors.white),
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
           Text(
             playerInCard.name,
@@ -267,9 +270,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Zuletzt:"),
-                Text(
-                  " $lastTurnSum",
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                AnimatedFlipCounter(
+                  duration: flipDuration,
+                  value: lastTurnSum,
+                  textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                  mainAxisAlignment: MainAxisAlignment.end,
                 ),
               ],
             ),
@@ -277,10 +282,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Avg:"),
-                Text(
-                  " ${avgScore.toStringAsFixed(2)}",
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                  textAlign: TextAlign.right,
+                AnimatedFlipCounter(
+                  duration: flipDuration,
+                  value: avgScore,
+                  fractionDigits: 2,
+                  textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                  mainAxisAlignment: MainAxisAlignment.end,
                 ),
               ],
             ),
@@ -288,9 +295,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Darts:"),
-                Text(
-                  " $totalDarts",
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                AnimatedFlipCounter(
+                  duration: flipDuration,
+                  value: totalDarts,
+                  textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                  mainAxisAlignment: MainAxisAlignment.end,
                 ),
               ],
             ),
