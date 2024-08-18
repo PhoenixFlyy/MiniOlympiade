@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
+
 import 'DartConstants.dart';
 
 class DartPlayScreen extends StatefulWidget {
@@ -39,7 +41,8 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   void nextPlayer() {
     setState(() {
       currentPlayerIndex = (currentPlayerIndex + 1) % widget.playerList.length;
-      turnHistory.add(PlayerTurn(player: widget.playerList[currentPlayerIndex], throws: []));
+      turnHistory.add(PlayerTurn(
+          player: widget.playerList[currentPlayerIndex], throws: []));
     });
   }
 
@@ -55,13 +58,33 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
 
   void onScoreSelected(int score, Multiplier multiplier) {
     setState(() {
-      if (turnHistory.isEmpty || turnHistory.last.player != widget.playerList[currentPlayerIndex]) {
-        turnHistory.add(PlayerTurn(player: widget.playerList[currentPlayerIndex], throws: [Throw(score: score, multiplier: multiplier)]));
+      if (turnHistory.isEmpty ||
+          turnHistory.last.player != widget.playerList[currentPlayerIndex]) {
+        turnHistory.add(PlayerTurn(
+            player: widget.playerList[currentPlayerIndex],
+            throws: [Throw(score: score, multiplier: multiplier)]));
       } else {
-        turnHistory.last.throws.add(Throw(score: score, multiplier: multiplier));
+        turnHistory.last.throws
+            .add(Throw(score: score, multiplier: multiplier));
       }
       if (turnHistory.last.throws.length == 3 || turnHistory.last.overthrown) {
         nextPlayer();
+      }
+    });
+  }
+
+  void removeThrow() {
+    setState(() {
+      if (turnHistory.isNotEmpty && (turnHistory.length != 1 || turnHistory[0].throws.isNotEmpty)) {
+        if (turnHistory.last.throws.isNotEmpty) {
+          turnHistory.last.throws.removeLast();
+        } else {
+          turnHistory.removeLast();
+          currentPlayerIndex =
+              (currentPlayerIndex - 1 + widget.playerList.length) %
+                  widget.playerList.length;
+          turnHistory.last.throws.removeLast();
+        }
       }
     });
   }
@@ -70,7 +93,35 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dart Game'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text('Dart Game'),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.undo, size: 30),
+                    onPressed: (turnHistory.isEmpty ||
+                        (turnHistory.length == 1 && turnHistory[0].throws.isEmpty))
+                        ? null
+                        : () => removeThrow(),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.analytics),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DartAnalyticsScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -78,11 +129,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.playerList.map((player) => playerCard(player)).toList(),
+                children: widget.playerList
+                    .map((player) => playerCard(player))
+                    .toList(),
               ),
             ),
           ),
-          // DartsKeyboard at the bottom
           DartsKeyboard(onScoreSelected: onScoreSelected),
         ],
       ),
@@ -111,7 +163,8 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget currentThrowScores(List<PlayerTurn> playerTurns) {
-    List<Throw> lastThrows = playerTurns.isNotEmpty ? playerTurns.last.throws : [];
+    List<Throw> lastThrows =
+        playerTurns.isNotEmpty ? playerTurns.last.throws : [];
 
     return Expanded(
       flex: 2,
@@ -123,18 +176,22 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             child: Row(
               children: List.generate(
                 3,
-                    (index) {
+                (index) {
                   if (index < lastThrows.length) {
                     String displayValue;
-                    if (lastThrows[index].multiplier == Multiplier.single && lastThrows[index].score == 25) {
+                    if (lastThrows[index].multiplier == Multiplier.single &&
+                        lastThrows[index].score == 25) {
                       displayValue = 'SB';
-                    } else if (lastThrows[index].multiplier == Multiplier.double && lastThrows[index].score == 25) {
+                    } else if (lastThrows[index].multiplier ==
+                            Multiplier.double &&
+                        lastThrows[index].score == 25) {
                       displayValue = 'DB';
                     } else {
                       String prefix = '';
                       if (lastThrows[index].multiplier == Multiplier.double) {
                         prefix = 'D';
-                      } else if (lastThrows[index].multiplier == Multiplier.triple) {
+                      } else if (lastThrows[index].multiplier ==
+                          Multiplier.triple) {
                         prefix = 'T';
                       }
                       displayValue = '$prefix${lastThrows[index].score}';
@@ -172,7 +229,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 15),
             child: Text(
-              lastThrows.isNotEmpty ? lastThrows.map((e) => e.calculateScore()).reduce((a, b) => a + b).toString() : '0',
+              lastThrows.isNotEmpty
+                  ? lastThrows
+                      .map((e) => e.calculateScore())
+                      .reduce((a, b) => a + b)
+                      .toString()
+                  : '0',
               style: const TextStyle(color: Colors.white, fontSize: 16),
               textAlign: TextAlign.center,
             ),
@@ -186,9 +248,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
     double avgScore = getAvgScore(playerTurns);
     int totalDarts = playerTurns.fold(0, (sum, t) => sum + t.throws.length);
     int lastTurnSum = 0;
-    if (playerTurns.isNotEmpty && (playerTurns.last.throws.length == 3 || playerTurns.last.overthrown)) {
+    if (playerTurns.isNotEmpty &&
+        (playerTurns.last.throws.length == 3 || playerTurns.last.overthrown)) {
       lastTurnSum = playerTurns.last.turnSum;
-    } else if (playerTurns.length > 1 && (playerTurns.last.throws.length < 3 || playerTurns.last.overthrown)) {
+    } else if (playerTurns.length > 1 &&
+        (playerTurns.last.throws.length < 3 || playerTurns.last.overthrown)) {
       lastTurnSum = playerTurns[playerTurns.length - 2].turnSum;
     }
 
@@ -205,8 +269,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                 const Text("Zuletzt:"),
                 Text(
                   " $lastTurnSum",
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 16),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
             ),
@@ -227,8 +290,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                 const Text("Darts:"),
                 Text(
                   " $totalDarts",
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 16),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
             ),
@@ -239,10 +301,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget playerCard(Player playerInCard) {
-    bool isCurrentPlayer = widget.playerList.indexOf(playerInCard) == currentPlayerIndex;
+    bool isCurrentPlayer =
+        widget.playerList.indexOf(playerInCard) == currentPlayerIndex;
     Color? defaultColor = Colors.grey[900];
 
-    List<PlayerTurn> playerTurns = turnHistory.where((turn) => turn.player == playerInCard).toList();
+    List<PlayerTurn> playerTurns =
+        turnHistory.where((turn) => turn.player == playerInCard).toList();
 
     return Padding(
       padding: const EdgeInsets.all(5),
@@ -253,8 +317,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           children: [
             Container(
                 color: isCurrentPlayer ? Colors.green : defaultColor,
-                width: 10
-            ),
+                width: 10),
             currentScore(playerInCard),
             currentThrowScores(playerTurns),
             currentStatistics(playerTurns),
