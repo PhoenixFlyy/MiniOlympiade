@@ -611,7 +611,7 @@ class _MainMenuState extends State<MainMenu> {
       children: <Widget>[
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white70,
@@ -619,6 +619,7 @@ class _MainMenuState extends State<MainMenu> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+                minimumSize: const Size.fromHeight(70)
               ),
               onPressed: () {
                 HapticFeedback.mediumImpact();
@@ -634,7 +635,7 @@ class _MainMenuState extends State<MainMenu> {
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white70,
@@ -642,6 +643,7 @@ class _MainMenuState extends State<MainMenu> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+                  minimumSize: const Size.fromHeight(70)
               ),
               onPressed: () {
                 HapticFeedback.mediumImpact();
@@ -655,6 +657,34 @@ class _MainMenuState extends State<MainMenu> {
                         )));
               },
               child: const Text('Laufplan',
+                  style: TextStyle(color: Colors.black)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white70,
+                padding: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                  minimumSize: const Size.fromHeight(70)
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SchedulePage(
+                          pairings: pairings,
+                          disciplines: disciplines,
+                          currentRowForColor: currentRound,
+                        )));
+              },
+              child: const Text('Wuecade Games', textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black)),
             ),
           ),
