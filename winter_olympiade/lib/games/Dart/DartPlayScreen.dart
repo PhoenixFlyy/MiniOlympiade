@@ -2,7 +2,6 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
-import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
 
 import 'DartConstants.dart';
@@ -72,11 +71,14 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   void onFinish() {
-    HapticFeedback.heavyImpact();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const DartStartScreen(),
+        builder: (context) => DartAnalyticsScreen(
+          turnHistory: turnHistory,
+          playerList: widget.playerList,
+          isFinished: true,
+        ),
       ),
     );
   }
@@ -189,6 +191,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                                 DartAnalyticsScreen(
                                   turnHistory: turnHistory,
                                   playerList: widget.playerList,
+                                  isFinished: false,
                                 ),
                           ),
                         );
