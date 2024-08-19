@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MainMenu.dart';
-import 'utils/MatchData.dart';
+import '../MainMenu.dart';
+import '../utils/MatchData.dart';
 
 class TeamSelection extends StatefulWidget {
   const TeamSelection({super.key});

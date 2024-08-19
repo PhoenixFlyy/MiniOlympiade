@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/games/ChessClock.dart';
-import 'package:olympiade/Rules.dart';
-import 'package:olympiade/SchedulePage.dart';
-import 'package:olympiade/TeamSelection.dart';
-import 'package:olympiade/UploadPointsScreen.dart';
+import 'package:olympiade/infos/Rules.dart';
+import 'package:olympiade/infos/SchedulePage.dart';
+import 'package:olympiade/setup/TeamSelection.dart';
+import 'package:olympiade/setup/UploadPointsScreen.dart';
 import 'package:olympiade/utils/MatchData.dart';
-import 'package:olympiade/utils/Soundboard.dart';
+import 'package:olympiade/infos/Soundboard.dart';
 
 import '../games/Dart/DartStartScreen.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olympiade/utils/Soundboard.dart';
+import 'package:olympiade/infos/Soundboard.dart';
 
 class GameRule {
   final String name;

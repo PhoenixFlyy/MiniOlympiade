@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'MainMenu.dart';
-import 'TeamSelection.dart';
+import 'setup/TeamSelection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

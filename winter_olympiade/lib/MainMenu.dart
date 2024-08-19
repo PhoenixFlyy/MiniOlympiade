@@ -9,16 +9,16 @@ import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ResultScreen.dart';
-import 'Rules.dart';
-import 'SchedulePage.dart';
-import 'UploadPointsScreen.dart';
+import 'setup/ResultScreen.dart';
+import 'infos/Rules.dart';
+import 'infos/SchedulePage.dart';
+import 'setup/UploadPointsScreen.dart';
 import 'games/ChessClock.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
 import 'utils/MatchDetailQueries.dart';
-import 'utils/PlaySounds.dart';
+import 'infos/PlaySounds.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
