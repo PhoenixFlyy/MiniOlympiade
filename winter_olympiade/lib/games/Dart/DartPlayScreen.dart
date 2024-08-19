@@ -104,9 +104,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         turnHistory.last.throws
             .add(Throw(score: score, multiplier: multiplier));
       }
-      if (turnHistory.last.throws.length == 3 || turnHistory.last.overthrown) {
-        nextPlayer();
-      }
+
 
       if (currentPlayerScore - throwPoints == 0) {
         if (widget.gameEndRule == GameEndRule.doubleOut) {
@@ -120,7 +118,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         }
       }
       if (currentPlayerScore - throwPoints < 0) {
-        onOverthrown();
+        return onOverthrown();
+      }
+
+      if (turnHistory.last.throws.length == 3) {
+        nextPlayer();
       }
     });
   }
@@ -164,7 +166,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.undo, size: 30),
+                      icon: const Icon(Icons.undo, size: 32),
                       onPressed: (turnHistory.isEmpty ||
                           (turnHistory.length == 1 &&
                               turnHistory[0].throws.isEmpty))
