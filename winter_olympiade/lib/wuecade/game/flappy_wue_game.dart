@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import '../components/background.dart';
 import '../components/bird.dart';
@@ -33,7 +34,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
         anchor: Anchor.center,
         textRenderer: TextPaint(
           style: const TextStyle(
-              fontSize: 40, fontFamily: 'Game', fontWeight: FontWeight.bold),
+              fontSize: 40, fontFamily: 'Game', fontWeight: FontWeight.bold, color: Colors.black),
         ));
   }
 
