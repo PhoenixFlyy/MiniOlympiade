@@ -39,6 +39,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
   }
 
   Future<void> _saveGameSettings() async {
+    HapticFeedback.lightImpact();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('selectedGameType', _selectedGameType);
     await prefs.setInt('selectedGameEndRule', _selectedGameEndRule.index);
@@ -202,7 +203,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.remove_circle),
-                        onPressed: () => _removePlayer(index),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          _removePlayer(index);
+                        },
                       ),
                     ],
                   ),
@@ -253,11 +257,17 @@ class _DartStartScreenState extends State<DartStartScreen> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.add_circle),
-                            onPressed: () => setState(() => _players.add(player)),
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              setState(() => _players.add(player));
+                            },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            onPressed: () => _removePlayerFromAvailable(index),
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              _removePlayerFromAvailable(index);
+                            },
                           ),
                         ],
                       ),
@@ -274,12 +284,14 @@ class _DartStartScreenState extends State<DartStartScreen> {
 
   Widget startSetup() {
     bool canStartGame = _players.length >= 2;
-
     return Row(
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: _addNewPlayer,
+            onPressed: () async {
+              HapticFeedback.lightImpact();
+              _addNewPlayer();
+            },
             icon: const Icon(Icons.add, color: Colors.white),
             label: const Text('Spieler erstellen', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
@@ -394,11 +406,15 @@ class _DartStartScreenState extends State<DartStartScreen> {
               actions: <Widget>[
                 TextButton(
                   child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    Navigator.of(context).pop();
+                  },
                 ),
                 TextButton(
                   child: const Text('Spieler hinzufügen', style: TextStyle(color: Colors.white)),
                   onPressed: () {
+                    HapticFeedback.lightImpact();
                     if (nameController.text.isNotEmpty) {
                       final newPlayer = Player(
                         name: nameController.text,
@@ -432,6 +448,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
       return;
     }
 
+    HapticFeedback.heavyImpact();
     Navigator.push(
       context,
       MaterialPageRoute(

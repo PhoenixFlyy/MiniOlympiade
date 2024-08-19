@@ -1,5 +1,6 @@
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
 import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
@@ -71,6 +72,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   void onFinish() {
+    HapticFeedback.heavyImpact();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -160,7 +162,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text('Dart Game'),
+              const Text('Dart'),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -171,11 +173,15 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                           (turnHistory.length == 1 &&
                               turnHistory[0].throws.isEmpty))
                           ? null
-                          : () => removeThrow(),
+                          : () {
+                        HapticFeedback.lightImpact();
+                        removeThrow();
+                          },
                     ),
                     IconButton(
                       icon: const Icon(Icons.analytics),
                       onPressed: () {
+                        HapticFeedback.lightImpact();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -284,6 +290,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                         Multiplier.double &&
                         lastThrows[index].score == 25) {
                       displayValue = 'DB';
+                    } else if (lastThrows[index].multiplier != Multiplier.single &&
+                        lastThrows[index].score == 0) {
+                      displayValue = lastThrows[index].score.toString();
                     } else {
                       String prefix = '';
                       if (lastThrows[index].multiplier == Multiplier.double) {

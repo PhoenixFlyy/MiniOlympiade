@@ -57,6 +57,9 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: backgroundColor,
                               shape: RoundedRectangleBorder(
+                                side: selectedMultiplier != Multiplier.single ?
+                                const BorderSide(color: Colors.white) :
+                                BorderSide.none,
                                 borderRadius: BorderRadius.circular(
                                     borderRadius),
                               ),
@@ -109,6 +112,7 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
         (label == "T" && selectedMultiplier == Multiplier.triple);
 
     bool isDisabled = label == "SB" && selectedMultiplier == Multiplier.triple;
+    bool multiplierBorder = selectedMultiplier == Multiplier.double && label == "SB";
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing),
@@ -116,6 +120,9 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
         style: ElevatedButton.styleFrom(
           backgroundColor: isDisabled ? Colors.grey : buttonColor,
           shape: RoundedRectangleBorder(
+            side: multiplierBorder ?
+            const BorderSide(color: Colors.white) :
+            BorderSide.none,
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           minimumSize: Size.fromHeight((size.height * 5) / 4),
@@ -123,7 +130,7 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
           elevation: isSelected ? 10 : 0,
         ),
         onPressed: isDisabled
-            ? null
+            ? () => HapticFeedback.lightImpact()
             : () {
           HapticFeedback.lightImpact();
           onPressed();
