@@ -63,7 +63,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
   }
 
   void _removePlayerFromAvailable(int index) async {
-    bool confirmed = await _showConfirmationDialog(context, "Spieler löschen", "Möchtest du diesen Spieler wirklich löschen?");
+    bool confirmed = await _showConfirmationDialog(context);
     if (confirmed) {
       setState(() => _availablePlayers.removeAt(index));
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -75,13 +75,13 @@ class _DartStartScreenState extends State<DartStartScreen> {
     }
   }
 
-  Future<bool> _showConfirmationDialog(BuildContext context, String title, String content) {
+  Future<bool> _showConfirmationDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: Text(content),
+          title: const Text("Spieler löschen"),
+          content: const Text("Möchtest du diesen Spieler wirklich löschen?"),
           actions: <Widget>[
             TextButton(
               child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),

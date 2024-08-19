@@ -57,7 +57,7 @@ enum Multiplier {
 class PlayerTurn {
   final Player player;
   final List<Throw> throws;
-  final bool overthrown;
+  bool overthrown;
 
   PlayerTurn({
     required this.player,
@@ -66,4 +66,11 @@ class PlayerTurn {
   });
 
   int get turnSum => throws.fold(0, (sum, t) => sum + t.calculateScore());
+}
+
+class AvgScoreResult {
+  final double avgScore;
+  final int totalThrows;
+
+  AvgScoreResult(this.avgScore, this.totalThrows);
 }
