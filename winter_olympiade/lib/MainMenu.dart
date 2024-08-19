@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
+import 'package:olympiade/wuecade/screens/main_menu_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'setup/ResultScreen.dart';
@@ -678,11 +679,7 @@ class _MainMenuState extends State<MainMenu> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SchedulePage(
-                          pairings: pairings,
-                          disciplines: disciplines,
-                          currentRowForColor: currentRound,
-                        )));
+                        builder: (context) => const FlappyMain()));
               },
               child: const Text('Wuecade Games', textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.black)),
