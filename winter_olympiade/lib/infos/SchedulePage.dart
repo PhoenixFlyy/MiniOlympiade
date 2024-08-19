@@ -54,7 +54,7 @@ class SchedulePage extends StatelessWidget {
                     isSpecialRow ? Colors.blue : Colors.transparent;
 
                 return DataRow(
-                  color: MaterialStateProperty.all<Color>(backgroundColor),
+                  color: WidgetStateProperty.all<Color>(backgroundColor),
                   cells: List<DataCell>.generate(
                     pairings[rowIndex].length + 1,
                     (cellIndex) {
