@@ -492,156 +492,174 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
-            const Column(
-              children: [
-                Text("Bisherige Gewinner:",
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
-                Text("Wenzel & Daniel",
-                    style: TextStyle(fontSize: 22, color: Colors.amber)),
-                Text("Simon B. & Felix",
-                    style: TextStyle(fontSize: 22, color: Colors.amber)),
-              ],
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 15,
-                    width: double.infinity,
-                    child: FilledButton.tonal(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const DartStartScreen()));
-                      },
-                      child: const Text(
-                        'Dartsrechner',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 15,
-                    width: double.infinity,
-                    child: FilledButton.tonal(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.all(16.0),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SchachUhr(
-                                      maxtime: maxChessTime.inSeconds,
-                                    )));
-                      },
-                      child: const Text(
-                        'Schachuhr',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white70,
-                            padding: const EdgeInsets.all(16.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const RulesScreen()));
-                          },
-                          child: const Text('Regeln',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: FilledButton.tonal(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.all(16.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UploadResults(
-                                      currentRound: currentRound,
-                                      teamNumber: selectedTeam)));
-                        },
-                        child: const Text('Ergebnisse eintragen',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black)),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white70,
-                            padding: const EdgeInsets.all(16.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SchedulePage(
-                                          pairings: pairings,
-                                          disciplines: disciplines,
-                                          currentRowForColor: currentRound,
-                                        )));
-                          },
-                          child: const Text('Laufplan',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            previousWinners(),
+            mainButtonColumn(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget previousWinners() {
+    return const Column(
+      children: [
+        Text("Bisherige Gewinner:",
+            style: TextStyle(fontSize: 20, color: Colors.white)),
+        Text("Wenzel & Daniel",
+            style: TextStyle(fontSize: 22, color: Colors.amber)),
+        Text("Simon B. & Felix",
+            style: TextStyle(fontSize: 22, color: Colors.amber)),
+      ],
+    );
+  }
+
+  Widget mainButtonColumn() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height / 15,
+            width: double.infinity,
+            child: FilledButton.tonal(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.all(16.0),
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UploadResults(
+                            currentRound: currentRound,
+                            teamNumber: selectedTeam)));
+              },
+              child: const Text(
+                'Ergebnisse eintragen',
+                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height / 15,
+            width: double.infinity,
+            child: FilledButton.tonal(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DartStartScreen()));
+              },
+              child: const Text(
+                'Dartsrechner',
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height / 15,
+            width: double.infinity,
+            child: FilledButton.tonal(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.all(16.0),
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SchachUhr(
+                          maxtime: maxChessTime.inSeconds,
+                        )));
+              },
+              child: const Text(
+                'Schachuhr',
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
+            ),
+          ),
+        ),
+        bottomButtonRow(),
+      ],
+    );
+  }
+
+  Widget bottomButtonRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white70,
+                padding: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RulesScreen()));
+              },
+              child: const Text('Regeln',
+                  style: TextStyle(color: Colors.black)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white70,
+                padding: const EdgeInsets.all(16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SchedulePage(
+                          pairings: pairings,
+                          disciplines: disciplines,
+                          currentRowForColor: currentRound,
+                        )));
+              },
+              child: const Text('Laufplan',
+                  style: TextStyle(color: Colors.black)),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
