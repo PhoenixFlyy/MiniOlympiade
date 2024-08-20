@@ -9,6 +9,7 @@ import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
 import 'package:olympiade/wuecade/wuecade_main_menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:starsview/starsview.dart';
 
 import 'setup/ResultScreen.dart';
 import 'infos/Rules.dart';
@@ -403,98 +404,119 @@ class _MainMenuState extends State<MainMenu> {
           eventStartTime: _eventStartTime,
           eventEndTime: _eventEndTime,
           maxChessTime: maxChessTime.inSeconds),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      body: SafeArea(
+        child: Stack(
           children: <Widget>[
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.circle, color: getRoundCircleColor()),
-                        Text(
-                            currentRound > 30 ? "Ende" : ' Runde $currentRound',
-                            style: const TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.timer),
-                        Text(' Zeit: $formattedRemainingTime',
-                            style: const TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                  ],
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: <Color>[
+                    Colors.black,
+                    Colors.black26
+                  ]
                 ),
-                if (isPaused)
-                  const Icon(
-                    Icons.pause,
-                    size: 300,
-                  )
-                else if (currentRound <= pairings.length && currentRound > 0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(currentMatchUpText,
-                              style: const TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: SizedBox(
-                              height: 150, child: getDisciplineImage()),
-                        ),
-                      ]),
-                    ),
-                  )
-                else
+              ),
+            ),
+            const StarsView(
+              fps: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
                   Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text(
-                            currentRound > pairings.length
-                                ? "Die Olympiade ist zu Ende"
-                                : "Die Olympiade beginnt bald..",
-                            style: const TextStyle(fontSize: 24)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.circle, color: getRoundCircleColor()),
+                              Text(
+                                  currentRound > 30 ? "Ende" : ' Runde $currentRound',
+                                  style: const TextStyle(fontSize: 18)),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.timer),
+                              Text(' Zeit: $formattedRemainingTime',
+                                  style: const TextStyle(fontSize: 18)),
+                            ],
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 200, child: getDisciplineImage()),
+                      if (isPaused)
+                        const Icon(
+                          Icons.pause,
+                          size: 300,
+                        )
+                      else if (currentRound <= pairings.length && currentRound > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 40),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[800],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(currentMatchUpText,
+                                    style: const TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: SizedBox(
+                                    height: 150, child: getDisciplineImage()),
+                              ),
+                            ]),
+                          ),
+                        )
+                      else
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Text(
+                                  currentRound > pairings.length
+                                      ? "Die Olympiade ist zu Ende"
+                                      : "Die Olympiade beginnt bald..",
+                                  style: const TextStyle(fontSize: 24)),
+                            ),
+                            SizedBox(height: 200, child: getDisciplineImage()),
+                          ],
+                        ),
+                      if (currentRound < pairings.length &&
+                          !isPaused &&
+                          currentRound >= 1)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[850],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(nextMatchUpText,
+                                  style: const TextStyle(fontSize: 15),
+                                  textAlign: TextAlign.center),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
-                if (currentRound < pairings.length &&
-                    !isPaused &&
-                    currentRound >= 1)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[850],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(nextMatchUpText,
-                            style: const TextStyle(fontSize: 15),
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                  ),
-              ],
+                  if (currentRound > pairings.length) previousWinners(),
+                  mainButtonColumn(),
+                ],
+              ),
             ),
-            if (currentRound > pairings.length) previousWinners(),
-            mainButtonColumn(),
           ],
         ),
       ),
@@ -522,11 +544,11 @@ class _MainMenuState extends State<MainMenu> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height / 15,
+              height: MediaQuery.of(context).size.height / 14,
               width: double.infinity,
               child: FilledButton.tonal(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.grey[500],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -543,7 +565,7 @@ class _MainMenuState extends State<MainMenu> {
                 },
                 child: const Text(
                   'Ergebnisse eintragen',
-                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -551,11 +573,11 @@ class _MainMenuState extends State<MainMenu> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height / 15,
+              height: MediaQuery.of(context).size.height / 14,
               width: double.infinity,
               child: FilledButton.tonal(
                 style: FilledButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.grey[500],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -569,7 +591,7 @@ class _MainMenuState extends State<MainMenu> {
                 },
                 child: const Text(
                   'Dartsrechner',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
             ),
@@ -577,11 +599,11 @@ class _MainMenuState extends State<MainMenu> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height / 15,
+              height: MediaQuery.of(context).size.height / 14,
               width: double.infinity,
               child: FilledButton.tonal(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.grey[500],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -598,7 +620,7 @@ class _MainMenuState extends State<MainMenu> {
                 },
                 child: const Text(
                   'Schachuhr',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
             ),
@@ -616,7 +638,7 @@ class _MainMenuState extends State<MainMenu> {
         Expanded(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.grey[500],
               padding: const EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -631,7 +653,7 @@ class _MainMenuState extends State<MainMenu> {
                       builder: (context) => const RulesScreen()));
             },
             child: const Text('Regeln',
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(color: Colors.white)),
           ),
         ),
         Expanded(
@@ -639,7 +661,7 @@ class _MainMenuState extends State<MainMenu> {
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.grey[500],
                 padding: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -658,14 +680,14 @@ class _MainMenuState extends State<MainMenu> {
                         )));
               },
               child: const Text('Laufplan',
-                  style: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: Colors.white)),
             ),
           ),
         ),
         Expanded(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.grey[500],
               padding: const EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -680,7 +702,7 @@ class _MainMenuState extends State<MainMenu> {
                       builder: (context) => const WuecadeMainMenu()));
             },
             child: const Text('Wuecade Games', textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
