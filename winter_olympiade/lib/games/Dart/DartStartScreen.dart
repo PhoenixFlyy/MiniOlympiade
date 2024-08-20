@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:olympiade/utils/ConfirmationDialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/ImageConverter.dart';
@@ -17,8 +18,8 @@ class DartStartScreen extends StatefulWidget {
 }
 
 class _DartStartScreenState extends State<DartStartScreen> {
-  int _selectedGameType = DartConstants.gameTypes[2];
-  GameEndRule _selectedGameEndRule = GameEndRule.doubleOut;
+  int _selectedGameType = DartConstants.gameTypes[1];
+  GameEndRule _selectedGameEndRule = GameEndRule.singleOut;
 
   final List<Player> _players = [];
   final List<Player> _availablePlayers = [];
@@ -49,10 +50,29 @@ class _DartStartScreenState extends State<DartStartScreen> {
   void _loadAvailablePlayers() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? playerData = prefs.getStringList('players');
+    List<String>? selectedPlayerData = prefs.getStringList('selectedPlayers');
     if (playerData != null) {
       setState(() => _availablePlayers.addAll(
         playerData.map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
       ));
+    }
+    if (selectedPlayerData != null) {
+      setState(() => _players.addAll(
+        selectedPlayerData.map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
+      ));
+    }
+    if (mounted && prefs.getInt('currentPlayerIndex') != null) {
+      bool resumeGame = await ConfirmationDialog.show(
+        context: context,
+        title: 'Spiel fortsetzen',
+        content: 'Möchtest du das letzte Spiel fortsetzen?',
+      );
+      if (resumeGame) {
+        _startGame();
+      } else {
+        prefs.remove('turnHistory');
+        prefs.remove('currentPlayerIndex');
+      }
     }
   }
 
@@ -63,8 +83,21 @@ class _DartStartScreenState extends State<DartStartScreen> {
     await prefs.setStringList('players', playerData);
   }
 
+  void _saveSelectedPlayer(Player player) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? selectedPlayerData = prefs.getStringList('selectedPlayers') ?? [];
+    selectedPlayerData.add(jsonEncode(player.toJson()));
+    await prefs.setStringList('selectedPlayers', selectedPlayerData);
+  }
+
   void _removePlayerFromAvailable(int index) async {
-    bool confirmed = await _showConfirmationDialog(context);
+    bool confirmed = await ConfirmationDialog.show(
+      context: context,
+      title: 'Spieler löschen',
+      content: 'Möchtest du diesen Spieler wirklich löschen?',
+      confirmText: 'Löschen',
+      cancelText: 'Abbrechen',
+    );
     if (confirmed) {
       setState(() => _availablePlayers.removeAt(index));
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -76,30 +109,21 @@ class _DartStartScreenState extends State<DartStartScreen> {
     }
   }
 
-  Future<bool> _showConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Spieler löschen"),
-          content: const Text("Möchtest du diesen Spieler wirklich löschen?"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: const Text('Löschen', style: TextStyle(color: Colors.white)),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    ).then((value) => value ?? false);
+  void _removePlayer(int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? selectedPlayerData = prefs.getStringList('selectedPlayers');
+    if (selectedPlayerData != null) {
+      selectedPlayerData.removeAt(index);
+      await prefs.setStringList('selectedPlayers', selectedPlayerData);
+    }
+
+    setState(() => _players.removeAt(index));
   }
 
-  void _removePlayer(int index) =>
-      setState(() => _players.removeAt(index));
+  void _addSelectedPlayer(Player player) {
+    _saveSelectedPlayer(player);
+    setState(() => _players.add(player));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +283,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
                             icon: const Icon(Icons.add_circle),
                             onPressed: () {
                               HapticFeedback.lightImpact();
-                              setState(() => _players.add(player));
+                              _addSelectedPlayer(player);
                             },
                           ),
                           IconButton(

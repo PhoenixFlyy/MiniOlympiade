@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
-
+import 'package:olympiade/utils/ConfirmationDialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'DartConstants.dart';
 
 class DartPlayScreen extends StatefulWidget {
@@ -26,6 +29,54 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   int currentPlayerIndex = 0;
   List<PlayerTurn> turnHistory = [];
   Duration flipDuration = const Duration(milliseconds: 250);
+
+  @override
+  void initState() {
+    super.initState();
+    loadGameState();
+  }
+
+  void saveGameState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> turnHistoryJson = turnHistory.map((turn) {
+      return jsonEncode({
+        'player': turn.player.toJson(),
+        'throws': turn.throws.map((t) {
+          return {'score': t.score, 'multiplier': t.multiplier.index};
+        }).toList(),
+        'overthrown': turn.overthrown,
+      });
+    }).toList();
+
+    await prefs.setStringList('turnHistory', turnHistoryJson);
+    await prefs.setInt('currentPlayerIndex', currentPlayerIndex);
+  }
+
+  void loadGameState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? turnHistoryJson = prefs.getStringList('turnHistory');
+    if (turnHistoryJson != null) {
+      List<PlayerTurn> loadedTurnHistory = turnHistoryJson.map((turnString) {
+        Map<String, dynamic> turnMap = jsonDecode(turnString);
+
+        return PlayerTurn(
+          player: Player.fromJson(turnMap['player']),
+          throws: (turnMap['throws'] as List).map((throwMap) {
+            return Throw(
+              score: throwMap['score'],
+              multiplier: Multiplier.values[throwMap['multiplier']],
+            );
+          }).toList(),
+          overthrown: turnMap['overthrown'],
+        );
+      }).toList();
+
+      setState(() {
+        turnHistory = loadedTurnHistory;
+        currentPlayerIndex = prefs.getInt('currentPlayerIndex') ?? 0;
+      });
+    }
+  }
 
   AvgScoreResult getAvgScore(List<PlayerTurn> playerTurns) {
     if (playerTurns.isEmpty) return AvgScoreResult(0.0, 0);
@@ -57,20 +108,26 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       currentPlayerIndex = (currentPlayerIndex + 1) % widget.playerList.length;
       turnHistory.add(PlayerTurn(
           player: widget.playerList[currentPlayerIndex], throws: []));
+      saveGameState();
     });
   }
 
   int calculatePlayerScore(Player player) {
     int score = widget.gameType;
 
-    for (var turn in turnHistory.where((t) => t.player == player && !t.overthrown)) {
+    for (var turn in turnHistory.where((t) => t.player.name == player.name && !t.overthrown)) {
       score -= turn.turnSum;
     }
 
     return score >= 0 ? score : 0;
   }
 
-  void onFinish() {
+  Future<void> onFinish() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('turnHistory');
+    await prefs.remove('currentPlayerIndex');
+
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -91,13 +148,15 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         overthrown: true,
       );
       nextPlayer();
+      // saveGameState(); is called in nextPlayer()
     });
   }
 
-  void onScoreSelected(int score, Multiplier multiplier) {
+  Future<void> onScoreSelected(int score, Multiplier multiplier) async {
     int currentPlayerScore = calculatePlayerScore(
         widget.playerList[currentPlayerIndex]);
     int throwPoints = score * (multiplier.index + 1);
+
     setState(() {
       if (turnHistory.isEmpty ||
           turnHistory.last.player != widget.playerList[currentPlayerIndex]) {
@@ -109,26 +168,24 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             .add(Throw(score: score, multiplier: multiplier));
       }
 
-
-      if (currentPlayerScore - throwPoints == 0) {
-        if (widget.gameEndRule == GameEndRule.doubleOut) {
-          if (multiplier == Multiplier.double) {
-            return onFinish();
-          } else {
-            return onOverthrown();
-          }
-        } else {
-          return onFinish();
-        }
-      }
-      if (currentPlayerScore - throwPoints < 0) {
-        return onOverthrown();
-      }
-
-      if (turnHistory.last.throws.length == 3) {
-        nextPlayer();
-      }
+      saveGameState();
     });
+
+    if (currentPlayerScore - throwPoints == 0) {
+      if (widget.gameEndRule == GameEndRule.doubleOut) {
+        if (multiplier == Multiplier.double) {
+          await onFinish();
+        } else {
+          onOverthrown();
+        }
+      } else {
+        await onFinish();
+      }
+    } else if (currentPlayerScore - throwPoints < 0) {
+      onOverthrown();
+    } else if (turnHistory.last.throws.length == 3) {
+      nextPlayer();
+    }
   }
 
   void removeThrow() {
@@ -146,6 +203,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           turnHistory.last.throws.removeLast();
           turnHistory.last.overthrown = false;
         }
+        saveGameState();
       }
     });
   }
@@ -156,8 +214,17 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) async {
         if (didPop) return;
-        final bool shouldPop = await _showConfirmationDialog(context) ?? false;
-        if (context.mounted && shouldPop) Navigator.pop(context);
+        final bool shouldPop = await ConfirmationDialog.show(
+            context: context,
+            title: "Spiel beenden",
+            content: "Möchtest du dieses Spiel wirklich beenden?"
+        );
+        if (shouldPop) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.remove('turnHistory');
+          await prefs.remove('currentPlayerIndex');
+          if (context.mounted) Navigator.pop(context);
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -220,28 +287,6 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         ),
       ),
     );
-  }
-
-  Future<bool?> _showConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Spiel beenden"),
-          content: const Text("Möchtest du dieses Spiel wirklich beenden?"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Nein', style: TextStyle(color: Colors.white)),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: const Text('Ja', style: TextStyle(color: Colors.white)),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
-      },
-    ).then((value) => value ?? false);
   }
 
   Widget currentScore(Player playerInCard) {
@@ -422,9 +467,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         widget.playerList.indexOf(playerInCard) == currentPlayerIndex;
     Color? defaultColor = Colors.grey[900];
 
-    List<PlayerTurn> playerTurns =
-    turnHistory.where((turn) => turn.player == playerInCard).toList();
 
+    List<PlayerTurn> playerTurns =
+    turnHistory.where((turn) => turn.player.name == playerInCard.name).toList();
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
