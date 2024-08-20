@@ -73,6 +73,9 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
                             buttonNumber.toString(),
                             style: TextStyle(
                                 color: Colors.white, fontSize: textSize),
+                            softWrap: false,
+                            overflow: TextOverflow.visible,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
@@ -138,6 +141,9 @@ class _DartsKeyboardState extends State<DartsKeyboard> {
         child: Text(
           label,
           style: TextStyle(color: Colors.white, fontSize: textSize),
+          softWrap: false,
+          overflow: TextOverflow.visible,
+          textAlign: TextAlign.center,
         ),
       ),
     );

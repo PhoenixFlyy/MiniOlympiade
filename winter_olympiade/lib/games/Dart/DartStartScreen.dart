@@ -345,7 +345,6 @@ class _DartStartScreenState extends State<DartStartScreen> {
 
   Future<void> _addNewPlayer() async {
     TextEditingController nameController = TextEditingController();
-    FocusNode nameFocusNode = FocusNode();
 
     File dartsImageFile = await getImageFileFromAssets('darts.png');
     FileImage playerImage = FileImage(dartsImageFile);
@@ -355,12 +354,6 @@ class _DartStartScreenState extends State<DartStartScreen> {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            FocusScope.of(context).requestFocus(nameFocusNode);
-          }
-        });
-
         return StatefulBuilder(
           builder: (context, setStateDialog) {
             return AlertDialog(
@@ -408,7 +401,6 @@ class _DartStartScreenState extends State<DartStartScreen> {
                     Expanded(
                       child: TextField(
                         controller: nameController,
-                        focusNode: nameFocusNode,
                         decoration: InputDecoration(
                           labelText: 'Name',
                           labelStyle: const TextStyle(color: Colors.white),
