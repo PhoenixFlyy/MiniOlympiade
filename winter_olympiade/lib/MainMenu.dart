@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/games/Dart/DartStartScreen.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
-import 'package:olympiade/wuecade/screens/main_menu_screen.dart';
+import 'package:olympiade/wuecade/wuecade_main_menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'setup/ResultScreen.dart';
@@ -493,7 +493,7 @@ class _MainMenuState extends State<MainMenu> {
                   ),
               ],
             ),
-            previousWinners(),
+            if (currentRound > pairings.length) previousWinners(),
             mainButtonColumn(),
           ],
         ),
@@ -515,94 +515,97 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   Widget mainButtonColumn() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height / 15,
-            width: double.infinity,
-            child: FilledButton.tonal(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 15,
+              width: double.infinity,
+              child: FilledButton.tonal(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
                 ),
-                padding: const EdgeInsets.all(16.0),
-              ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UploadResults(
-                            currentRound: currentRound,
-                            teamNumber: selectedTeam)));
-              },
-              child: const Text(
-                'Ergebnisse eintragen',
-                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UploadResults(
+                              currentRound: currentRound,
+                              teamNumber: selectedTeam)));
+                },
+                child: const Text(
+                  'Ergebnisse eintragen',
+                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height / 15,
-            width: double.infinity,
-            child: FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 15,
+              width: double.infinity,
+              child: FilledButton.tonal(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DartStartScreen()));
-              },
-              child: const Text(
-                'Dartsrechner',
-                style: TextStyle(fontSize: 20, color: Colors.black),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DartStartScreen()));
+                },
+                child: const Text(
+                  'Dartsrechner',
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height / 15,
-            width: double.infinity,
-            child: FilledButton.tonal(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 15,
+              width: double.infinity,
+              child: FilledButton.tonal(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.all(16.0),
                 ),
-                padding: const EdgeInsets.all(16.0),
-              ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SchachUhr(
-                          maxtime: maxChessTime.inSeconds,
-                        )));
-              },
-              child: const Text(
-                'Schachuhr',
-                style: TextStyle(fontSize: 20, color: Colors.black),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SchachUhr(
+                            maxtime: maxChessTime.inSeconds,
+                          )));
+                },
+                child: const Text(
+                  'Schachuhr',
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
               ),
             ),
           ),
-        ),
-        bottomButtonRow(),
-      ],
+          bottomButtonRow(),
+        ],
+      ),
     );
   }
 
@@ -611,35 +614,32 @@ class _MainMenuState extends State<MainMenu> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white70,
-                padding: const EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                minimumSize: const Size.fromHeight(70)
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              padding: const EdgeInsets.all(16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RulesScreen()));
-              },
-              child: const Text('Regeln',
-                  style: TextStyle(color: Colors.black)),
+              minimumSize: const Size.fromHeight(70)
             ),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RulesScreen()));
+            },
+            child: const Text('Regeln',
+                style: TextStyle(color: Colors.black)),
           ),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white70,
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.all(16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -663,27 +663,24 @@ class _MainMenuState extends State<MainMenu> {
           ),
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white70,
-                padding: const EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                  minimumSize: const Size.fromHeight(70)
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              padding: const EdgeInsets.all(16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const FlappyMain()));
-              },
-              child: const Text('Wuecade Games', textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black)),
+                minimumSize: const Size.fromHeight(70)
             ),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const WuecadeMainMenu()));
+            },
+            child: const Text('Wuecade Games', textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black)),
           ),
         ),
       ],
