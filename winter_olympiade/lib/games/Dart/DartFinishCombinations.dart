@@ -1,3 +1,12 @@
+List<String>? getFinishingCombination(int score, bool isSingleOut) {
+  if (isSingleOut) {
+    return singleFinishingCombinations[score];
+  } else {
+    return doubleFinishingCombinations[score];
+  }
+}
+
+
 final Map<int, List<String>> doubleFinishingCombinations = {
   170: ['T20', 'T20', 'Bull'],
   167: ['T20', 'T19', 'Bull'],

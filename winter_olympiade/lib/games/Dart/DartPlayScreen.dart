@@ -4,6 +4,7 @@ import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
+import 'package:olympiade/games/Dart/DartFinishCombinations.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
 import 'package:olympiade/utils/ConfirmationDialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -312,11 +313,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget currentThrowScores(List<PlayerTurn> playerTurns) {
-    List<Throw> lastThrows =
-    playerTurns.isNotEmpty ? playerTurns.last.throws : [];
+    List<Throw> lastThrows = playerTurns.isNotEmpty ? playerTurns.last.throws : [];
+    bool currentlyOverthrown = playerTurns.isNotEmpty && playerTurns.last.overthrown;
+    int currentPlayerScore = calculatePlayerScore(widget.playerList[currentPlayerIndex]);
 
-    bool currentlyOverthrown = playerTurns.isNotEmpty &&
-        playerTurns.last.overthrown;
+    List<String>? finishCombination = getFinishingCombination(currentPlayerScore, widget.gameEndRule == GameEndRule.singleOut);
 
     return Expanded(
       flex: 2,
@@ -364,14 +365,19 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                       ),
                     );
                   } else {
+                    String displayValue = '';
+                    int finishIndex = index - lastThrows.length;
+                    if (finishCombination != null && finishCombination.length <= (3 - lastThrows.length) && finishIndex < finishCombination.length) {
+                      displayValue = finishCombination[finishIndex];
+                    }
                     return Expanded(
                       child: Container(
                         color: currentlyOverthrown ? Colors.red : Colors.black,
                         margin: const EdgeInsets.all(2),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            '',
-                            style: TextStyle(color: Colors.white),
+                            displayValue,
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
                         ),
                       ),
