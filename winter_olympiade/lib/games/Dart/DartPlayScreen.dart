@@ -467,9 +467,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         widget.playerList.indexOf(playerInCard) == currentPlayerIndex;
     Color? defaultColor = Colors.grey[900];
 
-
     List<PlayerTurn> playerTurns =
     turnHistory.where((turn) => turn.player.name == playerInCard.name).toList();
+
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
