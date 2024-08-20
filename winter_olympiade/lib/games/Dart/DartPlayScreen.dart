@@ -317,7 +317,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
     bool currentlyOverthrown = playerTurns.isNotEmpty && playerTurns.last.overthrown;
     int currentPlayerScore = calculatePlayerScore(widget.playerList[currentPlayerIndex]);
 
-    List<String>? finishCombination = getFinishingCombination(currentPlayerScore, widget.gameEndRule == GameEndRule.singleOut);
+    List<String>? finishCombination = getFinishingCombination(currentPlayerScore, 3 - lastThrows.length);
 
     return Expanded(
       flex: 2,
