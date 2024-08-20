@@ -45,11 +45,11 @@ class WuecadeMainMenu extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height / 15,
+                        height: MediaQuery.of(context).size.height / 14,
                         width: double.infinity,
                         child: FilledButton.tonal(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.grey[500],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -64,17 +64,17 @@ class WuecadeMainMenu extends StatelessWidget {
                           },
                           child: const Text(
                             'Flappy Birds',
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.white),
                           ),
                         ),
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height / 15,
+                        height: MediaQuery.of(context).size.height / 14,
                         width: double.infinity,
                         child: FilledButton.tonal(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.grey[500],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -89,7 +89,7 @@ class WuecadeMainMenu extends StatelessWidget {
                           },
                           child: const Text(
                             'Achievements',
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.white),
                           ),
                         ),
                       ),
