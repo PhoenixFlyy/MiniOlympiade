@@ -68,17 +68,14 @@ class _AchievementScreenState extends State<AchievementScreen> {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              image,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.error, size: 80, color: Colors.red);
-              },
-            ),
+          Image.asset(
+            image,
+            width: 80,
+            height: 80,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.error, size: 80, color: Colors.red);
+            },
           ),
           const SizedBox(width: 12),
           Expanded(
