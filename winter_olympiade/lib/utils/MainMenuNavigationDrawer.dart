@@ -84,7 +84,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         child: InkWell(
           onTap: () {
             _confettiController.play();
-            context.read<AchievementProvider>().completeAchievementByTitle('First Blood!');
+            context.read<AchievementProvider>().completeAchievementByTitle('Lass es regnen');
           },
           child: Container(
             padding: EdgeInsets.only(
