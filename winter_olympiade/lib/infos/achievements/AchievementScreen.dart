@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'AchievementList.dart';
+import 'package:provider/provider.dart';
+import 'achievement_provider.dart';
 
 class AchievementScreen extends StatefulWidget {
   const AchievementScreen({super.key});
@@ -9,16 +10,11 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreenState extends State<AchievementScreen> {
-  void completeAchievement(int index) {
-    setState(() => achievements[index].isCompleted = true);
-  }
-
-  void completeAchievementByTitle(String title) {
-    setState(() => achievements.firstWhere((achievement) => achievement.title == title).isCompleted = true);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final achievements = context.watch<AchievementProvider>().getAchievementList();
+    int completedAchievements = achievements.where((achievement) => achievement.isCompleted).length;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -27,7 +23,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
           children: [
             const Text('Achievements'),
             Text(
-              '${achievements.where((achievement) => achievement.isCompleted).length / achievements.length}',
+              '$completedAchievements / ${achievements.length}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

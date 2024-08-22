@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/wuecade/screens/main_menu_screen.dart';
 import 'package:starsview/starsview.dart';
-import '../infos/AchievementScreen.dart';
+import '../infos/achievements/AchievementScreen.dart';
 
 class WuecadeMainMenu extends StatelessWidget {
   const WuecadeMainMenu({super.key});

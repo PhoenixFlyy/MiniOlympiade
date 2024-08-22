@@ -7,10 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:olympiade/games/ChessClock.dart';
 import 'package:olympiade/infos/Rules.dart';
 import 'package:olympiade/infos/SchedulePage.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/setup/TeamSelection.dart';
 import 'package:olympiade/setup/UploadPointsScreen.dart';
 import 'package:olympiade/utils/MatchData.dart';
 import 'package:olympiade/infos/Soundboard.dart';
+import 'package:provider/provider.dart';
 
 import '../games/Dart/DartStartScreen.dart';
 
@@ -23,14 +25,13 @@ class MainMenuNavigationDrawer extends StatefulWidget {
   final DateTime eventEndTime;
 
   const MainMenuNavigationDrawer(
-      {Key? key,
+      {super.key,
       required this.currentRound,
       required this.selectedRound,
       required this.teamNumber,
       required this.maxChessTime,
       required this.eventStartTime,
-      required this.eventEndTime})
-      : super(key: key);
+      required this.eventEndTime});
 
   @override
   State<MainMenuNavigationDrawer> createState() =>
@@ -81,7 +82,10 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
 
   Widget buildHeader(BuildContext context) => Material(
         child: InkWell(
-          onTap: () => _confettiController.play(),
+          onTap: () {
+            _confettiController.play();
+            context.read<AchievementProvider>().completeAchievementByTitle('First Blood!');
+          },
           child: Container(
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
