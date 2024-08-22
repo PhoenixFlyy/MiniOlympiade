@@ -34,6 +34,7 @@ class Achievement {
   }
 }
 
+// When changing the title or order please also adjust he eventFlag
 List<Achievement> defaultAchievements = [
   Achievement(
     image: "assets/icon/play_store_512.png",
