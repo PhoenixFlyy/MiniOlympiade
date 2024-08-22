@@ -87,7 +87,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
           ),
         ],
       ),
-      child: hidden ? const SizedBox(width: 80, height: 80) : Row(
+      child: hidden ?
+      const SizedBox(
+        width: 80,
+        height: 80,
+        child: Center(child: Text("? ? ?", style: TextStyle(fontSize: 24, color: Colors.white)))) :
+      Row(
         children: [
           Image.asset(
             image,

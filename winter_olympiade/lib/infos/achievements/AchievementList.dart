@@ -65,7 +65,6 @@ List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie6.PNG',
     title: 'Win Streak!',
     description: 'Gewinne drei Disziplinen hintereinander',
-    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie7.PNG',
@@ -191,11 +190,13 @@ List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie31.PNG',
     title: 'Nimm es ganz genau!',
     description: 'Schaue in den Regeln nach',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie32.PNG',
     title: 'Bücherwurm',
     description: 'Klappe alle Regeln gleichzeitig auf',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie33.PNG',
@@ -206,6 +207,7 @@ List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie34.PNG',
     title: 'Flappy Eagle',
     description: 'Erreiche 50 Punkte in Flappy Bird',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie35.PNG',
@@ -216,6 +218,7 @@ List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie36.PNG',
     title: 'Annoying Bastard',
     description: 'Spiele alle Soundeffekte ab',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie37.PNG',
@@ -231,11 +234,13 @@ List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie39.PNG',
     title: 'Taifun',
     description: 'Löse 10 mal den Konfettiregen aus',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie40.PNG',
     title: 'Cookie Clicker',
     description: 'Löse 100 mal den Konfettiregen aus',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie41.PNG',
