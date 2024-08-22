@@ -9,7 +9,13 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreenState extends State<AchievementScreen> {
-  int completedAchievements = 0;
+  void completeAchievement(int index) {
+    setState(() => achievements[index].isCompleted = true);
+  }
+
+  void completeAchievementByTitle(String title) {
+    setState(() => achievements.firstWhere((achievement) => achievement.title == title).isCompleted = true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
           children: [
             const Text('Achievements'),
             Text(
-              '$completedAchievements/${achievements.length}',
+              '${achievements.where((achievement) => achievement.isCompleted).length / achievements.length}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -46,10 +52,10 @@ class _AchievementScreenState extends State<AchievementScreen> {
           itemCount: achievements.length,
           itemBuilder: (context, index) {
             return achievementContainer(
-              image: achievements[index]['image'] as String,
-              title: achievements[index]['title'] as String,
-              description: achievements[index]['description'] as String,
-              isCompleted: achievements[index]['isCompleted'] as bool? ?? false,
+              image: achievements[index].image,
+              title: achievements[index].title,
+              description: achievements[index].description,
+              isCompleted: achievements[index].isCompleted,
             );
           },
         ),
