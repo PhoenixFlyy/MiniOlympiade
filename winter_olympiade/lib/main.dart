@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,18 @@ import 'setup/TeamSelection.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await AwesomeNotifications().initialize("assets/icon/play_store_512.png", [
+    NotificationChannel(
+      channelGroupKey: "achievement_channel_group",
+      channelKey: "achievement_channel",
+      channelName: "Achievement",
+      channelDescription: "Achievement Channel",
+    )
+  ], channelGroups: [
+    NotificationChannelGroup(
+        channelGroupKey: "achievement_channel_group",
+        channelGroupName: "Achievement Group")
+  ]);
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(const MyApp());
