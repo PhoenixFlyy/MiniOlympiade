@@ -6,7 +6,7 @@ List<Map<String, String>> achievements = [
   },
   {
     'image': 'assets/achievements/Folie3.PNG',
-    'title': 'No perfect score for you!',
+    'title': 'Oh no, the perfect score!',
     'description': 'Verliere deine erste Disziplin',
   },
   {
@@ -77,7 +77,7 @@ List<Map<String, String>> achievements = [
   {
     'image': 'assets/achievements/Folie17.PNG',
     'title': 'Comeback?',
-    'description': 'Gewinne nach mindestens drei Niederlagen in Folge',
+    'description': 'Gewinne nachdem du 3 mal verloren hast',
   },
   {
     'image': 'assets/achievements/Folie18.PNG',
@@ -196,7 +196,7 @@ List<Map<String, String>> achievements = [
   },
   {
     'image': 'assets/achievements/Folie41.PNG',
-    'title': 'Ich wäre gerne so wie du!',
+    'title': 'Coole Socke!',
     'description': 'Füge deinem Namen mindestens zwei „X“ hinzu',
   },
   {

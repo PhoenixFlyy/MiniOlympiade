@@ -30,6 +30,7 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+
   final player = AudioPlayer();
   late Timer _timer;
   String currentMatchUpText = '';
@@ -121,6 +122,78 @@ class _MainMenuState extends State<MainMenu> {
       });
     });
   }
+
+
+
+  void _showWinnersDialog() {
+    List<String> winners = ['Felix & Simon', 'Wenzel & Daniel']; // Ersetze dies durch die tatsächliche Gewinnerliste
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black87, // Hintergrundfarbe des Dialogs
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0), // Abgerundete Ecken
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Stack(
+            clipBehavior: Clip.none, // Damit das Feuerwerk außerhalb des Dialogs angezeigt wird
+            children: [
+              Positioned(
+                top: -50, // Positioniere das Feuerwerk oben aus dem Dialog heraus
+                left: 0,
+                right: 0,
+                child: Image.asset(
+                  'assets/background1.png', // Dein Feuerwerk-Bild
+                  fit: BoxFit.cover,
+                  height: 100, // Höhe des Feuerwerks-Bildes
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 60.0), // Platz für das Feuerwerk-Bild schaffen
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Gewinner',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ...winners.map((winner) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          winner,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.amberAccent, // Goldene Farbe für die Gewinnernamen
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // Der Schließen-Button wurde entfernt, damit der Dialog nur durch Tippen auf den Hintergrund geschlossen werden kann
+        );
+      },
+    );
+  }
+
+
+
+
 
   @override
   void initState() {
@@ -358,8 +431,11 @@ class _MainMenuState extends State<MainMenu> {
           "assets/jenga.png",
         );
       default:
-        return Image.asset(
-          "assets/pokalganz.png",
+        return GestureDetector(
+          onTap: () {
+            _showWinnersDialog(); // Methode zum Anzeigen der Gewinnerliste
+          },
+          child: Image.asset("assets/pokalganz.png"),
         );
     }
   }
