@@ -22,6 +22,11 @@ class _AchievementScreenState extends State<AchievementScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Achievements'),
+            IconButton(
+              icon: const Icon(Icons.restart_alt),
+              tooltip: 'Reset Achievements',
+              onPressed: () => context.read<AchievementProvider>().resetAchievements(),
+            ),
             Text(
               '$completedAchievements / ${achievements.length}',
               style: const TextStyle(
@@ -32,29 +37,17 @@ class _AchievementScreenState extends State<AchievementScreen> {
           ],
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            tileMode: TileMode.repeated,
-            colors: <Color>[
-              Colors.red,
-              Colors.blue,
-            ],
-          ),
-        ),
-        child: ListView.builder(
-          itemCount: achievements.length,
-          itemBuilder: (context, index) {
-            return achievementContainer(
-              image: achievements[index].image,
-              title: achievements[index].title,
-              description: achievements[index].description,
-              isCompleted: achievements[index].isCompleted,
-            );
-          },
-        ),
+      body: ListView.builder(
+        itemCount: achievements.length,
+        itemBuilder: (context, index) {
+          return achievementContainer(
+            image: achievements[index].image,
+            title: achievements[index].title,
+            description: achievements[index].description,
+            isCompleted: achievements[index].isCompleted,
+            hidden: achievements[index].hidden,
+          );
+        },
       ),
     );
   }
@@ -64,11 +57,17 @@ class _AchievementScreenState extends State<AchievementScreen> {
     required String title,
     required String description,
     required bool isCompleted,
+    required bool hidden,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
+      decoration: hidden
+          ? BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        border: Border.all(width: 2, color: Colors.white)
+      )
+          : BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         gradient: LinearGradient(
           colors: isCompleted
@@ -80,13 +79,15 @@ class _AchievementScreenState extends State<AchievementScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: isCompleted ? Colors.green.withOpacity(0.8) : Colors.amber.withOpacity(1),
+            color: isCompleted
+                ? Colors.green.withOpacity(1)
+                : Colors.green.withOpacity(0),
             blurRadius: 8,
             spreadRadius: 2,
           ),
         ],
       ),
-      child: Row(
+      child: hidden ? const SizedBox(width: 80, height: 80) : Row(
         children: [
           Image.asset(
             image,

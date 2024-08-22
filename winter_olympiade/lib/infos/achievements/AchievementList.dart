@@ -2,17 +2,45 @@ class Achievement {
   final String image;
   final String title;
   final String description;
+  bool hidden;
   bool isCompleted;
 
   Achievement({
     required this.image,
     required this.title,
     required this.description,
+    this.hidden = false,
     this.isCompleted = false,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'image': image,
+      'title': title,
+      'description': description,
+      'isCompleted': isCompleted,
+      'hidden': hidden,
+    };
+  }
+
+  static Achievement fromJson(Map<String, dynamic> json) {
+    return Achievement(
+      image: json['image'],
+      title: json['title'],
+      description: json['description'],
+      isCompleted: json['isCompleted'] ?? false,
+      hidden: json['hidden'] ?? false,
+    );
+  }
 }
 
-List<Achievement> achievements = [
+List<Achievement> defaultAchievements = [
+  Achievement(
+    image: "assets/icon/play_store_512.png",
+    title: "Nerd",
+    description: "Schaue dir Achievements an. Die Jagd beginnt!",
+    isCompleted: true,
+  ),
   Achievement(
     image: 'assets/achievements/Folie2.PNG',
     title: 'First Blood!',
@@ -37,6 +65,7 @@ List<Achievement> achievements = [
     image: 'assets/achievements/Folie6.PNG',
     title: 'Win Streak!',
     description: 'Gewinne drei Disziplinen hintereinander',
+    hidden: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie7.PNG',
