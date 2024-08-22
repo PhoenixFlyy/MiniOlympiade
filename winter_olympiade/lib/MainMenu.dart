@@ -126,7 +126,7 @@ class _MainMenuState extends State<MainMenu> {
 
 
   void _showWinnersDialog() {
-    List<String> winners = ['Felix & Simon', 'Wenzel & Daniel']; // Ersetze dies durch die tatsächliche Gewinnerliste
+    List<String> winners = [ '2022: Wenzel & Daniel', '2023: Felix & Simon']; // Ersetze dies durch die tatsächliche Gewinnerliste
 
     showDialog(
       context: context,
