@@ -126,36 +126,35 @@ class _MainMenuState extends State<MainMenu> {
 
 
   void _showWinnersDialog() {
-    List<String> winners = [ '2022: Wenzel & Daniel', '2023: Felix & Simon']; // Ersetze dies durch die tatsächliche Gewinnerliste
-
+    List<String> winners = [ '2022: Wenzel & Daniel', '2023: Felix & Simon'];
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.black87, // Hintergrundfarbe des Dialogs
+          backgroundColor: Colors.black87,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0), // Abgerundete Ecken
+            borderRadius: BorderRadius.circular(20.0),
           ),
           contentPadding: EdgeInsets.zero,
           content: Stack(
-            clipBehavior: Clip.none, // Damit das Feuerwerk außerhalb des Dialogs angezeigt wird
+            clipBehavior: Clip.none,
             children: [
               Positioned(
-                top: -50, // Positioniere das Feuerwerk oben aus dem Dialog heraus
+                top: -50,
                 left: 0,
                 right: 0,
                 child: Image.asset(
-                  'assets/background1.png', // Dein Feuerwerk-Bild
+                  'assets/background1.png',
                   fit: BoxFit.cover,
-                  height: 100, // Höhe des Feuerwerks-Bildes
+                  height: 100,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 60.0), // Platz für das Feuerwerk-Bild schaffen
+                padding: const EdgeInsets.only(top: 60.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Gewinner',
                         style: TextStyle(
@@ -172,28 +171,23 @@ class _MainMenuState extends State<MainMenu> {
                         child: Text(
                           winner,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.amberAccent, // Goldene Farbe für die Gewinnernamen
+                          style: const TextStyle(
+                            color: Colors.amberAccent,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
             ],
           ),
-          // Der Schließen-Button wurde entfernt, damit der Dialog nur durch Tippen auf den Hintergrund geschlossen werden kann
         );
       },
     );
   }
-
-
-
-
 
   @override
   void initState() {
@@ -433,7 +427,7 @@ class _MainMenuState extends State<MainMenu> {
       default:
         return GestureDetector(
           onTap: () {
-            _showWinnersDialog(); // Methode zum Anzeigen der Gewinnerliste
+            _showWinnersDialog();
           },
           child: Image.asset("assets/pokalganz.png"),
         );
@@ -565,7 +559,10 @@ class _MainMenuState extends State<MainMenu> {
                                       : "Die Olympiade beginnt bald..",
                                   style: const TextStyle(fontSize: 24)),
                             ),
-                            SizedBox(height: 200, child: getDisciplineImage()),
+                            AspectRatio(
+                              aspectRatio: 5/4,
+                              child: getDisciplineImage(),
+                            )
                           ],
                         ),
                       if (currentRound < pairings.length &&

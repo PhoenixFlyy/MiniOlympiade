@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'AchievementList.dart'; // Stelle sicher, dass dies die richtige Import-Anweisung für deine Daten ist
+import 'AchievementList.dart';
 
 class AchievementScreen extends StatefulWidget {
   const AchievementScreen({super.key});
@@ -9,9 +9,7 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreenState extends State<AchievementScreen> {
-  // Anzahl der totalen und abgeschlossenen Achievements
-  final int totalAchievements = achievements.length;
-  int completedAchievements = 0; // Dies sollte in der echten App aktualisiert werden. Vll mit Anzahl der Achievements mit iscompleted Eigenschaft abgleichen?
+  int completedAchievements = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
           children: [
             const Text('Achievements'),
             Text(
-              '$completedAchievements/$totalAchievements',
+              '$completedAchievements/${achievements.length}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -47,17 +45,11 @@ class _AchievementScreenState extends State<AchievementScreen> {
         child: ListView.builder(
           itemCount: achievements.length,
           itemBuilder: (context, index) {
-            final achievement = achievements[index];
-            final image = achievement['image'] as String;
-            final title = achievement['title'] as String;
-            final description = achievement['description'] as String;
-            final isCompleted = achievement['isCompleted'] as bool? ?? false; // Von ChatGPT eingefügt. Muss noch ausgearbeitet werden
-
             return achievementContainer(
-              image: image,
-              title: title,
-              description: description,
-              isCompleted: isCompleted,
+              image: achievements[index]['image'] as String,
+              title: achievements[index]['title'] as String,
+              description: achievements[index]['description'] as String,
+              isCompleted: achievements[index]['isCompleted'] as bool? ?? false,
             );
           },
         ),
@@ -78,7 +70,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
         borderRadius: BorderRadius.circular(10),
         gradient: LinearGradient(
           colors: isCompleted
-              ? [Colors.green[600]!, Colors.green[900]!]//hier stattdessen Bild ändern von Fragezeichen zu richtigem und nicht ausgrauen?
+              ? [Colors.green[600]!, Colors.green[900]!]
               : [Colors.grey[600]!, Colors.grey[900]!],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
