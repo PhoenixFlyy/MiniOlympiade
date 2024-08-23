@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olympiade/infos/Soundboard.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:provider/provider.dart';
 
 class GameRule {
   final String name;
@@ -95,9 +97,14 @@ final List<GameRule> gameRules = [
   ]),
 ];
 
-class RulesScreen extends StatelessWidget {
+class RulesScreen extends StatefulWidget {
   const RulesScreen({super.key});
 
+  @override
+  _RulesScreenState createState() => _RulesScreenState();
+}
+
+class _RulesScreenState extends State<RulesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,10 +115,8 @@ class RulesScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          // Button hier einfügen
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: FilledButton.tonal(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -131,21 +136,23 @@ class RulesScreen extends StatelessWidget {
               ),
             ),
           ),
-          // ExpansionTiles hier einfügen
           ...gameRules.map((ruleItem) {
             return ExpansionTile(
               title: Text(ruleItem.name),
+              onExpansionChanged: (expanded) {
+                if (expanded) {
+                  context.read<AchievementProvider>().markRuleAsExpanded(ruleItem.name);
+                }
+              },
               children: <Widget>[
                 if (ruleItem.name == 'Billard')
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Image.asset('assets/billardaufbau.png'),
                   ),
                 if (ruleItem.name == 'Kubb')
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child: Image.asset('assets/kubbaufbau.png'),
                   ),
                 ...ruleItem.rules.map((rule) {

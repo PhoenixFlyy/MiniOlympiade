@@ -196,7 +196,7 @@ List<Achievement> defaultAchievements = [
   Achievement(
     image: 'assets/achievements/Folie32.PNG',
     title: 'Bücherwurm',
-    description: 'Klappe alle Regeln gleichzeitig auf',
+    description: 'Lies dir alle Regeln durch',
     hidden: true,
   ),
   Achievement(

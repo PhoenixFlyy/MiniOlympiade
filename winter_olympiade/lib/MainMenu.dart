@@ -22,6 +22,9 @@ import 'utils/MatchData.dart';
 import 'utils/MatchDetailQueries.dart';
 import 'infos/PlaySounds.dart';
 
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:provider/provider.dart';
+
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
 
@@ -720,6 +723,8 @@ class _MainMenuState extends State<MainMenu> {
             ),
             onPressed: () {
               HapticFeedback.mediumImpact();
+              // Trigger das Achievement, wenn der Button gedrückt wird
+              context.read<AchievementProvider>().completeAchievementByTitle('Nimm es ganz genau!');
               Navigator.push(
                   context,
                   MaterialPageRoute(

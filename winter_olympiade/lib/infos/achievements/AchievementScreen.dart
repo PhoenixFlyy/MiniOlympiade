@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'achievement_provider.dart';
+import 'dart:ui';
 
 class AchievementScreen extends StatefulWidget {
   const AchievementScreen({super.key});
@@ -12,8 +13,11 @@ class AchievementScreen extends StatefulWidget {
 class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
-    final achievements = context.watch<AchievementProvider>().getAchievementList();
-    int completedAchievements = achievements.where((achievement) => achievement.isCompleted).length;
+    final achievements = context.watch<AchievementProvider>()
+        .getAchievementList();
+    int completedAchievements = achievements
+        .where((achievement) => achievement.isCompleted)
+        .length;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -25,7 +29,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
             IconButton(
               icon: const Icon(Icons.restart_alt),
               tooltip: 'Reset Achievements',
-              onPressed: () => context.read<AchievementProvider>().resetAchievements(),
+              onPressed: () =>
+                  context.read<AchievementProvider>().resetAchievements(),
             ),
             Text(
               '$completedAchievements / ${achievements.length}',
@@ -52,6 +57,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
     );
   }
 
+
+
   Widget achievementContainer({
     required String image,
     required String title,
@@ -61,11 +68,10 @@ class _AchievementScreenState extends State<AchievementScreen> {
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: const EdgeInsets.all(12.0),
       decoration: hidden
           ? BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-        border: Border.all(width: 2, color: Colors.white)
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(width: 2, color: Colors.white),
       )
           : BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -87,44 +93,87 @@ class _AchievementScreenState extends State<AchievementScreen> {
           ),
         ],
       ),
-      child: hidden ?
-      const SizedBox(
-        width: 80,
-        height: 80,
-        child: Center(child: Text("? ? ?", style: TextStyle(fontSize: 24, color: Colors.white)))) :
-      Row(
+      child: Stack(
         children: [
-          Image.asset(
-            image,
-            width: 80,
-            height: 80,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.error, size: 80, color: Colors.red);
-            },
+          // Background layer with blurred image
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Stack(
+                children: [
+                  Image.asset(
+                    image,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[800],
+                        child: Center(
+                          child: const Icon(Icons.error, size: 80, color: Colors.red),
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+          // Foreground layer with existing content
+          Padding(
+            padding: const EdgeInsets.all(12.0), // Apply padding here to the content
+            child: hidden
+                ? const SizedBox(
+              width: 80,
+              height: 80,
+              child: Center(
+                child: Text("? ? ?", style: TextStyle(fontSize: 24, color: Colors.white)),
+              ),
+            )
+                : Row(
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                Image.asset(
+                  image,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.error, size: 80, color: Colors.red);
+                  },
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.left,
                 ),
               ],
             ),
@@ -133,4 +182,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
       ),
     );
   }
+
+
 }

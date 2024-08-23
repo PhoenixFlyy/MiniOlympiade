@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/ImageConverter.dart';
 import 'DartConstants.dart';
 import 'DartPlayScreen.dart';
+import 'package:provider/provider.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
 
 class DartStartScreen extends StatefulWidget {
   const DartStartScreen({super.key});
@@ -346,8 +348,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
   Future<void> _addNewPlayer() async {
     TextEditingController nameController = TextEditingController();
 
+    // Define and load the default image (assuming this is set up correctly in your assets)
     File dartsImageFile = await getImageFileFromAssets('darts.png');
-    FileImage playerImage = FileImage(dartsImageFile);
+    FileImage defaultImage = FileImage(dartsImageFile);  // This is the default image
+    FileImage playerImage = defaultImage; // Initially set the player's image to the default
 
     if (!mounted) return;
 
@@ -365,8 +369,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
                     GestureDetector(
                       onTap: () async {
                         final picker = ImagePicker();
-                        final pickedFile = await picker.pickImage(
-                            source: ImageSource.camera);
+                        final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
                         if (pickedFile != null) {
                           setStateDialog(() {
@@ -436,10 +439,22 @@ class _DartStartScreenState extends State<DartStartScreen> {
                         name: nameController.text,
                         image: playerImage,
                       );
+
                       setState(() {
                         _availablePlayers.add(newPlayer);
                         _savePlayer(newPlayer);
                       });
+
+
+
+
+  // Achievement: Check if player used a custom image
+                      if (playerImage != defaultImage) {
+                        // Achievement completed for taking a picture
+                        context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
+                      }
+
+
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -455,7 +470,6 @@ class _DartStartScreenState extends State<DartStartScreen> {
       },
     );
   }
-
   void _startGame() {
     if (_players.map((player) => player.name).toList().any((name) => name.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(

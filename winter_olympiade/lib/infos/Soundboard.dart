@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'PlaySounds.dart';
 
 class SoundBoard extends StatelessWidget {
   const SoundBoard({super.key});
 
-  Widget PlayButton(String buttonText, void Function() onPressed) {
+  // Die PlayButton Methode akzeptiert nun einen BuildContext
+  Widget PlayButton(BuildContext context, String buttonText, void Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: SizedBox(
@@ -16,7 +19,16 @@ class SoundBoard extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               )),
-          onPressed: onPressed,
+          onPressed: () {
+            // Mark the sound effect as played
+            context.read<AchievementProvider>().markSoundEffectAsPlayed(buttonText);
+
+            // Trigger the Achievement for playing any sound effect
+            context.read<AchievementProvider>().completeAchievementByTitle('Gomme Mode');
+
+            // Call the original function
+            onPressed();
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -29,6 +41,7 @@ class SoundBoard extends StatelessWidget {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +56,18 @@ class SoundBoard extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Column(
             children: [
-              PlayButton("Start der Runde", playStartSound),
-              PlayButton("Ende der Runde", playgongakkuratSound),
-              PlayButton("1 Minute übrig", playWhooshSound),
-              PlayButton("Pause", playWhistleSound),
-              PlayButton("SIUUU", playSiuuuSound),
-              PlayButton("Villager", playVillagerSound),
-              PlayButton("Yeet", playYeetSound),
-              //PlayButton("Schlagbolzen", playschlagbolzenSound),
+              // Übergabe von context an die PlayButton Methode
+              PlayButton(context, "Start der Runde", playStartSound),
+              PlayButton(context, "Ende der Runde", playgongakkuratSound),
+              PlayButton(context, "1 Minute übrig", playWhooshSound),
+              PlayButton(context, "Pause", playWhistleSound),
+              PlayButton(context, "SIUUU", playSiuuuSound),
+              PlayButton(context, "Villager", playVillagerSound),
+              PlayButton(context, "Yeet", playYeetSound),
+              //PlayButton(context, "Schlagbolzen", playschlagbolzenSound),
 
-              //PlayButton("gonghell", playgonghellSound),
-              //PlayButton("gongvoluminös", playgongvoluminoesSound),
+              //PlayButton(context, "gonghell", playgonghellSound),
+              //PlayButton(context, "gongvoluminös", playgongvoluminoesSound),
             ],
           ),
         ),

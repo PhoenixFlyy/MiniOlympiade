@@ -81,64 +81,66 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
       );
 
   Widget buildHeader(BuildContext context) => Material(
-        child: InkWell(
-          onTap: () {
-            _confettiController.play();
-            context.read<AchievementProvider>().completeAchievementByTitle('Lass es regnen');
-          },
-          child: Container(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top,
+    child: InkWell(
+      onTap: () {
+        _confettiController.play();
+        context.read<AchievementProvider>().incrementConfettiTriggerCount();  // Erhöhe die Anzahl der Konfetti-Auslösungen
+        context.read<AchievementProvider>().completeAchievementByTitle('Lass es regnen');
+      },
+      child: Container(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-            child: Column(
+            Container(
+              width: 100,
+              height: 100,
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                shape: BoxShape.circle,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.asset(
+                  "assets/NewLogo.png",
+                  fit: BoxFit.scaleDown,
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text("Olympiade ${DateTime.now().year}",
+                style: const TextStyle(fontSize: 22, color: Colors.amber)),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: Image.asset(
-                      "assets/NewLogo.png",
-                      fit: BoxFit.scaleDown,
-                      width: 40,
-                      height: 40,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text("Olympiade ${DateTime.now().year}",
-                    style: const TextStyle(fontSize: 22, color: Colors.amber)),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                        DateFormat(' dd.MM. HH:mm')
-                            .format(widget.eventStartTime),
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.white)),
-                    const Text(" bis ca. ",
-                        style: TextStyle(fontSize: 16, color: Colors.white)),
-                    Text(DateFormat('HH:mm').format(widget.eventEndTime),
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.white)),
-                    const Text(' Uhr',
-                        style: TextStyle(fontSize: 16, color: Colors.white)),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                Text(
+                    DateFormat(' dd.MM. HH:mm')
+                        .format(widget.eventStartTime),
+                    style:
+                    const TextStyle(fontSize: 16, color: Colors.white)),
+                const Text(" bis ca. ",
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                Text(DateFormat('HH:mm').format(widget.eventEndTime),
+                    style:
+                    const TextStyle(fontSize: 16, color: Colors.white)),
+                const Text(' Uhr',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ],
             ),
-          ),
+            const SizedBox(height: 12),
+          ],
         ),
-      );
+      ),
+    ),
+  );
+
 
   Widget buildMenuItems(BuildContext context) => Wrap(
         runSpacing: 16,

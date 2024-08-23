@@ -9,6 +9,8 @@ import 'package:olympiade/games/Dart/DartsKeyboard.dart';
 import 'package:olympiade/utils/ConfirmationDialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'DartConstants.dart';
+import 'package:provider/provider.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
 
 class DartPlayScreen extends StatefulWidget {
   final GameEndRule gameEndRule;
@@ -171,6 +173,26 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
 
       saveGameState();
     });
+
+    // Überprüfe, ob eine Triple 20 geworfen wurde
+    if (score == 20 && multiplier == Multiplier.triple) {
+      // Trigger das Achievement
+      context.read<AchievementProvider>().completeAchievementByTitle('Mehr geht nicht!');
+    }
+
+    // Überprüfe, ob eine Triple 1 geworfen wurde
+    if (score == 1 && multiplier == Multiplier.triple) {
+      // Trigger das Achievement
+      context.read<AchievementProvider>().completeAchievementByTitle('Umgekehrte Psychologie');
+    }
+
+// Überprüfe, ob ein Single- oder Double-Bullseye geworfen wurde
+    if (score == 25 && (multiplier == Multiplier.single || multiplier == Multiplier.double)) {
+      // Trigger das Achievement
+      context.read<AchievementProvider>().completeAchievementByTitle('Bullseye!');
+    }
+
+
 
     if (currentPlayerScore - throwPoints == 0) {
       if (widget.gameEndRule == GameEndRule.doubleOut) {
