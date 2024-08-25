@@ -14,9 +14,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
     final achievements = context.watch<AchievementProvider>().getAchievementList();
-    int completedAchievements = achievements
-        .where((achievement) => achievement.isCompleted)
-        .length;
+    int completedAchievements = achievements.where((achievement) => achievement.isCompleted).length;
     context.read<AchievementProvider>().completeAchievementByTitle('Nerd');
 
     return Scaffold(
@@ -57,8 +55,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
     );
   }
 
-
-
   Widget achievementContainer({
     required String image,
     required String title,
@@ -75,14 +71,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
       )
           : BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          colors: isCompleted
-              ? [Colors.green[600]!, Colors.green[900]!]
-              : [Colors.grey[600]!, Colors.grey[900]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          tileMode: TileMode.repeated,
-        ),
         boxShadow: [
           BoxShadow(
             color: isCompleted
@@ -95,7 +83,6 @@ class _AchievementScreenState extends State<AchievementScreen> {
       ),
       child: Stack(
         children: [
-          // Background layer with blurred image
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -119,7 +106,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                       child: Container(
-                        color: Colors.transparent,
+                        color: Colors.black.withOpacity(0.5),
                       ),
                     ),
                   ),
@@ -127,9 +114,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
               ),
             ),
           ),
-          // Foreground layer with existing content
           Padding(
-            padding: const EdgeInsets.all(12.0), // Apply padding here to the content
+            padding: const EdgeInsets.all(12.0),
             child: hidden
                 ? const SizedBox(
               width: 80,
@@ -182,6 +168,4 @@ class _AchievementScreenState extends State<AchievementScreen> {
       ),
     );
   }
-
-
 }
