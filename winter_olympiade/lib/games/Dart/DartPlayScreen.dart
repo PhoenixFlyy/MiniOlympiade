@@ -6,11 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
 import 'package:olympiade/games/Dart/DartFinishCombinations.dart';
 import 'package:olympiade/games/Dart/DartsKeyboard.dart';
-import 'package:olympiade/utils/ConfirmationDialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'DartConstants.dart';
-import 'package:provider/provider.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:olympiade/utils/ConfirmationDialog.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'DartConstants.dart';
 
 class DartPlayScreen extends StatefulWidget {
   final GameEndRule gameEndRule;
@@ -118,7 +119,8 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   int calculatePlayerScore(Player player) {
     int score = widget.gameType;
 
-    for (var turn in turnHistory.where((t) => t.player.name == player.name && !t.overthrown)) {
+    for (var turn in turnHistory
+        .where((t) => t.player.name == player.name && !t.overthrown)) {
       score -= turn.turnSum;
     }
 
@@ -151,13 +153,12 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         overthrown: true,
       );
       nextPlayer();
-      // saveGameState(); is called in nextPlayer()
     });
   }
 
   Future<void> onScoreSelected(int score, Multiplier multiplier) async {
-    int currentPlayerScore = calculatePlayerScore(
-        widget.playerList[currentPlayerIndex]);
+    int currentPlayerScore =
+        calculatePlayerScore(widget.playerList[currentPlayerIndex]);
     int throwPoints = score * (multiplier.index + 1);
 
     setState(() {
@@ -174,25 +175,24 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       saveGameState();
     });
 
-    // Überprüfe, ob eine Triple 20 geworfen wurde
     if (score == 20 && multiplier == Multiplier.triple) {
-      // Trigger das Achievement
-      context.read<AchievementProvider>().completeAchievementByTitle('Mehr geht nicht!');
+      context
+          .read<AchievementProvider>()
+          .completeAchievementByTitle('Mehr geht nicht!');
     }
 
-    // Überprüfe, ob eine Triple 1 geworfen wurde
     if (score == 1 && multiplier == Multiplier.triple) {
-      // Trigger das Achievement
-      context.read<AchievementProvider>().completeAchievementByTitle('Umgekehrte Psychologie');
+      context
+          .read<AchievementProvider>()
+          .completeAchievementByTitle('Umgekehrte Psychologie');
     }
 
-// Überprüfe, ob ein Single- oder Double-Bullseye geworfen wurde
-    if (score == 25 && (multiplier == Multiplier.single || multiplier == Multiplier.double)) {
-      // Trigger das Achievement
-      context.read<AchievementProvider>().completeAchievementByTitle('Bullseye!');
+    if (score == 25 &&
+        (multiplier == Multiplier.single || multiplier == Multiplier.double)) {
+      context
+          .read<AchievementProvider>()
+          .completeAchievementByTitle('Bullseye!');
     }
-
-
 
     if (currentPlayerScore - throwPoints == 0) {
       if (widget.gameEndRule == GameEndRule.doubleOut) {
@@ -240,8 +240,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         final bool shouldPop = await ConfirmationDialog.show(
             context: context,
             title: "Spiel beenden",
-            content: "Möchtest du dieses Spiel wirklich beenden?"
-        );
+            content: "Möchtest du dieses Spiel wirklich beenden?");
         if (shouldPop) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.remove('turnHistory');
@@ -262,13 +261,13 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                     IconButton(
                       icon: const Icon(Icons.undo, size: 32),
                       onPressed: (turnHistory.isEmpty ||
-                          (turnHistory.length == 1 &&
-                              turnHistory[0].throws.isEmpty))
+                              (turnHistory.length == 1 &&
+                                  turnHistory[0].throws.isEmpty))
                           ? null
                           : () {
-                        HapticFeedback.lightImpact();
-                        removeThrow();
-                          },
+                              HapticFeedback.lightImpact();
+                              removeThrow();
+                            },
                     ),
                     IconButton(
                       icon: const Icon(Icons.analytics),
@@ -277,12 +276,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                DartAnalyticsScreen(
-                                  turnHistory: turnHistory,
-                                  playerList: widget.playerList,
-                                  isFinished: false,
-                                ),
+                            builder: (context) => DartAnalyticsScreen(
+                              turnHistory: turnHistory,
+                              playerList: widget.playerList,
+                              isFinished: false,
+                            ),
                           ),
                         );
                       },
@@ -335,11 +333,15 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   }
 
   Widget currentThrowScores(List<PlayerTurn> playerTurns) {
-    List<Throw> lastThrows = playerTurns.isNotEmpty ? playerTurns.last.throws : [];
-    bool currentlyOverthrown = playerTurns.isNotEmpty && playerTurns.last.overthrown;
-    int currentPlayerScore = calculatePlayerScore(widget.playerList[currentPlayerIndex]);
+    List<Throw> lastThrows =
+        playerTurns.isNotEmpty ? playerTurns.last.throws : [];
+    bool currentlyOverthrown =
+        playerTurns.isNotEmpty && playerTurns.last.overthrown;
+    int currentPlayerScore =
+        calculatePlayerScore(widget.playerList[currentPlayerIndex]);
 
-    List<String>? finishCombination = getFinishingCombination(currentPlayerScore, 3 - lastThrows.length);
+    List<String>? finishCombination =
+        getFinishingCombination(currentPlayerScore, 3 - lastThrows.length);
 
     return Expanded(
       flex: 2,
@@ -351,17 +353,18 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             child: Row(
               children: List.generate(
                 3,
-                    (index) {
+                (index) {
                   if (index < lastThrows.length) {
                     String displayValue;
                     if (lastThrows[index].multiplier == Multiplier.single &&
                         lastThrows[index].score == 25) {
                       displayValue = 'SB';
                     } else if (lastThrows[index].multiplier ==
-                        Multiplier.double &&
+                            Multiplier.double &&
                         lastThrows[index].score == 25) {
                       displayValue = 'DB';
-                    } else if (lastThrows[index].multiplier != Multiplier.single &&
+                    } else if (lastThrows[index].multiplier !=
+                            Multiplier.single &&
                         lastThrows[index].score == 0) {
                       displayValue = lastThrows[index].score.toString();
                     } else {
@@ -389,7 +392,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                   } else {
                     String displayValue = '';
                     int finishIndex = index - lastThrows.length;
-                    if (finishCombination != null && finishCombination.length <= (3 - lastThrows.length) && finishIndex < finishCombination.length) {
+                    if (finishCombination != null &&
+                        finishCombination.length <= (3 - lastThrows.length) &&
+                        finishIndex < finishCombination.length) {
                       displayValue = finishCombination[finishIndex];
                     }
                     return Expanded(
@@ -414,9 +419,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
             child: Text(
               lastThrows.isNotEmpty
                   ? lastThrows
-                  .map((e) => e.calculateScore())
-                  .reduce((a, b) => a + b)
-                  .toString()
+                      .map((e) => e.calculateScore())
+                      .reduce((a, b) => a + b)
+                      .toString()
                   : '0',
               style: const TextStyle(color: Colors.white, fontSize: 16),
               textAlign: TextAlign.center,
@@ -430,13 +435,11 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   Widget currentStatistics(List<PlayerTurn> playerTurns) {
     AvgScoreResult currentScores = getAvgScore(playerTurns);
     int lastTurnSum = 0;
-    if (playerTurns.isNotEmpty &&
-        (playerTurns.last.throws.length == 3)) {
+    if (playerTurns.isNotEmpty && (playerTurns.last.throws.length == 3)) {
       lastTurnSum = playerTurns.last.turnSum;
     } else if (playerTurns.isNotEmpty && playerTurns.last.overthrown) {
       lastTurnSum = 0;
-    } else if (playerTurns.length > 1 &&
-        (playerTurns.last.throws.length < 3)) {
+    } else if (playerTurns.length > 1 && (playerTurns.last.throws.length < 3)) {
       lastTurnSum = playerTurns[playerTurns.length - 2].turnSum;
     }
 
@@ -495,8 +498,9 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
         widget.playerList.indexOf(playerInCard) == currentPlayerIndex;
     Color? defaultColor = Colors.grey[900];
 
-    List<PlayerTurn> playerTurns =
-    turnHistory.where((turn) => turn.player.name == playerInCard.name).toList();
+    List<PlayerTurn> playerTurns = turnHistory
+        .where((turn) => turn.player.name == playerInCard.name)
+        .toList();
 
     return Padding(
       padding: const EdgeInsets.all(5),

@@ -109,8 +109,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: Colors.grey[800],
-                        child: Center(
-                          child: const Icon(Icons.error, size: 80, color: Colors.red),
+                        child: const Center(
+                          child: Icon(Icons.error, size: 80, color: Colors.red),
                         ),
                       );
                     },

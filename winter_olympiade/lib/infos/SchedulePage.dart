@@ -9,11 +9,11 @@ class SchedulePage extends StatefulWidget {
   final int currentRowForColor;
 
   const SchedulePage({
-    Key? key,
+    super.key,
     required this.pairings,
     required this.disciplines,
     required this.currentRowForColor,
-  }) : super(key: key);
+  });
 
   @override
   _SchedulePageState createState() => _SchedulePageState();
@@ -26,13 +26,11 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
     super.initState();
-    // Starte den Timer, wenn die Seite betreten wird
     _startTimer();
   }
 
   @override
   void dispose() {
-    // Stoppe den Timer, wenn die Seite verlassen wird
     _timer?.cancel();
     super.dispose();
   }
@@ -42,10 +40,7 @@ class _SchedulePageState extends State<SchedulePage> {
       _secondsSpent++;
 
       if (_secondsSpent >= 60) {
-        // Achievement freigeben
         context.read<AchievementProvider>().completeAchievementByTitle('Verlaufen?');
-
-        // Stoppe den Timer, da das Achievement freigegeben wurde
         _timer?.cancel();
       }
     });
@@ -93,7 +88,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 isSpecialRow ? Colors.blue : Colors.transparent;
 
                 return DataRow(
-                  color: MaterialStateProperty.all<Color>(backgroundColor),
+                  color: WidgetStateProperty.all<Color>(backgroundColor),
                   cells: List<DataCell>.generate(
                     widget.pairings[rowIndex].length + 1,
                         (cellIndex) {

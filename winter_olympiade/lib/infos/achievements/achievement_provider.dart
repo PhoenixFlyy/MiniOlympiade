@@ -1,15 +1,19 @@
 import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'AchievementList.dart';
 
 class AchievementProvider extends ChangeNotifier {
-  // Track expanded rules
+  int _confettiTriggerCount = 0;
   final Set<String> _expandedRules = {};
+  final Set<String> _playedSoundEffects = {};
+  List<Achievement> _achievements = [];
 
-  // List of all rule names
+  List<Achievement> getAchievementList() => _achievements;
+
   final List<String> _allRules = [
     'Allgemeines, Alkohol',
     'Kicker',
@@ -19,7 +23,6 @@ class AchievementProvider extends ChangeNotifier {
     'Kubb',
     'Jenga',
     'Bewertung',
-    // Add other rule names here
   ];
 
   void markRuleAsExpanded(String ruleName) {
@@ -33,16 +36,11 @@ class AchievementProvider extends ChangeNotifier {
     }
   }
 
-  // Variablen für Konfetti-Auslösungen
-  int _confettiTriggerCount = 0;
-
-  // Methode zur Erhöhung der Konfetti-Auslösungen
   void incrementConfettiTriggerCount() {
     _confettiTriggerCount++;
     _checkConfettiAchievements();
   }
 
-  // Methode zur Überprüfung, ob Konfetti-Achievements ausgelöst werden sollen
   void _checkConfettiAchievements() {
     if (_confettiTriggerCount == 3) {
       completeAchievementByTitle('Regenschauer');
@@ -53,10 +51,6 @@ class AchievementProvider extends ChangeNotifier {
     }
   }
 
-  // Set to keep track of played sound effects
-  final Set<String> _playedSoundEffects = {};
-
-  // List of all sound effect names
   final List<String> _allSoundEffects = [
     "Start der Runde",
     "Ende der Runde",
@@ -65,30 +59,22 @@ class AchievementProvider extends ChangeNotifier {
     "SIUUU",
     "Villager",
     "Yeet",
-    // Add more sound effects here if needed
   ];
 
-  // Method to mark a sound effect as played
   void markSoundEffectAsPlayed(String soundEffectName) {
     _playedSoundEffects.add(soundEffectName);
     _checkAllSoundEffectsPlayed();
   }
 
-  // Method to check if all sound effects have been played
   void _checkAllSoundEffectsPlayed() {
     if (_playedSoundEffects.length == _allSoundEffects.length) {
-      // Trigger the achievement for playing all sound effects
       completeAchievementByTitle('Annoying Bastard');
     }
   }
 
-  List<Achievement> _achievements = [];
-
   AchievementProvider() {
     _loadAchievements();
   }
-
-  List<Achievement> getAchievementList() => _achievements;
 
   Future<void> _loadAchievements() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -97,7 +83,7 @@ class AchievementProvider extends ChangeNotifier {
     if (savedAchievements != null) {
       _achievements = savedAchievements
           .map((achievementString) => Achievement.fromJson(
-          Map<String, dynamic>.from(jsonDecode(achievementString))))
+              Map<String, dynamic>.from(jsonDecode(achievementString))))
           .toList();
     } else {
       _achievements = defaultAchievements;
@@ -115,7 +101,9 @@ class AchievementProvider extends ChangeNotifier {
 
   Future<void> _saveAchievements() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> achievementsToSave = _achievements.map((achievement) => jsonEncode(achievement.toJson())).toList();
+    List<String> achievementsToSave = _achievements
+        .map((achievement) => jsonEncode(achievement.toJson()))
+        .toList();
     await prefs.setStringList('achievements', achievementsToSave);
   }
 
@@ -125,7 +113,8 @@ class AchievementProvider extends ChangeNotifier {
       _achievements[index].isCompleted = true;
       _achievements[index].hidden = false;
       await _saveAchievements();
-      callNotification(_achievements[index].title, _achievements[index].description, _achievements[index].image);
+      callNotification(_achievements[index].title,
+          _achievements[index].description, _achievements[index].image);
       notifyListeners();
     }
   }
@@ -133,12 +122,14 @@ class AchievementProvider extends ChangeNotifier {
   Future<void> completeAchievementByTitle(String title) async {
     await _ensureAchievementsLoaded();
     try {
-      final achievement = _achievements.firstWhere((achievement) => achievement.title == title);
+      final achievement =
+          _achievements.firstWhere((achievement) => achievement.title == title);
       if (!achievement.isCompleted) {
         achievement.isCompleted = true;
         achievement.hidden = false;
         await _saveAchievements();
-        callNotification(achievement.title, achievement.description, achievement.image);
+        callNotification(
+            achievement.title, achievement.description, achievement.image);
         notifyListeners();
       }
     } catch (e) {
@@ -150,26 +141,19 @@ class AchievementProvider extends ChangeNotifier {
 
   Future<void> resetAchievements() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('achievements');
 
-    // Setze Achievements auf die Standardwerte zurück
     _achievements = defaultAchievements.map((achievement) {
       return Achievement(
         title: achievement.title,
         description: achievement.description,
         image: achievement.image,
-        isCompleted: false,  // Setze auf false, um unerledigte Achievements zu markieren
-        hidden: true,  // Setze auf true, um alle Achievements versteckt zu machen
+        isCompleted: achievement.isCompleted,
+        hidden: achievement.hidden,
       );
     }).toList();
-
-    // Speichere die zurückgesetzten Achievements
-    await _saveAchievements();
-
-    // Benachrichtige alle Listener über die Änderung
     notifyListeners();
   }
-
-
 
   void callNotification(String title, String body, String image) {
     AwesomeNotifications().createNotification(
@@ -181,7 +165,7 @@ class AchievementProvider extends ChangeNotifier {
         body: body,
         displayOnForeground: true,
         wakeUpScreen: true,
-        bigPicture: image.isNotEmpty ? image : null,  // Optional: set image if available
+        bigPicture: image.isNotEmpty ? image : null,
       ),
     );
   }

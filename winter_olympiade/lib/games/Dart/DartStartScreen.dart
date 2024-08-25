@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/utils/ConfirmationDialog.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/ImageConverter.dart';
 import 'DartConstants.dart';
 import 'DartPlayScreen.dart';
-import 'package:provider/provider.dart';
-import 'package:olympiade/infos/achievements/achievement_provider.dart';
 
 class DartStartScreen extends StatefulWidget {
   const DartStartScreen({super.key});
@@ -36,8 +37,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
   Future<void> _loadGameSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedGameType = prefs.getInt('selectedGameType') ?? DartConstants.gameTypes[2];
-      _selectedGameEndRule = GameEndRule.values[prefs.getInt('selectedGameEndRule') ?? GameEndRule.doubleOut.index];
+      _selectedGameType =
+          prefs.getInt('selectedGameType') ?? DartConstants.gameTypes[2];
+      _selectedGameEndRule = GameEndRule.values[
+          prefs.getInt('selectedGameEndRule') ?? GameEndRule.doubleOut.index];
     });
   }
 
@@ -55,13 +58,15 @@ class _DartStartScreenState extends State<DartStartScreen> {
     List<String>? selectedPlayerData = prefs.getStringList('selectedPlayers');
     if (playerData != null) {
       setState(() => _availablePlayers.addAll(
-        playerData.map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
-      ));
+            playerData
+                .map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
+          ));
     }
     if (selectedPlayerData != null) {
       setState(() => _players.addAll(
-        selectedPlayerData.map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
-      ));
+            selectedPlayerData
+                .map((playerJson) => Player.fromJson(jsonDecode(playerJson))),
+          ));
     }
     if (mounted && prefs.getInt('currentPlayerIndex') != null) {
       bool resumeGame = await ConfirmationDialog.show(
@@ -87,7 +92,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
 
   void _saveSelectedPlayer(Player player) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? selectedPlayerData = prefs.getStringList('selectedPlayers') ?? [];
+    List<String>? selectedPlayerData =
+        prefs.getStringList('selectedPlayers') ?? [];
     selectedPlayerData.add(jsonEncode(player.toJson()));
     await prefs.setStringList('selectedPlayers', selectedPlayerData);
   }
@@ -164,11 +170,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
                 child: Text(value.toString()),
               );
             }).toList(),
-            onChanged: (newValue) =>
-                setState(() {
-                  _selectedGameType = newValue!;
-                  _saveGameSettings();
-                }),
+            onChanged: (newValue) => setState(() {
+              _selectedGameType = newValue!;
+              _saveGameSettings();
+            }),
           ),
         ),
         const SizedBox(width: 20),
@@ -182,11 +187,10 @@ class _DartStartScreenState extends State<DartStartScreen> {
                 child: Text(DartConstants.gameEndRuleToString(rule)),
               );
             }).toList(),
-            onChanged: (newValue) =>
-                setState(() {
-                  _selectedGameEndRule = newValue!;
-                  _saveGameSettings();
-                }),
+            onChanged: (newValue) => setState(() {
+              _selectedGameEndRule = newValue!;
+              _saveGameSettings();
+            }),
           ),
         ),
       ],
@@ -319,7 +323,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
               _addNewPlayer();
             },
             icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text('Spieler erstellen', style: TextStyle(color: Colors.white)),
+            label: const Text('Spieler erstellen',
+                style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey[800],
               shape: RoundedRectangleBorder(
@@ -348,11 +353,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
   Future<void> _addNewPlayer() async {
     TextEditingController nameController = TextEditingController();
 
-    // Define and load the default image (assuming this is set up correctly in your assets)
     File dartsImageFile = await getImageFileFromAssets('darts.png');
-    FileImage defaultImage = FileImage(dartsImageFile);  // This is the default image
-    FileImage playerImage = defaultImage; // Initially set the player's image to the default
-
+    FileImage playerImage = FileImage(dartsImageFile);
     if (!mounted) return;
 
     await showDialog(
@@ -369,7 +371,8 @@ class _DartStartScreenState extends State<DartStartScreen> {
                     GestureDetector(
                       onTap: () async {
                         final picker = ImagePicker();
-                        final pickedFile = await picker.pickImage(source: ImageSource.camera);
+                        final pickedFile =
+                            await picker.pickImage(source: ImageSource.camera);
 
                         if (pickedFile != null) {
                           setStateDialog(() {
@@ -424,14 +427,16 @@ class _DartStartScreenState extends State<DartStartScreen> {
               ),
               actions: <Widget>[
                 TextButton(
-                  child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
+                  child: const Text('Abbrechen',
+                      style: TextStyle(color: Colors.white)),
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
-                  child: const Text('Spieler hinzufügen', style: TextStyle(color: Colors.white)),
+                  child: const Text('Spieler hinzufügen',
+                      style: TextStyle(color: Colors.white)),
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     if (nameController.text.isNotEmpty) {
@@ -445,20 +450,15 @@ class _DartStartScreenState extends State<DartStartScreen> {
                         _savePlayer(newPlayer);
                       });
 
-
-
-
-  // Achievement: Check if player used a custom image
-                      if (playerImage != defaultImage) {
-                        // Achievement completed for taking a picture
+                      if (!playerImage.file.path.contains('darts.png')) {
                         context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
                       }
-
 
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Bitte einen Namen eingeben!')),
+                        const SnackBar(
+                            content: Text('Bitte einen Namen eingeben!')),
                       );
                     }
                   },
@@ -470,8 +470,12 @@ class _DartStartScreenState extends State<DartStartScreen> {
       },
     );
   }
+
   void _startGame() {
-    if (_players.map((player) => player.name).toList().any((name) => name.isEmpty)) {
+    if (_players
+        .map((player) => player.name)
+        .toList()
+        .any((name) => name.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a name for every player')),
       );
