@@ -13,11 +13,11 @@ class AchievementScreen extends StatefulWidget {
 class _AchievementScreenState extends State<AchievementScreen> {
   @override
   Widget build(BuildContext context) {
-    final achievements = context.watch<AchievementProvider>()
-        .getAchievementList();
+    final achievements = context.watch<AchievementProvider>().getAchievementList();
     int completedAchievements = achievements
         .where((achievement) => achievement.isCompleted)
         .length;
+    context.read<AchievementProvider>().completeAchievementByTitle('Nerd');
 
     return Scaffold(
       backgroundColor: Colors.black,
