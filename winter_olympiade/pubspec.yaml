@@ -27,6 +27,7 @@ dependencies:
   starsview: ^0.0.2
   provider: ^6.1.2
   awesome_notifications: ^0.9.3+1
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:

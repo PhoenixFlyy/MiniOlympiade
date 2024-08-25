@@ -185,7 +185,7 @@ List<Achievement> defaultAchievements = [
   Achievement(
     image: 'assets/achievements/Folie30.PNG',
     title: 'Verlaufen?',
-    description: 'Verbringe mindestens 3 Minuten im Laufplan-Screen',
+    description: 'Verbringe mindestens 1 Minute im Laufplan-Screen',
   ),
   Achievement(
     image: 'assets/achievements/Folie31.PNG',

@@ -6,8 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'AchievementList.dart';
 
 class AchievementProvider extends ChangeNotifier {
-
-
   // Track expanded rules
   final Set<String> _expandedRules = {};
 
@@ -35,9 +33,6 @@ class AchievementProvider extends ChangeNotifier {
     }
   }
 
-
-
-
   // Variablen für Konfetti-Auslösungen
   int _confettiTriggerCount = 0;
 
@@ -57,7 +52,6 @@ class AchievementProvider extends ChangeNotifier {
       completeAchievementByTitle('Cookie Clicker');
     }
   }
-
 
   // Set to keep track of played sound effects
   final Set<String> _playedSoundEffects = {};
@@ -130,7 +124,7 @@ class AchievementProvider extends ChangeNotifier {
     if (!_achievements[index].isCompleted) {
       _achievements[index].isCompleted = true;
       _achievements[index].hidden = false;
-      _saveAchievements();
+      await _saveAchievements();
       callNotification(_achievements[index].title, _achievements[index].description, _achievements[index].image);
       notifyListeners();
     }
@@ -143,7 +137,7 @@ class AchievementProvider extends ChangeNotifier {
       if (!achievement.isCompleted) {
         achievement.isCompleted = true;
         achievement.hidden = false;
-        _saveAchievements();
+        await _saveAchievements();
         callNotification(achievement.title, achievement.description, achievement.image);
         notifyListeners();
       }
@@ -156,22 +150,39 @@ class AchievementProvider extends ChangeNotifier {
 
   Future<void> resetAchievements() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('achievements');
+
+    // Setze Achievements auf die Standardwerte zurück
+    _achievements = defaultAchievements.map((achievement) {
+      return Achievement(
+        title: achievement.title,
+        description: achievement.description,
+        image: achievement.image,
+        isCompleted: false,  // Setze auf false, um unerledigte Achievements zu markieren
+        hidden: true,  // Setze auf true, um alle Achievements versteckt zu machen
+      );
+    }).toList();
+
+    // Speichere die zurückgesetzten Achievements
+    await _saveAchievements();
+
+    // Benachrichtige alle Listener über die Änderung
     notifyListeners();
   }
 
+
+
   void callNotification(String title, String body, String image) {
     AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
-          channelKey: "achievement_channel",
-          actionType: ActionType.Default,
-          title: title,
-          body: body,
-          displayOnForeground: true,
-          wakeUpScreen: true,
-          bigPicture: image.isNotEmpty ? image : null,  // Optional: set image if available
-        )
+      content: NotificationContent(
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+        channelKey: "achievement_channel",
+        actionType: ActionType.Default,
+        title: title,
+        body: body,
+        displayOnForeground: true,
+        wakeUpScreen: true,
+        bigPicture: image.isNotEmpty ? image : null,  // Optional: set image if available
+      ),
     );
   }
 }
