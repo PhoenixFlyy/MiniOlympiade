@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import '../utils/MatchData.dart';
 import '../utils/MatchDetailQueries.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:provider/provider.dart';
 
 class UploadResults extends StatefulWidget {
   final int currentRound;
@@ -61,6 +63,9 @@ class _UploadResultsState extends State<UploadResults> {
         .update({
       teamKey: teamScore,
     });
+
+    context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling'); //Achievements
+
     setState(() {});
   }
 
