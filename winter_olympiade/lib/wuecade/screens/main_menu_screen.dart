@@ -1,5 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../infos/achievements/achievement_provider.dart';
 import '../game/assets.dart';
 import '../game/flappy_wue_game.dart';
 import 'game_over_screen.dart';
@@ -10,6 +12,15 @@ class FlappyMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final game = FlappyWueGame();
+
+    game.onAchievementReached = (String achievementTitle) {
+      if (achievementTitle == 'Flappy Chick') {
+        context.read<AchievementProvider>().completeAchievementByTitle('Flappy Chick');
+      } else if (achievementTitle == 'Flappy Eagle') {
+        context.read<AchievementProvider>().completeAchievementByTitle('Flappy Eagle');
+      }
+    };
+
 
     return Scaffold(
       body: GameWidget(

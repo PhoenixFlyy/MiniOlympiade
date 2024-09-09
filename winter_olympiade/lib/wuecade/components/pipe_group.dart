@@ -9,6 +9,7 @@ import '../game/pipe_position.dart';
 
 class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   PipeGroup();
+  Function? onAchievementReached;
 
   final _random = Random();
 
@@ -30,7 +31,7 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
     super.update(dt);
     position.x -= Config.gameSpeed * dt;
 
-    if (position.x < -10) {
+    if (position.x < -30) {
       removeFromParent();
       updateScore();
     }
@@ -44,5 +45,14 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   void updateScore() {
     gameRef.bird.score += 1;
     FlameAudio.play(Assets.point);
+    if (gameRef.bird.score == 1) {
+      gameRef.checkAchievements();
+      onAchievementReached?.call('Flappy Chick');
+    }
+
+    if (gameRef.bird.score == 50) {
+      gameRef.checkAchievements();
+      onAchievementReached?.call('Flappy Eagle');
+    }
   }
 }

@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import '../components/background.dart';
 import '../components/bird.dart';
 import '../components/ground.dart';
@@ -14,6 +13,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
   late TextComponent score;
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
+  Function? onAchievementReached;
 
   @override
   Future<void> onLoad() async {
@@ -50,5 +50,15 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     interval.update(dt);
 
     score.text = 'Score: ${bird.score}';
+  }
+
+  void checkAchievements() {
+    if (bird.score == 10) {
+      onAchievementReached?.call('Flappy Chick');
+    }
+
+    if (bird.score == 50) {
+      onAchievementReached?.call('Flappy Eagle');
+    }
   }
 }
