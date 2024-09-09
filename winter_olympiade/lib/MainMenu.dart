@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:starsview/starsview.dart';
 
-import 'games/ChessClock.dart';
+import 'games/ChessTimer.dart';
 import 'infos/PlaySounds.dart';
 import 'infos/Rules.dart';
 import 'infos/SchedulePage.dart';
@@ -748,7 +748,7 @@ class _MainMenuState extends State<MainMenu> {
           mainMenuButton(
             "Schachuhr",
             Icons.timer,
-            () => SchachUhr(maxtime: maxChessTime.inSeconds),
+            () => ChessTimer(maxTime: maxChessTime.inSeconds),
             heroTag: "ChessClockHero"
           ),
           SingleChildScrollView(

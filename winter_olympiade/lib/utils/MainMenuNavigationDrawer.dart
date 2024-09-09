@@ -4,7 +4,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:olympiade/games/ChessClock.dart';
 import 'package:olympiade/infos/Rules.dart';
 import 'package:olympiade/infos/SchedulePage.dart';
 import 'package:olympiade/infos/Soundboard.dart';
@@ -15,6 +14,7 @@ import 'package:olympiade/utils/MatchData.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../games/ChessTimer.dart';
 import '../games/Dart/DartStartScreen.dart';
 
 class MainMenuNavigationDrawer extends StatefulWidget {
@@ -187,7 +187,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               Navigator.pop(context);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                      SchachUhr(maxtime: widget.maxChessTime)));
+                      ChessTimer(maxTime: widget.maxChessTime)));
             },
           ),
           ListTile(
