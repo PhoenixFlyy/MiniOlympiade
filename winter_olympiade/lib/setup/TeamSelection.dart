@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../MainMenu.dart';
+import '../infos/achievements/achievement_provider.dart';
 import '../utils/MatchData.dart';
 
 class TeamSelection extends StatefulWidget {
@@ -83,6 +85,9 @@ class _TeamSelectionState extends State<TeamSelection> {
                     prefs.setInt('selectedTeam', selectedTeam);
                     prefs.setString('teamName', teamName);
                     if (context.mounted) {
+                      if (teamName.toLowerCase().split('x').length - 1 >= 2) {
+                        context.read<AchievementProvider>().completeAchievementByTitle('Coole Socke!');
+                      }
                       HapticFeedback.heavyImpact();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
