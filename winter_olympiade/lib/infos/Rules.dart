@@ -147,7 +147,7 @@ class _RulesScreenState extends State<RulesScreen> {
                 );
               },
               child: const Text(
-                'Soundeffekt Beispiele',
+                'Soundeffekte',
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),

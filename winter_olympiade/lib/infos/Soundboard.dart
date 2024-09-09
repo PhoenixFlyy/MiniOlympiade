@@ -36,7 +36,6 @@ class SoundBoard extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +53,7 @@ class SoundBoard extends StatelessWidget {
               PlayButton(context, "Ende der Runde", playgongakkuratSound),
               PlayButton(context, "1 Minute übrig", playWhooshSound),
               PlayButton(context, "Pause", playWhistleSound),
+              PlayButton(context, "Alarm", playAlarmSound),
               PlayButton(context, "SIUUU", playSiuuuSound),
               PlayButton(context, "Villager", playVillagerSound),
               PlayButton(context, "Yeet", playYeetSound),
