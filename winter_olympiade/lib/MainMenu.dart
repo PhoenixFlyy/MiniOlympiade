@@ -442,6 +442,7 @@ class _MainMenuState extends State<MainMenu> {
     Duration remainingTime = calculateRemainingTimeInRound();
     String formattedRemainingTime;
     if (isPaused) {
+      context.read<AchievementProvider>().completeAchievementByTitle('Halbzeit!');
       formattedRemainingTime = "Pause";
     } else if (remainingTime.inMinutes > 59) {
       formattedRemainingTime = formatDuration(remainingTime);

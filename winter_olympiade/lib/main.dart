@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:olympiade/infos/achievements/AchievementScreen.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/infos/achievements/notification_controller.dart';
 import 'package:provider/provider.dart';
@@ -52,12 +53,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-      onNotificationCreatedMethod:
-          NotificationController.onNotificationCreatedMethod,
-      onNotificationDisplayedMethod:
-          NotificationController.onNotificationDisplayedMethod,
-      onDismissActionReceivedMethod:
-          NotificationController.onDismissActionReceivedMethod,
+      onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod,
     );
     super.initState();
   }
@@ -81,13 +79,17 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
             child: MaterialApp(
-                navigatorKey: MyApp.navigatorKey,
-                debugShowCheckedModeBanner: false,
-                title: 'Olympiade',
-                theme: ThemeData.dark(
-                  useMaterial3: true,
-                ),
-                home: teamSelected ? const MainMenu() : const TeamSelection()),
+              navigatorKey: MyApp.navigatorKey,
+              debugShowCheckedModeBanner: false,
+              title: 'Olympiade',
+              theme: ThemeData.dark(useMaterial3: true),
+              initialRoute: teamSelected ? '/main' : '/team_selection',
+              routes: {
+                '/main': (context) => const MainMenu(),
+                '/team_selection': (context) => const TeamSelection(),
+                '/achievements': (context) => const AchievementScreen(),
+              },
+            ),
           );
         }
       },
