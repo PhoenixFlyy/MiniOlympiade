@@ -4,18 +4,18 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:olympiade/infos/Rules.dart';
-import 'package:olympiade/infos/SchedulePage.dart';
-import 'package:olympiade/infos/Soundboard.dart';
+import 'package:olympiade/infos/rules.dart';
+import 'package:olympiade/infos/schedule_page.dart';
+import 'package:olympiade/infos/soundboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
-import 'package:olympiade/setup/TeamSelection.dart';
-import 'package:olympiade/setup/UploadPointsScreen.dart';
-import 'package:olympiade/utils/MatchData.dart';
+import 'package:olympiade/setup/team_selection.dart';
+import 'package:olympiade/setup/upload_points_screen.dart';
+import 'package:olympiade/utils/match_data.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../games/ChessTimer.dart';
-import '../games/Dart/DartStartScreen.dart';
+import '../games/chess_timer.dart';
+import '../games/Dart/darts_start_screen.dart';
 
 class MainMenuNavigationDrawer extends StatefulWidget {
   final int currentRound;

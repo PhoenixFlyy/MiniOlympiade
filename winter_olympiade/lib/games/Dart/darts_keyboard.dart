@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:olympiade/games/Dart/DartConstants.dart';
+import 'package:olympiade/games/Dart/dart_constants.dart';
 
 class DartsKeyboard extends StatefulWidget {
   final Function(int score, Multiplier multiplier) onScoreSelected;

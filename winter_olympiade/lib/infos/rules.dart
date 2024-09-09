@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olympiade/infos/Soundboard.dart';
+import 'package:olympiade/infos/soundboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -101,7 +101,7 @@ class RulesScreen extends StatefulWidget {
   const RulesScreen({super.key});
 
   @override
-  _RulesScreenState createState() => _RulesScreenState();
+  State<RulesScreen> createState() => _RulesScreenState();
 }
 
 class _RulesScreenState extends State<RulesScreen> {
@@ -179,10 +179,10 @@ class _RulesScreenState extends State<RulesScreen> {
                       title: Text(rule),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             );
-          }).toList(),
+          }),
         ],
       ),
     );

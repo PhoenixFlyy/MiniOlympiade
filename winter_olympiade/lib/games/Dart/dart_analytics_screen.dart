@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'DartConstants.dart';
-import 'DartStartScreen.dart';
+import 'dart_constants.dart';
+import 'darts_start_screen.dart';
 
 class DartAnalyticsScreen extends StatelessWidget {
   final List<PlayerTurn> turnHistory;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
-import 'AchievementList.dart';
+import 'achievement_list.dart';
 import 'achievement_provider.dart';
 import 'dart:ui';
 

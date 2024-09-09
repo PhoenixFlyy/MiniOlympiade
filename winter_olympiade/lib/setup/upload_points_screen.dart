@@ -2,8 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../utils/MatchData.dart';
-import '../utils/MatchDetailQueries.dart';
+import '../utils/match_data.dart';
+import '../utils/match_detail_queries.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:provider/provider.dart';
 

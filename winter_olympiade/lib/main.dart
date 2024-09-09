@@ -2,14 +2,14 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:olympiade/infos/achievements/AchievementScreen.dart';
+import 'package:olympiade/infos/achievements/achievement_screen.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/infos/achievements/notification_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MainMenu.dart';
-import 'setup/TeamSelection.dart';
+import 'main_menu.dart';
+import 'setup/team_selection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

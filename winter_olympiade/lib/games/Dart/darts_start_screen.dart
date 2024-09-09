@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
-import 'package:olympiade/utils/ConfirmationDialog.dart';
+import 'package:olympiade/utils/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../utils/ImageConverter.dart';
-import 'DartConstants.dart';
-import 'DartPlayScreen.dart';
+import '../../utils/image_converter.dart';
+import 'dart_constants.dart';
+import 'dart_play_screen.dart';
 
 class DartStartScreen extends StatefulWidget {
   const DartStartScreen({super.key});

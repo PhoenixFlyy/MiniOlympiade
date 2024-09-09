@@ -6,13 +6,13 @@ class TimePickerWidget extends StatefulWidget {
   final DateTime currentEventStartTime;
 
   const TimePickerWidget({
-    Key? key,
+    super.key,
     required this.onDateTimeSelected,
     required this.currentEventStartTime,
-  }) : super(key: key);
+  });
 
   @override
-  _TimePickerWidgetState createState() => _TimePickerWidgetState();
+  State<TimePickerWidget> createState() => _TimePickerWidgetState();
 }
 
 class _TimePickerWidgetState extends State<TimePickerWidget> {

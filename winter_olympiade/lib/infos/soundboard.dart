@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:olympiade/infos/play_sounds.dart';
 import 'package:provider/provider.dart';
-
-import 'PlaySounds.dart';
 
 class SoundBoard extends StatelessWidget {
   const SoundBoard({super.key});
 
-  Widget PlayButton(BuildContext context, String buttonText, void Function() onPressed) {
+  Widget playButton(BuildContext context, String buttonText, void Function() onPressed) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: SizedBox(
@@ -49,14 +48,14 @@ class SoundBoard extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Column(
             children: [
-              PlayButton(context, "Start der Runde", playStartSound),
-              PlayButton(context, "Ende der Runde", playgongakkuratSound),
-              PlayButton(context, "1 Minute übrig", playWhooshSound),
-              PlayButton(context, "Pause", playWhistleSound),
-              PlayButton(context, "Alarm", playAlarmSound),
-              PlayButton(context, "SIUUU", playSiuuuSound),
-              PlayButton(context, "Villager", playVillagerSound),
-              PlayButton(context, "Yeet", playYeetSound),
+              playButton(context, "Start der Runde", playStartSound),
+              playButton(context, "Ende der Runde", playgongakkuratSound),
+              playButton(context, "1 Minute übrig", playWhooshSound),
+              playButton(context, "Pause", playWhistleSound),
+              playButton(context, "Alarm", playAlarmSound),
+              playButton(context, "SIUUU", playSiuuuSound),
+              playButton(context, "Villager", playVillagerSound),
+              playButton(context, "Yeet", playYeetSound),
             ],
           ),
         ),

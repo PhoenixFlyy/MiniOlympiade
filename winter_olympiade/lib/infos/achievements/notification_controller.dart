@@ -1,6 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
-import 'package:olympiade/main.dart';  // Stelle sicher, dass du den richtigen Pfad zur MyApp-Klasse hast
+import 'package:olympiade/main.dart';
 
 class NotificationController {
   @pragma("vm:entry-point")
@@ -18,9 +17,7 @@ class NotificationController {
   @pragma("vm:entry-point")
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
-    // Hier wird überprüft, ob es sich um eine Achievement-Benachrichtigung handelt
     if (receivedAction.channelKey == 'achievement_channel') {
-      // Navigiere zur Achievement-Seite
       MyApp.navigatorKey.currentState?.pushNamed('/achievements');
     }
   }

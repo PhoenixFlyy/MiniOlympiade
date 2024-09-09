@@ -4,7 +4,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'AchievementList.dart';
+import 'achievement_list.dart';
 
 class AchievementProvider extends ChangeNotifier {
   int _confettiTriggerCount = 0;

@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:olympiade/games/Dart/DartAnalyticsScreen.dart';
-import 'package:olympiade/games/Dart/DartFinishCombinations.dart';
-import 'package:olympiade/games/Dart/DartsKeyboard.dart';
+import 'package:olympiade/games/Dart/dart_analytics_screen.dart';
+import 'package:olympiade/games/Dart/dart_finish_combinations.dart';
+import 'package:olympiade/games/Dart/darts_keyboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
-import 'package:olympiade/utils/ConfirmationDialog.dart';
+import 'package:olympiade/utils/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'DartConstants.dart';
+import 'dart_constants.dart';
 
 class DartPlayScreen extends StatefulWidget {
   final GameEndRule gameEndRule;

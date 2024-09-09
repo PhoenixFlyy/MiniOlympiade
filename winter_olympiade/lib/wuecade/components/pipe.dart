@@ -16,6 +16,7 @@ class Pipe extends SpriteComponent with HasGameRef<FlappyWueGame> {
   final double height;
   final PipePosition pipePosition;
 
+  @override
   Future<void> onLoad() async {
     final pipe = await Flame.images.load(Assets.pipe);
     final pipeRotated = await Flame.images.load(Assets.pipeRotated);
