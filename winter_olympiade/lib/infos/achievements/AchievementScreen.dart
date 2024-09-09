@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'AchievementList.dart';
 import 'achievement_provider.dart';
 import 'dart:ui';
 
@@ -11,19 +14,44 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreenState extends State<AchievementScreen> {
+
+  Future<List<Achievement>> fetchAchievements() async {
+    if (!mounted) return [];
+    return context.read<AchievementProvider>().getAchievementList();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final achievements = context.watch<AchievementProvider>().getAchievementList();
-    int completedAchievements = achievements.where((achievement) => achievement.isCompleted).length;
+    final achievementsAppBar = context.watch<AchievementProvider>().getAchievementList();
+    int completedAchievementsAppBar = achievementsAppBar.where((achievement) => achievement.isCompleted).length;
     context.read<AchievementProvider>().completeAchievementByTitle('Nerd');
 
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Achievements'),
+            const Hero(
+                tag: "achievementHero",
+                child: Text(
+                  'Achievements',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.normal,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: 0.0,
+                    wordSpacing: 0.0,
+                    decoration: TextDecoration.none,
+                    decorationColor: Colors.transparent,
+                    decorationStyle: TextDecorationStyle.solid,
+                    fontFamily: null,
+                    height: 1.0,
+                  ),
+                )
+            ),
             IconButton(
               icon: const Icon(Icons.restart_alt),
               tooltip: 'Reset Achievements',
@@ -31,7 +59,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   context.read<AchievementProvider>().resetAchievements(),
             ),
             Text(
-              '$completedAchievements / ${achievements.length}',
+              '$completedAchievementsAppBar / ${achievementsAppBar.length}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -40,17 +68,52 @@ class _AchievementScreenState extends State<AchievementScreen> {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: achievements.length,
-        itemBuilder: (context, index) {
-          return achievementContainer(
-            image: achievements[index].image,
-            title: achievements[index].title,
-            description: achievements[index].description,
-            isCompleted: achievements[index].isCompleted,
-            hidden: achievements[index].hidden,
-          );
+      body: FutureBuilder<List<Achievement>>(
+        future: fetchAchievements(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.builder(
+              itemCount: 20,
+              itemBuilder: (context, index) => skeletonContainer(),
+            );
+          } else {
+            final achievements = snapshot.data!;
+            return InfiniteCarousel.builder(
+              itemCount: achievements.length,
+              itemExtent: 155,
+              center: false,
+              anchor: 0.0,
+              velocityFactor: 0.4,
+              axisDirection: Axis.vertical,
+              loop: true,
+              itemBuilder: (context, itemIndex, realIndex) {
+                return achievementContainer(
+                  image: achievements[itemIndex].image,
+                  title: achievements[itemIndex].title,
+                  description: achievements[itemIndex].description,
+                  isCompleted: achievements[itemIndex].isCompleted,
+                  hidden: achievements[itemIndex].hidden,
+                );
+              },
+            );
+          }
         },
+      ),
+    );
+  }
+
+  Widget skeletonContainer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[800]!,
+      highlightColor: Colors.grey[700]!,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        height: 155,
+        width: double.infinity,
       ),
     );
   }

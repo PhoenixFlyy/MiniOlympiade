@@ -10,10 +10,10 @@ class UploadResults extends StatefulWidget {
   final int teamNumber;
 
   const UploadResults({
-    Key? key,
+    super.key,
     required this.currentRound,
     required this.teamNumber,
-  }) : super(key: key);
+  });
 
   @override
   State<UploadResults> createState() => _UploadResultsState();
@@ -122,7 +122,23 @@ class _UploadResultsState extends State<UploadResults> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Ergebnisse eintragen"),
+        title: const Hero(
+            tag: "uploadHero",
+            child: Text(
+              "Ergebnisse eintragen",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.normal,
+                fontStyle: FontStyle.normal,
+                letterSpacing: 0.0,
+                wordSpacing: 0.0,
+                decoration: TextDecoration.none,
+                decorationColor: Colors.transparent,
+                decorationStyle: TextDecorationStyle.solid,
+                fontFamily: null,
+                height: 1.0,
+              ),)),
         backgroundColor: Colors.black,
       ),
       body: Center(

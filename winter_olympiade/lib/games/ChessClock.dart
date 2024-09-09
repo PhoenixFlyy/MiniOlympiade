@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SchachUhr extends StatefulWidget {
-  const SchachUhr({Key? key, required this.maxtime}) : super(key: key);
+  const SchachUhr({super.key, required this.maxtime});
+
   final int maxtime;
 
   @override
@@ -106,7 +107,22 @@ class _SchachUhrState extends State<SchachUhr> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text("Schachuhr", style: TextStyle(fontSize: 20)),
+        title: const Hero(
+            tag: "ChessClockHero",
+            child: Text("Schachuhr",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: 0.0,
+                  wordSpacing: 0.0,
+                  decoration: TextDecoration.none,
+                  decorationColor: Colors.transparent,
+                  decorationStyle: TextDecorationStyle.solid,
+                  fontFamily: null,
+                  height: 1.0,
+                ))),
       ),
       body: Column(
         children: [

@@ -52,7 +52,24 @@ class _SchedulePageState extends State<SchedulePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Laufplan'),
+        title: const Hero(
+            tag: "scheduleHero",
+            child: Text(
+                'Laufplan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: 0.0,
+                  wordSpacing: 0.0,
+                  decoration: TextDecoration.none,
+                  decorationColor: Colors.transparent,
+                  decorationStyle: TextDecorationStyle.solid,
+                  fontFamily: null,
+                  height: 1.0,
+                )
+            )),
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(

@@ -6,24 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/games/Dart/DartStartScreen.dart';
+import 'package:olympiade/infos/achievements/AchievementScreen.dart';
+import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/utils/MainMenuNavigationDrawer.dart';
-import 'package:olympiade/wuecade/wuecade_main_menu.dart';
+import 'package:olympiade/wuecade/screens/main_menu_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:starsview/starsview.dart';
 
-import 'setup/ResultScreen.dart';
+import 'games/ChessClock.dart';
+import 'infos/PlaySounds.dart';
 import 'infos/Rules.dart';
 import 'infos/SchedulePage.dart';
+import 'setup/ResultScreen.dart';
 import 'setup/UploadPointsScreen.dart';
-import 'games/ChessClock.dart';
 import 'utils/DateTimePicker.dart';
 import 'utils/DateTimeUtils.dart';
 import 'utils/MatchData.dart';
 import 'utils/MatchDetailQueries.dart';
-import 'infos/PlaySounds.dart';
-
-import 'package:olympiade/infos/achievements/achievement_provider.dart';
-import 'package:provider/provider.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -33,7 +34,6 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-
   final player = AudioPlayer();
   late Timer _timer;
   String currentMatchUpText = '';
@@ -126,10 +126,8 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-
-
   void _showWinnersDialog() {
-    List<String> winners = [ '2022: Wenzel & Daniel', '2023: Felix & Simon'];
+    List<String> winners = ['2022: Wenzel & Daniel', '2023: Felix & Simon'];
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -483,13 +481,9 @@ class _MainMenuState extends State<MainMenu> {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: <Color>[
-                    Colors.black,
-                    Colors.black26
-                  ]
-                ),
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: <Color>[Colors.black, Colors.black26]),
               ),
             ),
             const StarsView(
@@ -510,7 +504,9 @@ class _MainMenuState extends State<MainMenu> {
                             children: [
                               Icon(Icons.circle, color: getRoundCircleColor()),
                               Text(
-                                  currentRound > 30 ? "Ende" : ' Runde $currentRound',
+                                  currentRound > 30
+                                      ? "Ende"
+                                      : ' Runde $currentRound',
                                   style: const TextStyle(fontSize: 18)),
                             ],
                           ),
@@ -528,7 +524,8 @@ class _MainMenuState extends State<MainMenu> {
                           Icons.pause,
                           size: 300,
                         )
-                      else if (currentRound <= pairings.length && currentRound > 0)
+                      else if (currentRound <= pairings.length &&
+                          currentRound > 0)
                         Padding(
                           padding: const EdgeInsets.only(top: 40),
                           child: Container(
@@ -563,7 +560,7 @@ class _MainMenuState extends State<MainMenu> {
                                   style: const TextStyle(fontSize: 24)),
                             ),
                             AspectRatio(
-                              aspectRatio: 5/4,
+                              aspectRatio: 5 / 4,
                               child: getDisciplineImage(),
                             )
                           ],
@@ -612,178 +609,201 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
+  Widget mainMenuButton(
+      String text, IconData icon, Widget Function() destinationWidget,
+      {bool bottomPadding = true, bool rightPadding = false, double fontSize = 20, String? heroTag, bool withShimmer = false}) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding ? 10 : 0, right: rightPadding ? 10 : 0),
+      child: withShimmer
+          ? Stack(
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.grey[800]!,
+            highlightColor: Colors.white.withOpacity(0.3),
+            direction: ShimmerDirection.ltr,
+            period: const Duration(seconds: 5),
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          ),
+          FilledButton.tonal(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              padding: const EdgeInsets.all(16.0),
+            ),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => destinationWidget(),
+                  ));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 10),
+                if (heroTag != null)
+                  Hero(
+                    tag: heroTag,
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    text,
+                    style: TextStyle(fontSize: fontSize, color: Colors.white),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      )
+          : FilledButton.tonal(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          padding: const EdgeInsets.all(16.0),
+        ),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => destinationWidget(),
+              ));
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 10),
+            if (heroTag != null)
+              Hero(
+                tag: heroTag,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.normal,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: 0.0,
+                    wordSpacing: 0.0,
+                    decoration: TextDecoration.none,
+                    decorationColor: Colors.transparent,
+                    decorationStyle: TextDecorationStyle.solid,
+                    fontFamily: null,
+                    height: 1.0,
+                  ),
+                ),
+              )
+            else
+              Text(
+                text,
+                style: TextStyle(fontSize: fontSize, color: Colors.white),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget mainButtonColumn() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 14,
-              width: double.infinity,
-              child: FilledButton.tonal(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[500],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                ),
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UploadResults(
-                              currentRound: currentRound,
-                              teamNumber: selectedTeam)));
-                },
-                child: const Text(
-                  'Ergebnisse eintragen',
-                  style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+          mainMenuButton(
+            "Ergebnisse eintragen",
+            Icons.edit,
+            () => UploadResults(
+                currentRound: currentRound, teamNumber: selectedTeam),
+            withShimmer: true,
+            heroTag: "uploadHero"
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 14,
-              width: double.infinity,
-              child: FilledButton.tonal(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.grey[500],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DartStartScreen()));
-                },
-                child: const Text(
-                  'Dartsrechner',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-            ),
+          mainMenuButton(
+            "Dartsrechner",
+            Icons.sports_esports,
+            () => const DartStartScreen(),
+            heroTag: "dartsHero"
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 14,
-              width: double.infinity,
-              child: FilledButton.tonal(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[500],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                ),
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SchachUhr(
-                            maxtime: maxChessTime.inSeconds,
-                          )));
-                },
-                child: const Text(
-                  'Schachuhr',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-            ),
+          mainMenuButton(
+            "Schachuhr",
+            Icons.timer,
+            () => SchachUhr(maxtime: maxChessTime.inSeconds),
+            heroTag: "ChessClockHero"
           ),
-          bottomButtonRow(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                mainMenuButton(
+                  "Regeln",
+                  Icons.rule,
+                      () {
+                    context
+                        .read<AchievementProvider>()
+                        .completeAchievementByTitle('Nimm es ganz genau!');
+                    return const RulesScreen();
+                  },
+                  bottomPadding: false,
+                  rightPadding: true,
+                  fontSize: 14,
+                  heroTag: "rulesHero"
+                ),
+                mainMenuButton(
+                  "Laufplan",
+                  Icons.directions_run,
+                      () => SchedulePage(
+                    pairings: pairings,
+                    disciplines: disciplines,
+                    currentRowForColor: currentRound,
+                  ),
+                  bottomPadding: false,
+                  rightPadding: true,
+                  fontSize: 14,
+                  heroTag: "scheduleHero"
+                ),
+                mainMenuButton(
+                  "Achievements",
+                  Icons.emoji_events,
+                      () => const AchievementScreen(),
+                  bottomPadding: false,
+                  rightPadding: true,
+                  fontSize: 14,
+                  heroTag: "achievementHero",
+                ),
+                mainMenuButton(
+                  "Wuecade Games",
+                  Icons.gamepad,
+                      () => const FlappyMain(),
+                  bottomPadding: false,
+                  rightPadding: false,
+                  fontSize: 14,
+                ),
+              ],
+            ),
+          )
         ],
       ),
-    );
-  }
-
-  Widget bottomButtonRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Expanded(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[500],
-              padding: const EdgeInsets.all(16.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              minimumSize: const Size.fromHeight(70)
-            ),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              // Trigger das Achievement, wenn der Button gedrückt wird
-              context.read<AchievementProvider>().completeAchievementByTitle('Nimm es ganz genau!');
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RulesScreen()));
-            },
-            child: const Text('Regeln',
-                style: TextStyle(color: Colors.white)),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[500],
-                padding: const EdgeInsets.all(16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                  minimumSize: const Size.fromHeight(70)
-              ),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SchedulePage(
-                          pairings: pairings,
-                          disciplines: disciplines,
-                          currentRowForColor: currentRound,
-                        )));
-              },
-              child: const Text('Laufplan',
-                  style: TextStyle(color: Colors.white)),
-            ),
-          ),
-        ),
-        Expanded(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[500],
-              padding: const EdgeInsets.all(16.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-                minimumSize: const Size.fromHeight(70)
-            ),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const WuecadeMainMenu()));
-            },
-            child: const Text('Wuecade Games', textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white)),
-          ),
-        ),
-      ],
     );
   }
 
