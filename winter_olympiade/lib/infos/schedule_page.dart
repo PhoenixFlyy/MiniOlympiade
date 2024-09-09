@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SchedulePage extends StatefulWidget {
   final List<List<String>> pairings;
@@ -22,11 +23,13 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   Timer? _timer;
   int _secondsSpent = 0;
+  late int selectedTeam = 0;
 
   @override
   void initState() {
     super.initState();
     _startTimer();
+    _loadSelectedTeam();
   }
 
   @override
@@ -46,17 +49,24 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  Future<void> _loadSelectedTeam() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() => selectedTeam = prefs.getInt('selectedTeam') ?? 0);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Hero(
+        title: Hero(
             tag: "scheduleHero",
             child: Text(
-                'Laufplan',
-                style: TextStyle(
+                'Laufplan  -  Team $selectedTeam',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.normal,
@@ -112,9 +122,16 @@ class _SchedulePageState extends State<SchedulePage> {
                       if (cellIndex == 0) {
                         return DataCell(Text('Runde ${rowIndex + 1}'));
                       }
+                      final isSpecialCell = isSpecialRow && widget.pairings[rowIndex][cellIndex - 1].contains(selectedTeam.toString());
                       return DataCell(
-                        Text(widget.pairings[rowIndex][cellIndex - 1],
-                            style: const TextStyle(fontSize: 16)),
+                        Text(
+                            widget.pairings[rowIndex][cellIndex - 1],
+                            style: TextStyle(
+                                fontWeight: isSpecialCell ? FontWeight.bold : null,
+                                fontSize: 16,
+                                color: isSpecialCell ? Colors.amber : Colors.white
+                            )
+                        ),
                       );
                     },
                   ),
