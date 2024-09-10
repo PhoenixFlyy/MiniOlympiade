@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+import '../utils/play_sounds.dart';
 
 class ChessTimer extends StatefulWidget {
   const ChessTimer({super.key, required this.maxTime});
@@ -20,10 +21,11 @@ class _ChessTimerState extends State<ChessTimer> {
   bool playerOneTurn = false;
   late double playerOneTime;
   late double playerTwoTime;
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   int playerOneTurns = 0;
   int playerTwoTurns = 0;
+
+  final audioService = AudioService();
 
   @override
   void initState() {
@@ -35,7 +37,6 @@ class _ChessTimerState extends State<ChessTimer> {
   @override
   void dispose() {
     timer?.cancel();
-    _audioPlayer.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -58,7 +59,7 @@ class _ChessTimerState extends State<ChessTimer> {
           } else {
             playerOneTime = 0.0;
             timer.cancel();
-            playAlarm();
+            audioService.playAlarmSound();
           }
         } else {
           if (playerTwoTime > 0) {
@@ -66,16 +67,11 @@ class _ChessTimerState extends State<ChessTimer> {
           } else {
             playerTwoTime = 0.0;
             timer.cancel();
-            playAlarm();
+            audioService.playAlarmSound();
           }
         }
       });
     });
-  }
-
-  Future<void> playAlarm() async {
-    _audioPlayer.setVolume(5.0);
-    _audioPlayer.play(AssetSource('audio/alarm.mp3'));
   }
 
   void togglePlayerTurn() {
