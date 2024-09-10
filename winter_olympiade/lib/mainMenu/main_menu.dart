@@ -2,19 +2,16 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:olympiade/utils/main_menu_navigation_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-import '../setup/result_screen.dart';
-import '../utils/date_time_picker.dart';
 import '../utils/date_time_utils.dart';
 import '../utils/match_data.dart';
 import '../utils/match_detail_queries.dart';
 import '../utils/play_sounds.dart';
 import 'main_menu_body.dart';
+import 'main_menu_settings.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -206,16 +203,6 @@ class _MainMenuState extends State<MainMenu> {
     return currentRound + 1;
   }
 
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-
-    String days = duration.inDays != 0 ? '${duration.inDays} d ' : '';
-    String hours = '${twoDigits(duration.inHours.remainder(24))} h ';
-    String minutes = '${twoDigits(duration.inMinutes.remainder(60))} Min';
-
-    return days + hours + minutes;
-  }
-
   Duration calculateRemainingTimeInRound() {
     DateTime currentTime = DateTime.now();
 
@@ -283,21 +270,6 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  Color getRoundCircleColor() {
-    if (currentRound > 0 && currentRound <= pairings.length) {
-      if (calculateRemainingTimeInRound().inSeconds < (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-        return Colors.red;
-      } else if (calculateRemainingTimeInRound().inSeconds <
-          (roundTimeDuration.inSeconds - playTimeDuration.inSeconds + const Duration(seconds: 60).inSeconds)) {
-        return Colors.orange;
-      } else {
-        return Colors.green;
-      }
-    } else {
-      return Colors.red;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     String appBarTitle = 'Team $selectedTeam';
@@ -334,7 +306,9 @@ class _MainMenuState extends State<MainMenu> {
         nextMatchUpText: nextMatchUpText,
         remainingTime: calculateRemainingTimeInRound(),
         selectedTeamName: selectedTeamName,
-        getRoundCircleColor: getRoundCircleColor,
+        roundTimeDuration: roundTimeDuration,
+        playTimeDuration: playTimeDuration,
+        calculateRemainingTimeInRound: calculateRemainingTimeInRound(),
       ),
     );
   }
@@ -349,149 +323,14 @@ class _MainMenuState extends State<MainMenu> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(31.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text("Beginn:", style: TextStyle(fontSize: 18)),
-                      Text(DateFormat(' dd.MM.yyyy, HH:mm').format(_eventStartTime), style: const TextStyle(fontSize: 18)),
-                      const Text(" Uhr", style: TextStyle(fontSize: 18)),
-                      TimePickerWidget(
-                          currentEventStartTime: _eventStartTime,
-                          onDateTimeSelected: (newTime) {
-                            final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
-                            databaseReference.update({
-                              "pauseTime": 0,
-                              "startTime": dateTimeToString(newTime),
-                            });
-                          }),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 75,
-                        width: 200,
-                        child: TextField(
-                          controller: _maxChessTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          onChanged: (value) {
-                            setState(() {
-                              maxChessTime = Duration(seconds: int.tryParse(value) ?? maxChessTime.inSeconds);
-                            });
-                          },
-                        ),
-                      ),
-                      FilledButton.tonal(
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () => updateChessTimeInDatabase(),
-                        child: const Text("Update"),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 75,
-                        width: 200,
-                        child: TextField(
-                          controller: _roundTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: "Rundenzeit in Minuten"),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          onChanged: (value) {
-                            setState(() {
-                              roundTimeDuration = Duration(minutes: int.tryParse(value) ?? roundTimeDuration.inMinutes);
-                            });
-                          },
-                        ),
-                      ),
-                      FilledButton.tonal(
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () => updateRoundTimeInDatabase(),
-                        child: const Text("Update"),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 75,
-                        width: 200,
-                        child: TextField(
-                          controller: _playTimeController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(labelText: "Spielzeit einer Runde"),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          onChanged: (value) {
-                            setState(() {
-                              playTimeDuration = Duration(minutes: int.tryParse(value) ?? playTimeDuration.inMinutes);
-                            });
-                          },
-                        ),
-                      ),
-                      FilledButton.tonal(
-                        style: FilledButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () => updateRoundTimeInDatabase(),
-                        child: const Text("Update"),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () => updateIsPausedInDatabase(),
-                    child: const Text("Update Pause in Database"),
-                  ),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ResultScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text('Ergebnisse anschauen'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        return SettingsModal(
+          maxChessTimeController: _maxChessTimeController,
+          roundTimeController: _roundTimeController,
+          playTimeController: _playTimeController,
+          eventStartTime: _eventStartTime,
+          updateChessTimeInDatabase: updateChessTimeInDatabase,
+          updateRoundTimeInDatabase: updateRoundTimeInDatabase,
+          updateIsPausedInDatabase: updateIsPausedInDatabase,
         );
       },
     );

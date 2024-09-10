@@ -16,7 +16,9 @@ class MainMenuBody extends StatelessWidget {
   final String nextMatchUpText;
   final Duration remainingTime;
   final String selectedTeamName;
-  final Function getRoundCircleColor;
+  final Duration roundTimeDuration;
+  final Duration playTimeDuration;
+  final Duration calculateRemainingTimeInRound;
 
   const MainMenuBody({
     super.key,
@@ -28,7 +30,9 @@ class MainMenuBody extends StatelessWidget {
     required this.nextMatchUpText,
     required this.remainingTime,
     required this.selectedTeamName,
-    required this.getRoundCircleColor,
+    required this.roundTimeDuration,
+    required this.playTimeDuration,
+    required this.calculateRemainingTimeInRound
   });
 
   String formatDuration(Duration duration) {
@@ -39,6 +43,21 @@ class MainMenuBody extends StatelessWidget {
     String minutes = '${twoDigits(duration.inMinutes.remainder(60))} Min';
 
     return days + hours + minutes;
+  }
+
+  Color getRoundCircleColor() {
+    if (currentRound > 0 && currentRound <= pairings.length) {
+      if (calculateRemainingTimeInRound.inSeconds < (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+        return Colors.red;
+      } else if (calculateRemainingTimeInRound.inSeconds <
+          (roundTimeDuration.inSeconds - playTimeDuration.inSeconds + const Duration(seconds: 60).inSeconds)) {
+        return Colors.orange;
+      } else {
+        return Colors.green;
+      }
+    } else {
+      return Colors.red;
+    }
   }
 
   Widget getDisciplineImage(BuildContext context) {
