@@ -145,9 +145,7 @@ class MainMenuBody extends StatelessWidget {
   Widget build(BuildContext context) {
     String formattedRemainingTime;
     if (isPaused) {
-      context
-          .read<AchievementProvider>()
-          .completeAchievementByTitle('Halbzeit!');
+      context.read<AchievementProvider>().completeAchievementByTitle('Halbzeit!');
       formattedRemainingTime = "Pause";
     } else if (remainingTime.inMinutes > 59) {
       formattedRemainingTime = formatDuration(remainingTime);
@@ -176,18 +174,14 @@ class MainMenuBody extends StatelessWidget {
                         Row(
                           children: [
                             Icon(Icons.circle, color: getRoundCircleColor()),
-                            Text(
-                                currentRound > 30
-                                    ? "Ende"
-                                    : ' Runde $currentRound',
+                            Text(currentRound > 30 ? "Ende" : ' Runde $currentRound',
                                 style: const TextStyle(fontSize: 18)),
                           ],
                         ),
                         Row(
                           children: [
                             const Icon(Icons.timer),
-                            Text(' Zeit: $formattedRemainingTime',
-                                style: const TextStyle(fontSize: 18)),
+                            Text(' Zeit: $formattedRemainingTime', style: const TextStyle(fontSize: 18)),
                           ],
                         ),
                       ],
@@ -197,8 +191,7 @@ class MainMenuBody extends StatelessWidget {
                         Icons.pause,
                         size: 300,
                       )
-                    else if (currentRound <= pairings.length &&
-                        currentRound > 0)
+                    else if (currentRound <= pairings.length && currentRound > 0)
                       Padding(
                         padding: const EdgeInsets.only(top: 40),
                         child: Container(
@@ -210,13 +203,11 @@ class MainMenuBody extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: Text(currentMatchUpText,
-                                  style: const TextStyle(fontSize: 18),
-                                  textAlign: TextAlign.center),
+                                  style: const TextStyle(fontSize: 18), textAlign: TextAlign.center),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: SizedBox(
-                                  height: 150, child: getDisciplineImage(context)),
+                              child: SizedBox(height: 150, child: getDisciplineImage(context)),
                             ),
                           ]),
                         ),
@@ -238,9 +229,7 @@ class MainMenuBody extends StatelessWidget {
                           )
                         ],
                       ),
-                    if (currentRound < pairings.length &&
-                        !isPaused &&
-                        currentRound >= 1)
+                    if (currentRound < pairings.length && !isPaused && currentRound >= 1)
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
                         child: Container(
@@ -251,17 +240,13 @@ class MainMenuBody extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(10),
                             child: Text(nextMatchUpText,
-                                style: const TextStyle(fontSize: 15),
-                                textAlign: TextAlign.center),
+                                style: const TextStyle(fontSize: 15), textAlign: TextAlign.center),
                           ),
                         ),
                       ),
                   ],
                 ),
-                MainButtonColumn(
-                    currentRound: currentRound,
-                    selectedTeam: selectedTeam,
-                    maxChessTime: maxChessTime),
+                MainButtonColumn(currentRound: currentRound, selectedTeam: selectedTeam, maxChessTime: maxChessTime),
               ],
             ),
           ),

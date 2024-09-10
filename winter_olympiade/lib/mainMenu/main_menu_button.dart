@@ -26,8 +26,7 @@ class MainMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-          bottom: bottomPadding ? 10 : 0, right: rightPadding ? 10 : 0),
+      padding: EdgeInsets.only(bottom: bottomPadding ? 10 : 0, right: rightPadding ? 10 : 0),
       child: withShimmer
           ? Stack(
               children: [
@@ -75,7 +74,6 @@ class MainMenuButton extends StatelessWidget {
                           text,
                           style: TextStyle(fontSize: fontSize, color: Colors.white),
                         ),
-
                     ],
                   ),
                 ),

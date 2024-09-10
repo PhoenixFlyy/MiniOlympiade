@@ -49,15 +49,13 @@ class _MainMenuState extends State<MainMenu> {
   DateTime _eventStartTime = DateTime.now();
   DateTime _eventEndTime = DateTime.now();
 
-  final DatabaseReference _databaseTime =
-      FirebaseDatabase.instance.ref('/time');
+  final DatabaseReference _databaseTime = FirebaseDatabase.instance.ref('/time');
 
   bool isFirstRenderingWhistle = true;
 
   void _activateDatabaseTimeListener() {
     _databaseTime.child("isPaused").onValue.listen((event) {
-      final bool streamIsPaused =
-          event.snapshot.value.toString().toLowerCase() == 'true';
+      final bool streamIsPaused = event.snapshot.value.toString().toLowerCase() == 'true';
       if (!isFirstRenderingWhistle && streamIsPaused) {
         audioService.playWhistleSound();
       }
@@ -72,45 +70,39 @@ class _MainMenuState extends State<MainMenu> {
       }
     });
     _databaseTime.child("pauseTime").onValue.listen((event) {
-      final int streamPauseTime =
-          int.tryParse(event.snapshot.value.toString()) ?? 0;
+      final int streamPauseTime = int.tryParse(event.snapshot.value.toString()) ?? 0;
       setState(() {
         pauseTimeInSeconds = streamPauseTime;
       });
     });
     _databaseTime.child("startTime").onValue.listen((event) {
-      final DateTime streamEventStartTime =
-          stringToDateTime(event.snapshot.value.toString());
+      final DateTime streamEventStartTime = stringToDateTime(event.snapshot.value.toString());
       setState(() {
         _eventStartTime = streamEventStartTime;
         currentRound = calculateCurrentRoundWithDateTime();
       });
     });
     _databaseTime.child("pauseStartTime").onValue.listen((event) {
-      final DateTime streamPauseStartTime =
-          stringToDateTime(event.snapshot.value.toString());
+      final DateTime streamPauseStartTime = stringToDateTime(event.snapshot.value.toString());
       setState(() {
         pauseStartTime = streamPauseStartTime;
       });
     });
     _databaseTime.child("chessTime").onValue.listen((event) {
-      final Duration streamChessTime = Duration(
-          seconds: int.tryParse(event.snapshot.value.toString()) ?? 240);
+      final Duration streamChessTime = Duration(seconds: int.tryParse(event.snapshot.value.toString()) ?? 240);
       setState(() {
         maxChessTime = streamChessTime;
       });
     });
 
     _databaseTime.child("roundTime").onValue.listen((event) {
-      final Duration streamRoundTime = Duration(
-          minutes: int.tryParse(event.snapshot.value.toString()) ?? 12);
+      final Duration streamRoundTime = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 12);
       setState(() {
         roundTimeDuration = streamRoundTime;
       });
     });
     _databaseTime.child("playTime").onValue.listen((event) {
-      final Duration streamPlayTime = Duration(
-          minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
+      final Duration streamPlayTime = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
       setState(() {
         playTimeDuration = streamPlayTime;
       });
@@ -152,8 +144,7 @@ class _MainMenuState extends State<MainMenu> {
 
   void calculateEventEndTime() {
     Duration calculatedDuration =
-        Duration(minutes: pairings.length * roundTimeDuration.inMinutes) +
-            Duration(seconds: pauseTimeInSeconds);
+        Duration(minutes: pairings.length * roundTimeDuration.inMinutes) + Duration(seconds: pauseTimeInSeconds);
     if (isPaused) {
       calculatedDuration += DateTime.now().difference(pauseStartTime);
     }
@@ -173,31 +164,23 @@ class _MainMenuState extends State<MainMenu> {
 
   void _updateMatchAndDiscipline() {
     if (currentRound > 0 && currentRound <= pairings.length) {
-      var opponentTeamNumber =
-          getOpponentTeamNumberByRound(currentRound, selectedTeam);
-      var nextOpponentTeamNumber =
-          getOpponentTeamNumberByRound(currentRound + 1, selectedTeam);
+      var opponentTeamNumber = getOpponentTeamNumberByRound(currentRound, selectedTeam);
+      var nextOpponentTeamNumber = getOpponentTeamNumberByRound(currentRound + 1, selectedTeam);
       var disciplineName = getDisciplineName(currentRound, selectedTeam);
-      var nextDisciplineName =
-          getDisciplineName(currentRound + 1, selectedTeam);
-      var startTeam = isStartingTeam(currentRound, selectedTeam)
-          ? "Beginner: Team $selectedTeam"
-          : "Beginner: Team $opponentTeamNumber";
+      var nextDisciplineName = getDisciplineName(currentRound + 1, selectedTeam);
+      var startTeam =
+          isStartingTeam(currentRound, selectedTeam) ? "Beginner: Team $selectedTeam" : "Beginner: Team $opponentTeamNumber";
       var nextStartTeam = isStartingTeam(currentRound + 1, selectedTeam)
           ? "Beginner: Team $selectedTeam"
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
-        if (calculateRemainingTimeInRound().inSeconds <=
-            (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-          currentMatchUpText =
-              'Wechseln. Bitte alles so aufbauen wie es vorher war!';
+        if (calculateRemainingTimeInRound().inSeconds <= (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+          currentMatchUpText = 'Wechseln. Bitte alles so aufbauen wie es vorher war!';
         } else {
-          currentMatchUpText =
-              'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+          currentMatchUpText = 'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
         }
 
-        nextMatchUpText =
-            'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
+        nextMatchUpText = 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
       });
     }
   }
@@ -217,8 +200,7 @@ class _MainMenuState extends State<MainMenu> {
   int calculateCurrentRoundWithDateTime() {
     DateTime currentTime = DateTime.now();
 
-    Duration timeDifference = currentTime.difference(_eventStartTime) -
-        Duration(seconds: pauseTimeInSeconds);
+    Duration timeDifference = currentTime.difference(_eventStartTime) - Duration(seconds: pauseTimeInSeconds);
     int currentRound = timeDifference.inMinutes ~/ roundTimeDuration.inMinutes;
     if (timeDifference.isNegative) return 0;
     return currentRound + 1;
@@ -244,21 +226,15 @@ class _MainMenuState extends State<MainMenu> {
       return currentTime.difference(_eventEndTime);
     }
 
-    int elapsedSeconds =
-        currentTime.difference(_eventStartTime).inSeconds - pauseTimeInSeconds;
-    int elapsedSecondsInCurrentRound =
-        elapsedSeconds % roundTimeDuration.inSeconds;
-    int remainingSecondsInCurrentRound =
-        roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
+    int elapsedSeconds = currentTime.difference(_eventStartTime).inSeconds - pauseTimeInSeconds;
+    int elapsedSecondsInCurrentRound = elapsedSeconds % roundTimeDuration.inSeconds;
+    int remainingSecondsInCurrentRound = roundTimeDuration.inSeconds - elapsedSecondsInCurrentRound;
 
     if (remainingSecondsInCurrentRound ==
-        (roundTimeDuration.inSeconds -
-            playTimeDuration.inSeconds +
-            const Duration(seconds: 60).inSeconds)) {
+        (roundTimeDuration.inSeconds - playTimeDuration.inSeconds + const Duration(seconds: 60).inSeconds)) {
       audioService.playWhooshSound();
     }
-    if (remainingSecondsInCurrentRound ==
-        (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+    if (remainingSecondsInCurrentRound == (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
       audioService.playGongAkkuratSound();
     }
     return Duration(seconds: remainingSecondsInCurrentRound);
@@ -270,8 +246,7 @@ class _MainMenuState extends State<MainMenu> {
       getPauseStartTime().then((value) {
         int elapsedSeconds = DateTime.now().difference(value).inSeconds;
         getPauseTime().then((value2) {
-          final DatabaseReference databaseReference =
-              FirebaseDatabase.instance.ref('/time');
+          final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
           databaseReference.update({
             "pauseTime": elapsedSeconds + value2,
           });
@@ -279,14 +254,12 @@ class _MainMenuState extends State<MainMenu> {
       });
     } else {
       String dateTimeString = dateTimeToString(DateTime.now());
-      final DatabaseReference databaseReference =
-          FirebaseDatabase.instance.ref('/time');
+      final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
       databaseReference.update({
         "pauseStartTime": dateTimeString,
       });
     }
-    final DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('/time');
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "isPaused": !isPaused,
     });
@@ -294,8 +267,7 @@ class _MainMenuState extends State<MainMenu> {
 
   void updateChessTimeInDatabase() {
     if (!mounted) return;
-    final DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('/time');
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "chessTime": maxChessTime.inSeconds,
     });
@@ -304,8 +276,7 @@ class _MainMenuState extends State<MainMenu> {
   void updateRoundTimeInDatabase() {
     if (!mounted) return;
     if (!mounted) return;
-    final DatabaseReference databaseReference =
-        FirebaseDatabase.instance.ref('/time');
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
       "roundTime": roundTimeDuration.inMinutes,
       "playTime": playTimeDuration.inMinutes,
@@ -314,13 +285,10 @@ class _MainMenuState extends State<MainMenu> {
 
   Color getRoundCircleColor() {
     if (currentRound > 0 && currentRound <= pairings.length) {
-      if (calculateRemainingTimeInRound().inSeconds <
-          (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
+      if (calculateRemainingTimeInRound().inSeconds < (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
         return Colors.red;
       } else if (calculateRemainingTimeInRound().inSeconds <
-          (roundTimeDuration.inSeconds -
-              playTimeDuration.inSeconds +
-              const Duration(seconds: 60).inSeconds)) {
+          (roundTimeDuration.inSeconds - playTimeDuration.inSeconds + const Duration(seconds: 60).inSeconds)) {
         return Colors.orange;
       } else {
         return Colors.green;
@@ -382,8 +350,7 @@ class _MainMenuState extends State<MainMenu> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(31.0),
@@ -395,16 +362,12 @@ class _MainMenuState extends State<MainMenu> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Text("Beginn:", style: TextStyle(fontSize: 18)),
-                      Text(
-                          DateFormat(' dd.MM.yyyy, HH:mm')
-                              .format(_eventStartTime),
-                          style: const TextStyle(fontSize: 18)),
+                      Text(DateFormat(' dd.MM.yyyy, HH:mm').format(_eventStartTime), style: const TextStyle(fontSize: 18)),
                       const Text(" Uhr", style: TextStyle(fontSize: 18)),
                       TimePickerWidget(
                           currentEventStartTime: _eventStartTime,
                           onDateTimeSelected: (newTime) {
-                            final DatabaseReference databaseReference =
-                                FirebaseDatabase.instance.ref('/time');
+                            final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
                             databaseReference.update({
                               "pauseTime": 0,
                               "startTime": dateTimeToString(newTime),
@@ -421,16 +384,11 @@ class _MainMenuState extends State<MainMenu> {
                         child: TextField(
                           controller: _maxChessTimeController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: "Schachuhr Zeit in Sekunden"),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          decoration: const InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChanged: (value) {
                             setState(() {
-                              maxChessTime = Duration(
-                                  seconds: int.tryParse(value) ??
-                                      maxChessTime.inSeconds);
+                              maxChessTime = Duration(seconds: int.tryParse(value) ?? maxChessTime.inSeconds);
                             });
                           },
                         ),
@@ -455,16 +413,11 @@ class _MainMenuState extends State<MainMenu> {
                         child: TextField(
                           controller: _roundTimeController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: "Rundenzeit in Minuten"),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          decoration: const InputDecoration(labelText: "Rundenzeit in Minuten"),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChanged: (value) {
                             setState(() {
-                              roundTimeDuration = Duration(
-                                  minutes: int.tryParse(value) ??
-                                      roundTimeDuration.inMinutes);
+                              roundTimeDuration = Duration(minutes: int.tryParse(value) ?? roundTimeDuration.inMinutes);
                             });
                           },
                         ),
@@ -489,16 +442,11 @@ class _MainMenuState extends State<MainMenu> {
                         child: TextField(
                           controller: _playTimeController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: "Spielzeit einer Runde"),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
+                          decoration: const InputDecoration(labelText: "Spielzeit einer Runde"),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           onChanged: (value) {
                             setState(() {
-                              playTimeDuration = Duration(
-                                  minutes: int.tryParse(value) ??
-                                      playTimeDuration.inMinutes);
+                              playTimeDuration = Duration(minutes: int.tryParse(value) ?? playTimeDuration.inMinutes);
                             });
                           },
                         ),

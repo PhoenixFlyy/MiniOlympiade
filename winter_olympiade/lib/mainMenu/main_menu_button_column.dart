@@ -39,8 +39,7 @@ class MainButtonColumn extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => UploadResults(
-                          currentRound: currentRound, teamNumber: selectedTeam),
+                      builder: (context) => UploadResults(currentRound: currentRound, teamNumber: selectedTeam),
                     ));
               },
               withShimmer: true,
@@ -65,8 +64,7 @@ class MainButtonColumn extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ChessTimer(maxTime: maxChessTime.inSeconds),
+                      builder: (context) => ChessTimer(maxTime: maxChessTime.inSeconds),
                     ));
               },
               heroTag: "ChessClockHero"),
@@ -80,9 +78,7 @@ class MainButtonColumn extends StatelessWidget {
                     icon: Icons.rule,
                     onPressed: () {
                       HapticFeedback.mediumImpact();
-                      context
-                          .read<AchievementProvider>()
-                          .completeAchievementByTitle('Nimm es ganz genau!');
+                      context.read<AchievementProvider>().completeAchievementByTitle('Nimm es ganz genau!');
                       Navigator.push(
                           context,
                           MaterialPageRoute(
