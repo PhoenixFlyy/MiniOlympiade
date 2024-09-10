@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:starsview/starsview.dart';
 
 import 'games/chess_timer.dart';
-import 'infos/play_sounds.dart';
 import 'infos/rules.dart';
 import 'infos/schedule_page.dart';
 import 'setup/result_screen.dart';
@@ -25,6 +23,7 @@ import 'utils/date_time_picker.dart';
 import 'utils/date_time_utils.dart';
 import 'utils/match_data.dart';
 import 'utils/match_detail_queries.dart';
+import 'utils/play_sounds.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -34,10 +33,11 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  final player = AudioPlayer();
   late Timer _timer;
   String currentMatchUpText = '';
   String nextMatchUpText = '';
+
+  final audioService = AudioService();
 
   Duration maxChessTime = const Duration(minutes: 4);
   Duration roundTimeDuration = const Duration(minutes: 12);
@@ -68,10 +68,10 @@ class _MainMenuState extends State<MainMenu> {
       final bool streamIsPaused =
           event.snapshot.value.toString().toLowerCase() == 'true';
       if (!isFirstRenderingWhistle && streamIsPaused) {
-        playWhistleSound();
+        audioService.playWhistleSound();
       }
       if (!isFirstRenderingWhistle && !streamIsPaused) {
-        playStartSound();
+        audioService.playStartSound();
       }
       setState(() {
         isPaused = streamIsPaused;
@@ -226,7 +226,7 @@ class _MainMenuState extends State<MainMenu> {
 
   void _updateCurrentRound() {
     int newCurrentRound = calculateCurrentRoundWithDateTime();
-    if (newCurrentRound != currentRound) playStartSound();
+    if (newCurrentRound != currentRound) audioService.playStartSound();
 
     setState(() {
       currentRound = newCurrentRound;
@@ -316,10 +316,10 @@ class _MainMenuState extends State<MainMenu> {
     if (remainingSecondsInCurrentRound ==
         (roundTimeDuration.inSeconds -
             playTimeDuration.inSeconds +
-            const Duration(seconds: 60).inSeconds)) playWhooshSound();
+            const Duration(seconds: 60).inSeconds)) audioService.playWhooshSound();
     if (remainingSecondsInCurrentRound ==
         (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-      playgongakkuratSound();
+      audioService.playGongAkkuratSound();
     }
     return Duration(seconds: remainingSecondsInCurrentRound);
   }

@@ -16,9 +16,7 @@ dependencies:
   firebase_core: ^3.3.0
   flutter_launcher_icons: ^0.13.1
   intl: ^0.19.0
-  audioplayers: ^6.0.0
   confetti: ^0.7.0
-  audioplayers_darwin: ^6.0.0
   image_picker: ^1.1.2
   path_provider: ^2.1.4
   animated_flip_counter: ^0.3.4
@@ -31,6 +29,11 @@ dependencies:
   infinite_carousel: ^1.1.1
   shimmer: ^3.0.0
   wakelock_plus: ^1.2.8
+  just_audio: ^0.9.40
+  audio_service: ^0.18.15
+
+  # TODO: Setup just_audio for iOS
+  # TODO: Setup awesome_notifcations for iOS
 
 dev_dependencies:
   flutter_test:

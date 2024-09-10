@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
-import 'package:olympiade/infos/play_sounds.dart';
 import 'package:provider/provider.dart';
+
+import '../utils/play_sounds.dart';
 
 class SoundBoard extends StatelessWidget {
   const SoundBoard({super.key});
@@ -37,6 +38,7 @@ class SoundBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioService = AudioService();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -48,14 +50,14 @@ class SoundBoard extends StatelessWidget {
           padding: const EdgeInsets.all(25),
           child: Column(
             children: [
-              playButton(context, "Start der Runde", playStartSound),
-              playButton(context, "Ende der Runde", playgongakkuratSound),
-              playButton(context, "1 Minute übrig", playWhooshSound),
-              playButton(context, "Pause", playWhistleSound),
-              playButton(context, "Alarm", playAlarmSound),
-              playButton(context, "SIUUU", playSiuuuSound),
-              playButton(context, "Villager", playVillagerSound),
-              playButton(context, "Yeet", playYeetSound),
+              playButton(context, "Start der Runde", audioService.playStartSound),
+              playButton(context, "Ende der Runde", audioService.playGongAkkuratSound),
+              playButton(context, "1 Minute übrig", audioService.playWhooshSound),
+              playButton(context, "Pause", audioService.playWhistleSound),
+              playButton(context, "Alarm", audioService.playAlarmSound),
+              playButton(context, "SIUUU", audioService.playSiuuuSound),
+              playButton(context, "Villager", audioService.playVillagerSound),
+              playButton(context, "Yeet", audioService.playYeetSound),
             ],
           ),
         ),
