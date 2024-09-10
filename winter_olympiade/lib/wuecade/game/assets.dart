@@ -1,7 +1,6 @@
 class Assets {
   static const background = 'background.png';
   static const ground = 'ground.png';
-  static const clouds = 'clouds.png';
   static const pipe = 'pipe.png';
   static const pipeRotated = 'pipe_rotated.png';
 
@@ -16,4 +15,6 @@ class Assets {
   static const flying = 'fly.wav';
   static const collision = 'collision.wav';
   static const point = 'point.wav';
+
+  static const gameFont = 'Game.tff';
 }
