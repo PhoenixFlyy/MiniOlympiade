@@ -19,7 +19,7 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
     final spacing = 150 + _random.nextDouble() * (heightMinusGround / 4);
-    final centerY = spacing + _random.nextDouble() * (heightMinusGround - spacing);
+    final centerY =  spacing + _random.nextDouble() * (heightMinusGround - spacing);
     addAll([
       Pipe(pipePosition: PipePosition.top, height: centerY - spacing / 2),
       Pipe(pipePosition: PipePosition.bottom, height: heightMinusGround - (centerY + spacing / 2)),

@@ -1,4 +1,3 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/parallax.dart';
@@ -7,20 +6,18 @@ import '../game/assets.dart';
 import '../game/configuration.dart';
 import '../game/flappy_wue_game.dart';
 
-class Ground extends ParallaxComponent<FlappyWueGame> with HasGameRef<FlappyWueGame> {
-  Ground();
+class Clouds extends ParallaxComponent<FlappyWueGame> with HasGameRef<FlappyWueGame> {
+  Clouds();
 
   @override
   Future<void> onLoad() async {
-    final ground = await Flame.images.load(Assets.ground);
+    final image = await Flame.images.load(Assets.clouds);
+    position = Vector2(x, -(gameRef.size.y - Config.cloudsHeight));
     parallax = Parallax([
       ParallaxLayer(
-        ParallaxImage(ground, fill: LayerFill.none),
-      )
+        ParallaxImage(image, fill: LayerFill.none),
+      ),
     ]);
-
-    add(RectangleHitbox(
-        position: Vector2(0, gameRef.size.y - Config.groundHeight), size: Vector2(gameRef.size.x, Config.groundHeight)));
   }
 
   @override

@@ -2,6 +2,8 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:olympiade/wuecade/components/clouds.dart';
+
 import '../components/background.dart';
 import '../components/bird.dart';
 import '../components/ground.dart';
@@ -9,19 +11,21 @@ import '../components/pipe_group.dart';
 import 'configuration.dart';
 
 class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
+  FlappyWueGame();
+
   late Bird bird;
-  late TextComponent score;
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
+  late TextComponent score;
   Function? onAchievementReached;
 
   @override
   Future<void> onLoad() async {
     addAll([
       Background(),
+      Clouds(),
       Ground(),
       bird = Bird(),
-      PipeGroup(),
       score = buildScore(),
     ]);
 
@@ -33,14 +37,12 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
         position: Vector2(size.x / 2, size.y / 2 * 0.2),
         anchor: Anchor.center,
         textRenderer: TextPaint(
-          style: const TextStyle(
-              fontSize: 40, fontFamily: 'Game', fontWeight: FontWeight.bold, color: Colors.black),
+          style: const TextStyle(fontSize: 40, fontFamily: 'Game', fontWeight: FontWeight.bold, color: Colors.black),
         ));
   }
 
   @override
   void onTap() {
-    super.onTap();
     bird.fly();
   }
 
