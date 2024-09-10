@@ -129,8 +129,16 @@ class _DartStartScreenState extends State<DartStartScreen> {
   }
 
   void _addSelectedPlayer(Player player) {
-    _saveSelectedPlayer(player);
-    setState(() => _players.add(player));
+    if (_players.any((p) => p.name == player.name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${player.name} ist bereits ausgewählt.'),
+        ),
+      );
+    } else {
+      _saveSelectedPlayer(player);
+      setState(() => _players.add(player));
+    }
   }
 
   @override
@@ -389,7 +397,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
                       onTap: () async {
                         final picker = ImagePicker();
                         final pickedFile =
-                            await picker.pickImage(source: ImageSource.camera);
+                        await picker.pickImage(source: ImageSource.camera);
 
                         if (pickedFile != null) {
                           setStateDialog(() {
@@ -457,25 +465,35 @@ class _DartStartScreenState extends State<DartStartScreen> {
                   onPressed: () {
                     HapticFeedback.lightImpact();
                     if (nameController.text.isNotEmpty) {
-                      final newPlayer = Player(
-                        name: nameController.text,
-                        image: playerImage,
-                      );
+                      String newPlayerName = nameController.text;
 
-                      setState(() {
-                        _availablePlayers.add(newPlayer);
-                        _savePlayer(newPlayer);
-                      });
+                      bool playerExists = _availablePlayers.any((p) => p.name == newPlayerName) ||
+                          _players.any((p) => p.name == newPlayerName);
 
-                      if (!playerImage.file.path.contains('darts.png')) {
-                        context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
+                      if (playerExists) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('$newPlayerName existiert bereits!')),
+                        );
+                      } else {
+                        final newPlayer = Player(
+                          name: newPlayerName,
+                          image: playerImage,
+                        );
+
+                        setState(() {
+                          _availablePlayers.add(newPlayer);
+                          _savePlayer(newPlayer);
+                        });
+
+                        if (!playerImage.file.path.contains('darts.png')) {
+                          context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
+                        }
+
+                        Navigator.of(context).pop();
                       }
-
-                      Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Bitte einen Namen eingeben!')),
+                        const SnackBar(content: Text('Bitte einen Namen eingeben!')),
                       );
                     }
                   },

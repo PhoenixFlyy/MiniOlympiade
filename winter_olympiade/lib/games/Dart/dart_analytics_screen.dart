@@ -72,39 +72,22 @@ class DartAnalyticsScreen extends StatelessWidget {
   }
 
   Widget playerAnalyticsCard(Player player) {
-    List<PlayerTurn> playerTurns =
-    turnHistory.where((turn) => turn.player == player).toList();
+    List<PlayerTurn> playerTurns = turnHistory.where((turn) => turn.player == player).toList();
 
-    int totalThrows =
-    playerTurns.fold(0, (sum, turn) => sum + turn.throws.length);
-    double avgScore = totalThrows > 0
-        ? playerTurns.fold(0, (sum, turn) => sum + turn.turnSum) / totalThrows
+    double avgScore = playerTurns.isNotEmpty
+        ? playerTurns.fold(0, (sum, turn) => sum + turn.turnSum) / playerTurns.length
         : 0.0;
 
-    int first9ThrowsSum = playerTurns
-        .expand((turn) => turn.throws)
-        .take(9)
-        .fold(0, (sum, throwItem) => sum + throwItem.calculateScore());
-    double first9AvgScore =
-    playerTurns.expand((turn) => turn.throws).take(9).isNotEmpty
-        ? first9ThrowsSum /
-        playerTurns.expand((turn) => turn.throws).take(9).length
+    double first3AvgScore = playerTurns.length >= 3
+        ? playerTurns.take(3).fold(0, (sum, turn) => sum + turn.turnSum) / 3
         : 0.0;
 
-    int first18ThrowsSum = playerTurns
-        .expand((turn) => turn.throws)
-        .take(18)
-        .fold(0, (sum, throwItem) => sum + throwItem.calculateScore());
-    double first18AvgScore =
-    playerTurns.expand((turn) => turn.throws).take(18).isNotEmpty
-        ? first18ThrowsSum /
-        playerTurns.expand((turn) => turn.throws).take(18).length
+    double first5AvgScore = playerTurns.length >= 5
+        ? playerTurns.take(5).fold(0, (sum, turn) => sum + turn.turnSum) / 5
         : 0.0;
 
     int maxTurnSum = playerTurns.isNotEmpty
-        ? playerTurns
-        .map((turn) => turn.turnSum)
-        .reduce((a, b) => a > b ? a : b)
+        ? playerTurns.map((turn) => turn.turnSum).reduce((a, b) => a > b ? a : b)
         : 0;
 
     int totalOverthrows = playerTurns.where((turn) => turn.overthrown).length;
@@ -113,7 +96,7 @@ class DartAnalyticsScreen extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView( // Make content scrollable
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Row(
@@ -133,11 +116,11 @@ class DartAnalyticsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              _buildStatRow('Durchschnittliche Punkte:', avgScore, 40),
-              _buildStatRow('Durchschnitt erste 9 Würfe:', first9AvgScore, 40),
-              _buildStatRow('Durchschnitt erste 18 Würfe:', first18AvgScore, 40),
+              _buildStatRow('Durchschnittliche Punkte pro Runde:', avgScore, 40),
+              _buildStatRow('Durchschnitt der ersten 3 Runden:', first3AvgScore, 40),
+              _buildStatRow('Durchschnitt der ersten 5 Runden:', first5AvgScore, 40),
               _buildStatRow('Maximale Punkte in einer Runde:', maxTurnSum, 100),
-              _buildStatRow('Gesamtzahl der Würfe:', totalThrows, 1000),
+              _buildStatRow('Gesamtzahl der Würfe:', playerTurns.fold(0, (sum, turn) => sum + turn.throws.length), 1000),
               _buildStatRow('Anzahl Überworfen:', totalOverthrows, 1000),
             ],
           ),

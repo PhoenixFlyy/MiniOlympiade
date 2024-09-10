@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:starsview/starsview.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'games/chess_timer.dart';
 import 'infos/rules.dart';
@@ -196,6 +197,17 @@ class _MainMenuState extends State<MainMenu> {
     _loadSelectedTeam();
     _setUpTimer();
     _activateDatabaseTimeListener();
+    WakelockPlus.enable();
+  }
+
+  @override
+  void dispose() {
+    _maxChessTimeController.dispose();
+    _roundTimeController.dispose();
+    _playTimeController.dispose();
+    _timer.cancel();
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   void _setUpTimer() {
@@ -388,15 +400,6 @@ class _MainMenuState extends State<MainMenu> {
     } else {
       return Colors.red;
     }
-  }
-
-  @override
-  void dispose() {
-    _maxChessTimeController.dispose();
-    _roundTimeController.dispose();
-    _playTimeController.dispose();
-    _timer.cancel();
-    super.dispose();
   }
 
   Widget getDisciplineImage() {

@@ -34,6 +34,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   int currentPlayerIndex = 0;
   List<PlayerTurn> turnHistory = [];
   Duration flipDuration = const Duration(milliseconds: 250);
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   @override
   void dispose() {
     WakelockPlus.disable();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -94,25 +96,14 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
     if (playerTurns.isEmpty) return AvgScoreResult(0.0, 0);
 
     int totalScore = 0;
-    int totalThrows = 0;
+    int totalTurns = playerTurns.length;
 
     for (var turn in playerTurns) {
-      if (turn.overthrown) {
-        if (turn != playerTurns.last) {
-          totalThrows += 3;
-        } else {
-          totalThrows += turn.throws.length;
-          totalScore +=
-              turn.throws.fold(0, (sum, t) => sum + t.calculateScore());
-        }
-      } else {
-        totalScore += turn.turnSum;
-        totalThrows += turn.throws.length;
-      }
+      totalScore += turn.turnSum;
     }
 
-    double avgScore = totalThrows > 0 ? totalScore / totalThrows : 0.0;
-    return AvgScoreResult(avgScore, totalThrows);
+    double avgScore = totalTurns > 0 ? totalScore / totalTurns : 0.0;
+    return AvgScoreResult(avgScore, totalTurns);
   }
 
   void nextPlayer() {
@@ -121,6 +112,14 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       turnHistory.add(PlayerTurn(
           player: widget.playerList[currentPlayerIndex], throws: []));
       saveGameState();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        currentPlayerIndex * 130.0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
@@ -214,6 +213,8 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       }
     } else if (currentPlayerScore - throwPoints < 0) {
       onOverthrown();
+    } else if (currentPlayerScore - throwPoints == 1 && widget.gameEndRule == GameEndRule.doubleOut) {
+      onOverthrown();
     } else if (turnHistory.last.throws.length == 3) {
       nextPlayer();
     }
@@ -303,6 +304,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: widget.playerList
