@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class ChessTimer extends StatefulWidget {
   const ChessTimer({super.key, required this.maxTime});
@@ -27,6 +28,7 @@ class _ChessTimerState extends State<ChessTimer> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
     resetTimers();
   }
 
@@ -34,6 +36,7 @@ class _ChessTimerState extends State<ChessTimer> {
   void dispose() {
     timer?.cancel();
     _audioPlayer.dispose();
+    WakelockPlus.disable();
     super.dispose();
   }
 

@@ -10,6 +10,7 @@ import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/utils/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'dart_constants.dart';
 
@@ -37,7 +38,14 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable();
     loadGameState();
+  }
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   void saveGameState() async {
