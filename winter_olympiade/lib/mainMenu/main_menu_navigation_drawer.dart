@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:olympiade/dice/dice_game.dart';
 import 'package:olympiade/infos/rules.dart';
 import 'package:olympiade/infos/schedule_page.dart';
 import 'package:olympiade/infos/soundboard.dart';
@@ -242,6 +243,19 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const FlappyMain(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.casino, color: Colors.white),
+            title:
+            const Text('Würfel', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DiceGame(),
                   ));
             },
           ),

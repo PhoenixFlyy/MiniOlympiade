@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:olympiade/dice/dice_game.dart';
 import 'package:provider/provider.dart';
 
 import '../games/Dart/darts_start_screen.dart';
@@ -149,6 +150,21 @@ class MainButtonColumn extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FlappyMain(),
+                        ));
+                  },
+                  bottomPadding: false,
+                  rightPadding: true,
+                  fontSize: 14,
+                ),
+                MainMenuButton(
+                  text: "Würfel",
+                  icon: Icons.casino,
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DiceGame(),
                         ));
                   },
                   bottomPadding: false,

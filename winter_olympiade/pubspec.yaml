@@ -31,6 +31,7 @@ dependencies:
   wakelock_plus: ^1.2.8
   just_audio: ^0.9.40
   audio_service: ^0.18.15
+  shake: ^2.2.0
 
   # TODO: Setup just_audio for iOS
   # TODO: Setup awesome_notifcations for iOS
@@ -57,3 +58,4 @@ flutter:
     - assets/achievements/
     - assets/icon/
     - assets/fonts/
+    - assets/dice/
