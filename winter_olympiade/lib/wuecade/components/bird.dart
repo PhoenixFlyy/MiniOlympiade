@@ -16,20 +16,35 @@ class Bird extends SpriteGroupComponent<BirdMovement>
 
   @override
   Future<void> onLoad() async {
-    final birdUpFlap = await gameRef.loadSprite(Assets.birdUpFlap);
-    final birdMidFlap = await gameRef.loadSprite(Assets.birdMidFlap);
-    final birdDownFlap = await gameRef.loadSprite(Assets.birdDownFlap);
+    // Initially load the default bird skin (Skin1).
+    await loadBirdSprites(Assets.birdUpFlap, Assets.birdMidFlap, Assets.birdDownFlap);
 
     size = Vector2(50, 40);
     position = Vector2(50, gameRef.size.y / 2 - size.y / 2);
     current = BirdMovement.middle;
+    add(CircleHitbox());
+  }
+
+  // Method to load bird sprites dynamically based on the selected skin
+  Future<void> loadBirdSprites(String upFlap, String midFlap, String downFlap) async {
+    final birdUpFlap = await gameRef.loadSprite(upFlap);
+    final birdMidFlap = await gameRef.loadSprite(midFlap);
+    final birdDownFlap = await gameRef.loadSprite(downFlap);
+
     sprites = {
       BirdMovement.up: birdUpFlap,
       BirdMovement.middle: birdMidFlap,
       BirdMovement.down: birdDownFlap,
     };
+  }
 
-    add(CircleHitbox());
+  // Method to set the bird skin based on the selected option
+  void setBirdSkin(String skinType) {
+    if (skinType == 'Skin1') {
+      loadBirdSprites(Assets.birdUpFlap, Assets.birdMidFlap, Assets.birdDownFlap);
+    } else if (skinType == 'Skin2') {
+      loadBirdSprites(Assets.birdUpFlap2, Assets.birdMidFlap2, Assets.birdDownFlap2);
+    }
   }
 
   void fly() {
@@ -43,10 +58,7 @@ class Bird extends SpriteGroupComponent<BirdMovement>
   }
 
   @override
-  void onCollisionStart(
-      Set<Vector2> intersectionPoints,
-      PositionComponent other,
-      ) {
+  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     gameOver();
   }

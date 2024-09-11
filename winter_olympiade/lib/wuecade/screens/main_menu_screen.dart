@@ -21,7 +21,6 @@ class FlappyMain extends StatelessWidget {
       }
     };
 
-
     return Scaffold(
       body: GameWidget(
         game: game,
@@ -36,30 +35,93 @@ class FlappyMain extends StatelessWidget {
 }
 
 
-class FlappyMainMenuScreen extends StatelessWidget {
+class FlappyMainMenuScreen extends StatefulWidget {
   final FlappyWueGame game;
   static const String id = 'mainMenu';
 
   const FlappyMainMenuScreen({super.key, required this.game});
 
   @override
+  State<FlappyMainMenuScreen> createState() => _FlappyMainMenuScreenState();
+}
+
+class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
+  String selectedSkin = 'Skin1';
+
+  @override
   Widget build(BuildContext context) {
-    game.pauseEngine();
+    widget.game.pauseEngine();
 
     return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          game.overlays.remove('mainMenu');
-          game.resumeEngine();
-        },
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(Assets.menu), fit: BoxFit.cover)),
-          child: Image.asset(Assets.message),
-        ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          GestureDetector(
+            onTap: () {
+              widget.game.overlays.remove('mainMenu');
+              widget.game.resumeEngine();
+            },
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(Assets.menu),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Image.asset(Assets.message),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 50),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text(
+                  "Choose your fighter",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedSkin = 'Skin1';
+                          widget.game.bird.setBirdSkin('Skin1');
+                        });
+                      },
+                      child: Image.asset(
+                        'assets/images/bird_midflap.png',
+                        width: selectedSkin == 'Skin1' ? 120 : 80,
+                        height: selectedSkin == 'Skin1' ? 120 : 80,
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedSkin = 'Skin2';
+                          widget.game.bird.setBirdSkin('Skin2');
+                        });
+                      },
+                      child: Image.asset(
+                        'assets/images/bird_midflap2.png',
+                        width: selectedSkin == 'Skin2' ? 120 : 80,
+                        height: selectedSkin == 'Skin2' ? 120 : 80,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
