@@ -85,7 +85,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
               anchor: 0.0,
               velocityFactor: 0.4,
               axisDirection: Axis.vertical,
-              loop: true,
+              loop: false,
               itemBuilder: (context, itemIndex, realIndex) {
                 return achievementContainer(
                   image: achievements[itemIndex].image,

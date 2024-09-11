@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:olympiade/infos/soundboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -131,27 +130,6 @@ class _RulesScreenState extends State<RulesScreen> {
       ),
       body: ListView(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SoundBoard()),
-                );
-              },
-              child: const Text(
-                'Soundeffekte',
-                style: TextStyle(fontSize: 20, color: Colors.black),
-              ),
-            ),
-          ),
           ...gameRules.map((ruleItem) {
             return ExpansionTile(
               title: Text(ruleItem.name),

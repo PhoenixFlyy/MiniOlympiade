@@ -16,6 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../games/chess_timer.dart';
 import '../games/Dart/darts_start_screen.dart';
+import '../infos/achievements/achievement_screen.dart';
+import '../wuecade/screens/main_menu_screen.dart';
 
 class MainMenuNavigationDrawer extends StatefulWidget {
   final int currentRound;
@@ -146,14 +148,6 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         runSpacing: 16,
         children: [
           ListTile(
-            leading: const Icon(Icons.home_outlined, color: Colors.white),
-            title: const Text('Home', style: TextStyle(color: Colors.white)),
-            onTap: () {
-              HapticFeedback.lightImpact();
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.upload_outlined, color: Colors.white),
             title: const Text('Ergebnisse eintragen',
                 style: TextStyle(color: Colors.white)),
@@ -215,14 +209,40 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.emoji_events, color: Colors.white),
+            title:
+            const Text('Achievements', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AchievementScreen(),
+                  ));
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.music_note_outlined, color: Colors.white),
             title:
-                const Text('Soundboard', style: TextStyle(color: Colors.white)),
+            const Text('Soundboard', style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const SoundBoard()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.gamepad, color: Colors.white),
+            title:
+            const Text('Wuecade Games', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FlappyMain(),
+                  ));
             },
           ),
           ListTile(

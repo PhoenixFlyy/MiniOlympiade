@@ -8,6 +8,7 @@ import '../infos/achievements/achievement_provider.dart';
 import '../infos/achievements/achievement_screen.dart';
 import '../infos/rules.dart';
 import '../infos/schedule_page.dart';
+import '../infos/soundboard.dart';
 import '../setup/upload_points_screen.dart';
 import '../utils/match_data.dart';
 import '../wuecade/screens/main_menu_screen.dart';
@@ -117,6 +118,22 @@ class MainButtonColumn extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const AchievementScreen(),
+                        ));
+                  },
+                  bottomPadding: false,
+                  rightPadding: true,
+                  fontSize: 14,
+                  heroTag: "achievementHero",
+                ),
+                MainMenuButton(
+                  text: "Soundboard",
+                  icon: Icons.music_note,
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SoundBoard(),
                         ));
                   },
                   bottomPadding: false,
