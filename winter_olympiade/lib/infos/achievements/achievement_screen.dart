@@ -184,15 +184,17 @@ class _AchievementScreenState extends State<AchievementScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.only(left:10),
             child: hidden
-                ? const SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Center(
-                      child: Text("? ? ?", style: TextStyle(fontSize: 24, color: Colors.white)),
+                ? const Center(
+                  child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                        child: Text("? ? ?", style: TextStyle(fontSize: 24, color: Colors.white)),
+                      ),
                     ),
-                  )
+                )
                 : Row(
                     children: [
                       Container(
@@ -209,8 +211,8 @@ class _AchievementScreenState extends State<AchievementScreen> {
                         ),
                         child: Image.asset(
                           image,
-                          width: 80,
-                          height: 80,
+                          width: 120,
+                          height: 120,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return const Icon(Icons.error, size: 80, color: Colors.red);
@@ -238,11 +240,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
                                 fontSize: 16,
                                 color: Colors.white,
                               ),
-                              textAlign: TextAlign.left,
+
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(width: 3),
                     ],
                   ),
           ),
