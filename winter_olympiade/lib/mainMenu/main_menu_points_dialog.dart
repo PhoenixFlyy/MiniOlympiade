@@ -22,11 +22,11 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
 
   String getLabelForScore(double value) {
     if (value == 0.0) {
-      return "Niederlage";
+      return "Verlierer";
     } else if (value == 0.5) {
-      return "Unentschieden";
+      return "Unentsch.";
     } else if (value == 1.0) {
-      return "Sieg";
+      return "Gewinner";
     }
     return "";
   }
@@ -69,7 +69,7 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 250,
+      height: 275,
       decoration: BoxDecoration(
         color: Colors.grey[850],
         borderRadius: BorderRadius.circular(10),
@@ -89,7 +89,17 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
+                  GestureDetector(
+                    onDoubleTap: () {
+                      Navigator.of(context).pop(true);
+                    },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
+                          Text("Gegen Team: ${getOpponentTeamNumberByRound(widget.currentRound, widget.teamNumber)}", style: const TextStyle(fontSize: 22))
+                        ],
+                      )),
                 ]),
                 Text(getDisciplineName(widget.currentRound, widget.teamNumber), style: const TextStyle(fontSize: 23)),
               ],
@@ -105,33 +115,35 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
                     Wrap(
                       spacing: 8,
                       children: [0, 0.5, 1].map((value) {
-                        return RawChip(
-                          label: Column(
-                            children: [
-                              Text(
-                                value.toString(),
-                                style: TextStyle(
-                                  color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                        return Expanded(
+                          child: RawChip(
+                            label: Column(
+                              children: [
+                                Text(
+                                  value.toString(),
+                                  style: TextStyle(
+                                    color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                getLabelForScore(value.toDouble()),
-                                style: TextStyle(
-                                  color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                                Text(
+                                  getLabelForScore(value.toDouble()),
+                                  style: TextStyle(
+                                    color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                            selected: currentRoundTeamScore == value.toDouble(),
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              setState(() {
+                                currentRoundTeamScore = value.toDouble();
+                              });
+                            },
+                            showCheckmark: false,
+                            backgroundColor: const Color(0xFF000000),
+                            selectedColor: const Color(0xB3FF9800),
                           ),
-                          selected: currentRoundTeamScore == value.toDouble(),
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              currentRoundTeamScore = value.toDouble();
-                            });
-                          },
-                          showCheckmark: false,
-                          backgroundColor: const Color(0xFF000000),
-                          selectedColor: const Color(0xB3FF9800),
                         );
                       }).toList(),
                     ),

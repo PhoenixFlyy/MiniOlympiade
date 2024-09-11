@@ -260,16 +260,6 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  void updateRoundTimeInDatabase() {
-    if (!mounted) return;
-    if (!mounted) return;
-    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
-    databaseReference.update({
-      "roundTime": roundTimeDuration.inMinutes,
-      "playTime": playTimeDuration.inMinutes,
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     String appBarTitle = 'Team $selectedTeam';
@@ -329,7 +319,6 @@ class _MainMenuState extends State<MainMenu> {
           playTimeController: _playTimeController,
           eventStartTime: _eventStartTime,
           updateChessTimeInDatabase: updateChessTimeInDatabase,
-          updateRoundTimeInDatabase: updateRoundTimeInDatabase,
           updateIsPausedInDatabase: updateIsPausedInDatabase,
         );
       },

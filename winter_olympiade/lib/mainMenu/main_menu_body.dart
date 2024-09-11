@@ -59,13 +59,16 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.green,
-            alignment: Alignment.center,
-            insetPadding: const EdgeInsets.all(20),
-            child: MainMenuPointsDialog(
-              currentRound: widget.currentRound,
-              teamNumber: widget.selectedTeam,
+          return PopScope(
+            canPop: false,
+            child: Dialog(
+              backgroundColor: Colors.green,
+              alignment: Alignment.center,
+              insetPadding: const EdgeInsets.all(20),
+              child: MainMenuPointsDialog(
+                currentRound: widget.currentRound,
+                teamNumber: widget.selectedTeam,
+              ),
             ),
           );
         });
@@ -291,7 +294,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Column(
                           children: [
                             // "Currently playing" component or trophy image
-                            if (widget.currentRound <= pairings.length && widget.currentRound > 0)
+                            if (widget.currentRound <= pairings.length && widget.currentRound > 0 && !widget.isPaused)
                               Opacity(
                                 opacity: isPointsDialogOpen ? 0.4 : 1.0,
                                 child: Padding(
@@ -316,7 +319,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                                 ),
                               ),
                             // "Coming up" component (Only during olympiade)
-                            if (widget.currentRound < pairings.length && !widget.isPaused && widget.currentRound >= 1)
+                            if (widget.currentRound < pairings.length && !widget.isPaused && widget.currentRound >= 1 && !widget.isPaused)
                               Opacity(
                                 opacity: isPointsDialogOpen ? 0.4 : 1.0,
                                 child: Padding(
@@ -336,7 +339,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                               )
 
                             // Info text (only before and after olympiade
-                            else
+                            else if ((widget.currentRound > pairings.length || widget.currentRound < 1) && !widget.isPaused)
                               Column(
                                 children: [
                                   Padding(

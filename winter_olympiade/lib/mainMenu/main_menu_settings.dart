@@ -13,7 +13,6 @@ class SettingsModal extends StatelessWidget {
   final TextEditingController playTimeController;
   final DateTime eventStartTime;
   final void Function() updateChessTimeInDatabase;
-  final void Function() updateRoundTimeInDatabase;
   final void Function() updateIsPausedInDatabase;
 
   const SettingsModal({
@@ -23,7 +22,6 @@ class SettingsModal extends StatelessWidget {
     required this.playTimeController,
     required this.eventStartTime,
     required this.updateChessTimeInDatabase,
-    required this.updateRoundTimeInDatabase,
     required this.updateIsPausedInDatabase,
   });
 
@@ -79,60 +77,6 @@ class SettingsModal extends StatelessWidget {
                       ),
                     ),
                     onPressed: updateChessTimeInDatabase,
-                    child: const Text("Update"),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 75,
-                    width: 200,
-                    child: TextField(
-                      controller: roundTimeController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: "Rundenzeit in Minuten"),
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChanged: (value) {
-                        roundTimeController.text = value;
-                      },
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: updateRoundTimeInDatabase,
-                    child: const Text("Update"),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 75,
-                    width: 200,
-                    child: TextField(
-                      controller: playTimeController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: "Spielzeit einer Runde"),
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onChanged: (value) {
-                        playTimeController.text = value;
-                      },
-                    ),
-                  ),
-                  FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: updateRoundTimeInDatabase,
                     child: const Text("Update"),
                   ),
                 ],
