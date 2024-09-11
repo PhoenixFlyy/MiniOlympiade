@@ -187,6 +187,8 @@ class MainMenuBody extends StatelessWidget {
               children: <Widget>[
                 Column(
                   children: [
+
+                    // Current row and time row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -205,11 +207,15 @@ class MainMenuBody extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    // pause component (only during pause)
                     if (isPaused)
                       const Icon(
                         Icons.pause,
                         size: 300,
                       )
+
+                    // "Currently playing" component or trophy image
                     else if (currentRound <= pairings.length && currentRound > 0)
                       Padding(
                         padding: const EdgeInsets.only(top: 40),
@@ -231,6 +237,8 @@ class MainMenuBody extends StatelessWidget {
                           ]),
                         ),
                       )
+
+                    // Info text (only before and after olympiade
                     else
                       Column(
                         children: [
@@ -248,6 +256,8 @@ class MainMenuBody extends StatelessWidget {
                           )
                         ],
                       ),
+
+                    // "Coming up" component (Only during olympiade)
                     if (currentRound < pairings.length && !isPaused && currentRound >= 1)
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
@@ -263,9 +273,13 @@ class MainMenuBody extends StatelessWidget {
                           ),
                         ),
                       ),
+
                   ],
                 ),
+
+                // Navigation button components
                 MainButtonColumn(currentRound: currentRound, selectedTeam: selectedTeam, maxChessTime: maxChessTime),
+
               ],
             ),
           ),
