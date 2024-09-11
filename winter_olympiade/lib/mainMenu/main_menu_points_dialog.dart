@@ -69,7 +69,7 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: 250,
       decoration: BoxDecoration(
         color: Colors.grey[850],
         borderRadius: BorderRadius.circular(10),
@@ -97,43 +97,46 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Wrap(
-                    spacing: 8,
-                    children: [0, 0.5, 1].map((value) {
-                      return RawChip(
-                        label: Column(
-                          children: [
-                            Text(
-                              value.toString(),
-                              style: TextStyle(
-                                color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      children: [0, 0.5, 1].map((value) {
+                        return RawChip(
+                          label: Column(
+                            children: [
+                              Text(
+                                value.toString(),
+                                style: TextStyle(
+                                  color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                                ),
                               ),
-                            ),
-                            Text(
-                              getLabelForScore(value.toDouble()),
-                              style: TextStyle(
-                                color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                              Text(
+                                getLabelForScore(value.toDouble()),
+                                style: TextStyle(
+                                  color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        selected: currentRoundTeamScore == value.toDouble(),
-                        onPressed: () {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            currentRoundTeamScore = value.toDouble();
-                          });
-                        },
-                        showCheckmark: false,
-                        backgroundColor: const Color(0xFF000000),
-                        selectedColor: const Color(0xB3FF9800),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                            ],
+                          ),
+                          selected: currentRoundTeamScore == value.toDouble(),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              currentRoundTeamScore = value.toDouble();
+                            });
+                          },
+                          showCheckmark: false,
+                          backgroundColor: const Color(0xFF000000),
+                          selectedColor: const Color(0xB3FF9800),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),

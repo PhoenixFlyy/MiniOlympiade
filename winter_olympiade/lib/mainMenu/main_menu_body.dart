@@ -236,7 +236,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
     if (!isPointsDialogOpen &&
         !isDatabaseCorrect &&
-        (widget.remainingTime.inSeconds <= 120 && widget.remainingTime.inSeconds > 0) &&
+        (widget.remainingTime.inSeconds <= (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds) && widget.remainingTime.inSeconds > 0) &&
         widget.currentRound > 0 &&
         widget.currentRound <= pairings.length) {
       isPointsDialogOpen = true;
