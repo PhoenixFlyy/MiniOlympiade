@@ -51,7 +51,7 @@ class _DiceGameState extends State<DiceGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dice Game'),
+        title: const Text('Würfel'),
       ),
       body: Center(
         child: Column(
@@ -61,7 +61,7 @@ class _DiceGameState extends State<DiceGame> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: rollDice,
-              child: const Text('Roll Dice'),
+              child: const Text('Würfeln'),
             ),
           ],
         ),
