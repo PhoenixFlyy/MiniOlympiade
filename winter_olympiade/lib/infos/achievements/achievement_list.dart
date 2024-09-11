@@ -39,7 +39,7 @@ final List<Achievement> defaultAchievements = [
   Achievement(
     image: "assets/icon/play_store_512.png",
     title: "Nerd",
-    description: "Schaue dir Achievements an. Die Jagd beginnt!",
+    description: "Die Jagd beginnt!",
     isCompleted: true,
   ),
   Achievement(
@@ -54,7 +54,7 @@ final List<Achievement> defaultAchievements = [
   ),
   Achievement(
     image: 'assets/achievements/Folie4.PNG',
-    title: 'Ein weiterer Schritt zum Sieg',
+    title: 'Ein erster Schritt zum Sieg',
     description: 'Schlage den ersten Gegner',
   ),
   Achievement(
