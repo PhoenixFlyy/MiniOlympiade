@@ -23,25 +23,15 @@ class UploadResults extends StatefulWidget {
 
 class _UploadResultsState extends State<UploadResults> {
   int selectedDiscipline = 1;
-
   int currentSelectedRound = 1;
-  int lastSelectedRound = 1;
-
   double currentRoundTeamScore = 0.0;
-  double lastRoundTeamScore = 0.0;
 
   @override
   void initState() {
     super.initState();
     if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
       currentSelectedRound = widget.currentRound;
-      selectedDiscipline =
-          getDisciplineNumber(widget.currentRound, widget.teamNumber);
-      if (widget.currentRound > 1) {
-        lastSelectedRound = widget.currentRound - 1;
-      } else {
-        lastSelectedRound = widget.currentRound;
-      }
+      selectedDiscipline = getDisciplineNumber(widget.currentRound, widget.teamNumber);
     }
   }
 
@@ -53,6 +43,16 @@ class _UploadResultsState extends State<UploadResults> {
     bool isStarting = isStartingTeam(roundNumber, widget.teamNumber);
     int matchNumber = getDisciplineNumber(roundNumber, widget.teamNumber);
     String teamKey = isStarting ? "team1" : "team2";
+    String opponentTeamKey = isStarting ? "team2" : "team1";
+
+    double otherTeamScore = 0.0;
+    if (teamScore == 0.0) {
+      otherTeamScore = 1.0;
+    } else if (teamScore == 1.0) {
+      otherTeamScore = 0.0;
+    } else if (teamScore == 0.5) {
+      otherTeamScore = 0.5;
+    }
 
     databaseReference
         .child("results")
@@ -62,6 +62,7 @@ class _UploadResultsState extends State<UploadResults> {
         .child((matchNumber - 1).toString())
         .update({
       teamKey: teamScore,
+      opponentTeamKey: otherTeamScore
     });
 
     context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling'); //Achievements
@@ -130,7 +131,7 @@ class _UploadResultsState extends State<UploadResults> {
         title: const Hero(
             tag: "uploadHero",
             child: Text(
-              "Ergebnisse eintragen",
+              "Ergebnisse nachtragen",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -155,104 +156,7 @@ class _UploadResultsState extends State<UploadResults> {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Text('Letzte Runde: ',
-                          style: TextStyle(fontSize: 22)),
-                      DropdownButton<int>(
-                        value: lastSelectedRound,
-                        onChanged: (newValue) {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            lastSelectedRound = newValue!;
-                          });
-                        },
-                        items: List<DropdownMenuItem<int>>.generate(
-                          pairings.length,
-                          (index) => DropdownMenuItem<int>(
-                            value: index + 1,
-                            child: Text('${index + 1}',
-                                style: const TextStyle(fontSize: 22)),
-                          ),
-                        ),
-                      ),
-                    ]),
-                Text(getDisciplineName(lastSelectedRound, widget.teamNumber),
-                    style: const TextStyle(fontSize: 23)),
-              ],
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      children: [0.0, 0.5, 1.0].map((value) {
-                        return RawChip(
-                          label: Column(
-                            children: [
-                              Text(
-                                value.toString(),
-                                style: TextStyle(
-                                  color: lastRoundTeamScore == value
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                getLabelForScore(value),
-                                style: TextStyle(
-                                  color: lastRoundTeamScore == value
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          selected: lastRoundTeamScore == value,
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              lastRoundTeamScore = value;
-                            });
-                          },
-                          showCheckmark: false,
-                          backgroundColor: const Color(0xFF1B191D),
-                          selectedColor: const Color(0xFF494255),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.heavyImpact();
-                        updateScores(lastSelectedRound, lastRoundTeamScore);
-                      },
-                      child: const Text("Upload",
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5.0),
-              child: Divider(color: Colors.white),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text('Aktuelle Runde: ',
+                      const Text('Runde: ',
                           style: TextStyle(fontSize: 22)),
                       DropdownButton<int>(
                         value: currentSelectedRound,

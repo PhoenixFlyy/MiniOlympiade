@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../infos/achievements/achievement_provider.dart';
 import '../utils/match_detail_queries.dart';
@@ -35,9 +36,18 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
 
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
 
-    bool isStarting = isStartingTeam(roundNumber, widget.teamNumber);
     int matchNumber = getDisciplineNumber(roundNumber, widget.teamNumber);
-    String teamKey = isStarting ? "team1" : "team2";
+    String teamKey = isStartingTeam(roundNumber, widget.teamNumber) ? "team1" : "team2";
+    String opponentTeamKey = isStartingTeam(roundNumber, widget.teamNumber) ? "team2" : "team1";
+
+    double otherTeamScore = 0.0;
+    if (teamScore == 0.0) {
+      otherTeamScore = 1.0;
+    } else if (teamScore == 1.0) {
+      otherTeamScore = 0.0;
+    } else if (teamScore == 0.5) {
+      otherTeamScore = 0.5;
+    }
 
     databaseReference
         .child("results")
@@ -47,91 +57,124 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
         .child((matchNumber - 1).toString())
         .update({
       teamKey: teamScore,
+      opponentTeamKey: otherTeamScore,
     });
 
     context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling'); //Achievements
 
     setState(() {});
+    Navigator.of(context).pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.grey[850],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(1),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
-            ]),
-            Text(getDisciplineName(widget.currentRound, widget.teamNumber), style: const TextStyle(fontSize: 23)),
-          ],
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Wrap(
-                  spacing: 8,
-                  children: [0.0, 0.5, 1.0].map((value) {
-                    return RawChip(
-                      label: Column(
-                        children: [
-                          Text(
-                            value.toString(),
-                            style: TextStyle(
-                              color: currentRoundTeamScore == value
-                                  ? Colors.white
-                                  : Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            getLabelForScore(value),
-                            style: TextStyle(
-                              color: currentRoundTeamScore == value
-                                  ? Colors.white
-                                  : Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                      selected: currentRoundTeamScore == value,
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        setState(() {
-                          currentRoundTeamScore = value;
-                        });
-                      },
-                      showCheckmark: false,
-                      backgroundColor: const Color(0xFF1B191D),
-                      selectedColor: const Color(0xFF494255),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    HapticFeedback.heavyImpact();
-                    updateScores(
-                        widget.currentRound, currentRoundTeamScore);
-                  },
-                  child: const Text("Upload",
-                      style: TextStyle(fontSize: 16, color: Colors.black)),
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
+                ]),
+                Text(getDisciplineName(widget.currentRound, widget.teamNumber), style: const TextStyle(fontSize: 23)),
               ],
             ),
-          ),
-        )
-      ],
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Wrap(
+                    spacing: 8,
+                    children: [0, 0.5, 1].map((value) {
+                      return RawChip(
+                        label: Column(
+                          children: [
+                            Text(
+                              value.toString(),
+                              style: TextStyle(
+                                color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              getLabelForScore(value.toDouble()),
+                              style: TextStyle(
+                                color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        selected: currentRoundTeamScore == value.toDouble(),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          setState(() {
+                            currentRoundTeamScore = value.toDouble();
+                          });
+                        },
+                        showCheckmark: false,
+                        backgroundColor: const Color(0xFF000000),
+                        selectedColor: const Color(0xB3FF9800),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 50,
+              width: 200,
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.heavyImpact();
+                  updateScores(widget.currentRound, currentRoundTeamScore);
+                },
+                child: Stack(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey[800]!,
+                      highlightColor: Colors.white.withOpacity(0.3),
+                      period: const Duration(seconds: 2),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 40),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800]!,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const Center(
+                      child: const Text(
+                        "Upload",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

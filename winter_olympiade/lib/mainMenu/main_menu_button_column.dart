@@ -33,7 +33,7 @@ class MainButtonColumn extends StatelessWidget {
       child: Column(
         children: [
           MainMenuButton(
-              text: "Ergebnisse eintragen",
+              text: "Ergebnisse nachtragen",
               icon: Icons.edit,
               onPressed: () {
                 HapticFeedback.mediumImpact();
@@ -43,7 +43,6 @@ class MainButtonColumn extends StatelessWidget {
                       builder: (context) => UploadResults(currentRound: currentRound, teamNumber: selectedTeam),
                     ));
               },
-              withShimmer: true,
               heroTag: "uploadHero"),
           MainMenuButton(
               text: "Dartsrechner",
@@ -139,7 +138,7 @@ class MainButtonColumn extends StatelessWidget {
                   bottomPadding: false,
                   rightPadding: true,
                   fontSize: 14,
-                  heroTag: "achievementHero",
+                  heroTag: "soundboardHero",
                 ),
                 MainMenuButton(
                   text: "Wuecade Games",

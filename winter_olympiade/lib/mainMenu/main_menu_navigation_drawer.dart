@@ -149,7 +149,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         children: [
           ListTile(
             leading: const Icon(Icons.upload_outlined, color: Colors.white),
-            title: const Text('Ergebnisse eintragen',
+            title: const Text('Ergebnisse nachtragen',
                 style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
