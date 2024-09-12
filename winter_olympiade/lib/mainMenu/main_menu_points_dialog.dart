@@ -82,110 +82,117 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  GestureDetector(
-                    onDoubleTap: () {
-                      Navigator.of(context).pop(true);
-                    },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
-                          Text("Gegen Team: ${getOpponentTeamNumberByRound(widget.currentRound, widget.teamNumber)}", style: const TextStyle(fontSize: 22))
-                        ],
-                      )),
-                ]),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Aktuelle Runde: ${widget.currentRound}', style: const TextStyle(fontSize: 22)),
+                    Text("Gegen Team: ${getOpponentTeamNumberByRound(widget.currentRound, widget.teamNumber)}", style: const TextStyle(fontSize: 22))
+                  ],
+                ),
                 Text(getDisciplineName(widget.currentRound, widget.teamNumber), style: const TextStyle(fontSize: 23)),
               ],
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      children: [0, 0.5, 1].map((value) {
-                        return Expanded(
-                          child: RawChip(
-                            label: Column(
-                              children: [
-                                Text(
-                                  value.toString(),
-                                  style: TextStyle(
-                                    color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  getLabelForScore(value.toDouble()),
-                                  style: TextStyle(
-                                    color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            selected: currentRoundTeamScore == value.toDouble(),
-                            onPressed: () {
-                              HapticFeedback.lightImpact();
-                              setState(() {
-                                currentRoundTeamScore = value.toDouble();
-                              });
-                            },
-                            showCheckmark: false,
-                            backgroundColor: const Color(0xFF000000),
-                            selectedColor: const Color(0xB3FF9800),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [0, 0.5, 1].map((value) {
+                return Expanded(
+                  child: RawChip(
+                    label: Column(
+                      children: [
+                        Text(
+                          value.toString(),
+                          style: TextStyle(
+                            color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        Text(
+                          getLabelForScore(value.toDouble()),
+                          style: TextStyle(
+                            color: currentRoundTeamScore == value.toDouble() ? Colors.white : Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                    selected: currentRoundTeamScore == value.toDouble(),
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      setState(() {
+                        currentRoundTeamScore = value.toDouble();
+                      });
+                    },
+                    showCheckmark: false,
+                    backgroundColor: const Color(0xFF000000),
+                    selectedColor: const Color(0xB3FF9800),
+                  ),
+                );
+              }).toList(),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: GestureDetector(
-                onTap: () {
-                  HapticFeedback.heavyImpact();
-                  updateScores(widget.currentRound, currentRoundTeamScore);
-                },
-                child: Stack(
-                  children: [
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey[800]!,
-                      highlightColor: Colors.white.withOpacity(0.3),
-                      period: const Duration(seconds: 2),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 40),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[800]!,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: SizedBox(
+                    height: 50,
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.heavyImpact();
+                        updateScores(widget.currentRound, currentRoundTeamScore);
+                      },
+                      child: Stack(
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[800]!,
+                            highlightColor: Colors.white.withOpacity(0.3),
+                            period: const Duration(seconds: 2),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[800]!,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const Center(
+                            child: Text(
+                              "Upload",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    const Center(
-                      child: Text(
-                        "Upload",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 1,
+                  child: GestureDetector(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black,
+                      ),
+                      child: const Center(child: Text("X", style: TextStyle(fontSize: 20))),
+                    ),
+                  ),
+                )
+              ],
             )
           ],
         ),

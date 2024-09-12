@@ -363,12 +363,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           '${widget.remainingTime.inMinutes}:${(widget.remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
     }
 
-    if (!isPointsDialogOpen &&
-        !isDatabaseCorrect &&
+    if (!isPointsDialogOpen && !isDatabaseCorrect &&
         (widget.remainingTime.inSeconds <= (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds) &&
             widget.remainingTime.inSeconds > 0) &&
-        widget.currentRound > 0 &&
-        widget.currentRound <= pairings.length) {
+        widget.currentRound > 0 && widget.currentRound <= pairings.length) {
       isPointsDialogOpen = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showPointsDialog();

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'achievement_list.dart';
@@ -16,9 +17,24 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreenState extends State<AchievementScreen> {
+  late String selectedTeamName = "";
+
   Future<List<Achievement>> fetchAchievements() async {
     if (!mounted) return [];
     return context.read<AchievementProvider>().getAchievementList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSelectedTeamName();
+  }
+
+  Future<void> _loadSelectedTeamName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() => selectedTeamName = prefs.getString('teamName') ?? "");
+    }
   }
 
   @override
@@ -50,11 +66,12 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     height: 1.0,
                   ),
                 )),
-            IconButton(
-              icon: const Icon(Icons.restart_alt),
-              tooltip: 'Reset Achievements',
-              onPressed: () => context.read<AchievementProvider>().resetAchievements(),
-            ),
+            if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
+              IconButton(
+                icon: const Icon(Icons.restart_alt),
+                tooltip: 'Reset Achievements',
+                onPressed: () => context.read<AchievementProvider>().resetAchievements(),
+              ),
             Text(
               '$completedAchievementsAppBar / ${achievementsAppBar.length}',
               style: const TextStyle(
