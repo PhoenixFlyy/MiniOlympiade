@@ -6,7 +6,6 @@ class DatabaseCalls {
   final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
 
   Future<bool> didTeamWinFirstRound(int teamNumber) async {
-    print("FOOOOOOOOOOO");
     try {
       final DataSnapshot snapshot = await databaseReference
           .child('results')
@@ -18,14 +17,12 @@ class DatabaseCalls {
 
       if (snapshot.exists) {
         final data = Map<String, dynamic>.from(snapshot.value as Map);
-        print(snapshot.value);
         if (isStartingTeam(0, teamNumber)) {
           return data['team1'] == 1;
         } else {
           return data['team2'] == 1;
         }
       } else {
-        print("foWAdawdaw");
         return false;
       }
     } catch (e) {

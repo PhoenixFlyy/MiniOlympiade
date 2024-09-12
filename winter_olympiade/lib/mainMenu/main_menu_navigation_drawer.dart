@@ -5,19 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:olympiade/dice/dice_game.dart';
-import 'package:olympiade/infos/rules.dart';
-import 'package:olympiade/infos/schedule_page.dart';
 import 'package:olympiade/infos/soundboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:olympiade/setup/team_selection.dart';
 import 'package:olympiade/setup/upload_points_screen.dart';
-import 'package:olympiade/utils/match_data.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../games/chess_timer.dart';
 import '../games/Dart/darts_start_screen.dart';
-import '../infos/achievements/achievement_screen.dart';
 import '../wuecade/screens/main_menu_screen.dart';
 
 class MainMenuNavigationDrawer extends StatefulWidget {
@@ -183,43 +179,6 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                       ChessTimer(maxTime: widget.maxChessTime)));
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.rule_outlined, color: Colors.white),
-            title: const Text('Regeln', style: TextStyle(color: Colors.white)),
-            onTap: () {
-              HapticFeedback.lightImpact();
-              Navigator.pop(context);
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const RulesScreen()));
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.next_plan_outlined, color: Colors.white),
-            title:
-                const Text('Laufplan', style: TextStyle(color: Colors.white)),
-            onTap: () {
-              HapticFeedback.lightImpact();
-              Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SchedulePage(
-                      pairings: pairings,
-                      disciplines: disciplines,
-                      currentRowForColor: widget.currentRound)));
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.emoji_events, color: Colors.white),
-            title:
-            const Text('Achievements', style: TextStyle(color: Colors.white)),
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AchievementScreen(),
-                  ));
             },
           ),
           ListTile(

@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:olympiade/infos/achievements/achievement_screen.dart';
+import 'package:olympiade/infos/rules.dart';
+import 'package:olympiade/infos/schedule_page.dart';
 import 'package:olympiade/mainMenu/main_menu_navigation_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -21,6 +24,9 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+  int currentPageIndex = 0;
+
   late Timer _timer;
   String currentMatchUpText = '';
   String nextMatchUpText = '';
@@ -260,6 +266,27 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
+  List<Widget> _screenList() {
+    return [
+      MainMenuBody(
+        currentRound: currentRound,
+        selectedTeam: selectedTeam,
+        maxChessTime: maxChessTime,
+        isPaused: isPaused,
+        currentMatchUpText: currentMatchUpText,
+        nextMatchUpText: nextMatchUpText,
+        remainingTime: calculateRemainingTimeInRound(),
+        selectedTeamName: selectedTeamName,
+        roundTimeDuration: roundTimeDuration,
+        playTimeDuration: playTimeDuration,
+        calculateRemainingTimeInRound: calculateRemainingTimeInRound(),
+      ),
+      const RulesScreen(),
+      SchedulePage(currentRound: currentRound),
+      const AchievementScreen()
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     String appBarTitle = 'Team $selectedTeam';
@@ -268,6 +295,7 @@ class _MainMenuState extends State<MainMenu> {
     }
 
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
@@ -285,18 +313,25 @@ class _MainMenuState extends State<MainMenu> {
           eventStartTime: _eventStartTime,
           eventEndTime: _eventEndTime,
           maxChessTime: maxChessTime.inSeconds),
-      body: MainMenuBody(
-        currentRound: currentRound,
-        selectedTeam: selectedTeam,
-        maxChessTime: maxChessTime,
-        isPaused: isPaused,
-        currentMatchUpText: currentMatchUpText,
-        nextMatchUpText: nextMatchUpText,
-        remainingTime: calculateRemainingTimeInRound(),
-        selectedTeamName: selectedTeamName,
-        roundTimeDuration: roundTimeDuration,
-        playTimeDuration: playTimeDuration,
-        calculateRemainingTimeInRound: calculateRemainingTimeInRound(),
+      body: IndexedStack(
+        index: currentPageIndex,
+        children: _screenList(),
+      ),
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedIndex: currentPageIndex,
+        indicatorColor: Colors.transparent,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        onDestinationSelected: (int index) {
+          if (currentPageIndex == 0 && index == 0) _key.currentState!.openDrawer();
+          setState(() => currentPageIndex = index);
+        },
+        destinations: <Widget>[
+          NavigationDestination(icon: Icon(currentPageIndex == 0 ? Icons.menu : Icons.home, color: Colors.grey), label: currentPageIndex == 0 ? "More" : "Home"),
+          const NavigationDestination(icon: Icon(Icons.rule, color: Colors.grey), label: "Regeln", selectedIcon: Icon(Icons.rule, color: Colors.amber)),
+          const NavigationDestination(icon: Icon(Icons.directions_run, color: Colors.grey), label: "Laufplan", selectedIcon: Icon(Icons.directions_run, color: Colors.amber)),
+          const NavigationDestination(icon: Icon(Icons.emoji_events, color: Colors.grey), label: "Achievements", selectedIcon: Icon(Icons.emoji_events, color: Colors.amber)),
+        ],
       ),
     );
   }

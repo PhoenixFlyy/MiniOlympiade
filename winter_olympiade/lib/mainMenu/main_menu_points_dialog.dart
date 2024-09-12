@@ -175,7 +175,7 @@ class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
                       ),
                     ),
                     const Center(
-                      child: const Text(
+                      child: Text(
                         "Upload",
                         style: TextStyle(
                           fontSize: 16,

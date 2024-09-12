@@ -4,16 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/match_data.dart';
+
 class SchedulePage extends StatefulWidget {
-  final List<List<String>> pairings;
-  final Map<String, String> disciplines;
-  final int currentRowForColor;
+  final int currentRound;
 
   const SchedulePage({
     super.key,
-    required this.pairings,
-    required this.disciplines,
-    required this.currentRowForColor,
+    required this.currentRound,
   });
 
   @override
@@ -59,26 +57,6 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Hero(
-            tag: "scheduleHero",
-            child: Text(
-                'Laufplan  -  Team $selectedTeam',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: 0.0,
-                  wordSpacing: 0.0,
-                  decoration: TextDecoration.none,
-                  decorationColor: Colors.transparent,
-                  decorationStyle: TextDecorationStyle.solid,
-                  fontFamily: null,
-                  height: 1.0,
-                )
-            )),
-      ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -100,30 +78,30 @@ class _SchedulePageState extends State<SchedulePage> {
                 }
                 return DataColumn(
                   label: Text(
-                    widget.disciplines[index.toString()] ?? 'Disziplin $index',
+                    disciplines[index.toString()] ?? 'Disziplin $index',
                   ),
                 );
               },
             ),
             rows: List<DataRow>.generate(
-              widget.pairings.length,
+              pairings.length,
                   (rowIndex) {
-                final isSpecialRow = rowIndex == widget.currentRowForColor - 1;
+                final isSpecialRow = rowIndex == widget.currentRound - 1;
                 final backgroundColor =
                 isSpecialRow ? Colors.blue : Colors.transparent;
 
                 return DataRow(
                   color: WidgetStateProperty.all<Color>(backgroundColor),
                   cells: List<DataCell>.generate(
-                    widget.pairings[rowIndex].length + 1,
+                    pairings[rowIndex].length + 1,
                         (cellIndex) {
                       if (cellIndex == 0) {
                         return DataCell(Text('Runde ${rowIndex + 1}'));
                       }
-                      final isSpecialCell = isSpecialRow && widget.pairings[rowIndex][cellIndex - 1].contains(selectedTeam.toString());
+                      final isSpecialCell = isSpecialRow && pairings[rowIndex][cellIndex - 1].contains(selectedTeam.toString());
                       return DataCell(
                         Text(
-                            widget.pairings[rowIndex][cellIndex - 1],
+                            pairings[rowIndex][cellIndex - 1],
                             style: TextStyle(
                                 fontWeight: isSpecialCell ? FontWeight.bold : null,
                                 fontSize: 16,

@@ -79,8 +79,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   Color getRoundCircleColor() {
     if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
-      if (widget.calculateRemainingTimeInRound.inSeconds <
-          (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds)) {
+      if (widget.calculateRemainingTimeInRound.inSeconds < (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds)) {
         return Colors.red;
       } else if (widget.calculateRemainingTimeInRound.inSeconds <
           (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds + const Duration(seconds: 60).inSeconds)) {
@@ -226,6 +225,129 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     });
   }
 
+  Widget _currentRoundContainer() {
+    return Opacity(
+      opacity: isPointsDialogOpen ? 0.4 : 1.0,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 40),
+        child: Container(
+          height: 150,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: LinearGradient(
+              colors: [
+                Colors.grey.shade700,
+                Colors.grey.shade800,
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Aktuelle Runde",
+                          style: TextStyle(fontSize: 22, color: Colors.grey[350]!),
+                          textAlign: TextAlign.start,
+                        ),
+                        Text(widget.currentMatchUpText,
+                            style: const TextStyle(fontSize: 20), textAlign: TextAlign.start),
+                      ]),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: SizedBox(
+                      height: double.infinity,
+                      child: getDisciplineImage(context)
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _comingUpContainer() {
+    return Opacity(
+      opacity: isPointsDialogOpen ? 0.4 : 1.0,
+      child: Container(
+        height: 125,
+        width: 190,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: [
+              Colors.grey.shade700,
+              Colors.grey.shade800,
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Coming Up",
+                style: TextStyle(fontSize: 20, color: Colors.grey[350]!),
+                textAlign: TextAlign.start,
+              ),
+              Text(widget.nextMatchUpText,
+                  style: const TextStyle(fontSize: 18), textAlign: TextAlign.start),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _highlightTimeContainer() {
+    Duration remainingStateTime;
+    if (widget.calculateRemainingTimeInRound.inSeconds < (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds)) {
+      remainingStateTime = widget.calculateRemainingTimeInRound;
+    } else {
+      remainingStateTime = Duration(seconds: widget.calculateRemainingTimeInRound.inSeconds - (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds));
+    }
+
+    return Container(
+      height: 125,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        gradient: LinearGradient(
+          colors: [
+            (getRoundCircleColor() as MaterialColor).shade500,
+            (getRoundCircleColor() as MaterialColor).shade600
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Center(
+          child: Text(
+              '${remainingStateTime.inMinutes}:${(remainingStateTime.inSeconds % 60).toString().padLeft(2, '0')}',
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String formattedRemainingTime;
@@ -269,7 +391,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                 Colors.amberAccent,
                 Colors.white,
               ],
-              starCount: 250,
+              starCount: 100,
             ),
           ),
           Padding(
@@ -314,96 +436,27 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                           children: [
                             // "Currently playing" component or trophy image
                             if (widget.currentRound <= pairings.length && widget.currentRound > 0 && !widget.isPaused)
-                              Opacity(
-                                opacity: isPointsDialogOpen ? 0.4 : 1.0,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 40),
-                                  child: Container(
-                                    height: 150,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.grey.shade700,
-                                          Colors.grey.shade800,
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: Flex(
-                                        direction: Axis.horizontal,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                            child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                              Text("Aktuelle Runde",
-                                                  style: TextStyle(fontSize: 22, color: Colors.grey[350]!),
-                                                  textAlign: TextAlign.start,
-                                              ),
-                                              Text(widget.currentMatchUpText,
-                                                  style: const TextStyle(fontSize: 20), textAlign: TextAlign.start),
-                                            ]),
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: SizedBox(
-                                                height: double.infinity,
-                                                child: getDisciplineImage(context)
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              _currentRoundContainer(),
                             // "Coming up" component (Only during olympiade)
                             if (widget.currentRound < pairings.length &&
                                 !widget.isPaused &&
                                 widget.currentRound >= 1 &&
                                 !widget.isPaused)
-                              Opacity(
-                                opacity: isPointsDialogOpen ? 0.4 : 1.0,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: Container(
-                                    height: 125,
-                                    width: 190,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.grey.shade700,
-                                          Colors.grey.shade800,
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Flex(
+                                  direction: Axis.horizontal,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: _comingUpContainer(),
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Coming Up",
-                                            style: TextStyle(fontSize: 20, color: Colors.grey[350]!),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                          Text(widget.nextMatchUpText,
-                                              style: const TextStyle(fontSize: 18), textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                    const SizedBox(width: 20),
+                                    Expanded(
+                                      flex: 1,
+                                      child: _highlightTimeContainer(),
+                                    )
+                                  ],
                                 ),
                               )
 
