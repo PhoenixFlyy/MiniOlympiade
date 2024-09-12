@@ -8,10 +8,12 @@ import '../utils/match_data.dart';
 
 class SchedulePage extends StatefulWidget {
   final int currentRound;
+  final bool isCurrentPage;
 
   const SchedulePage({
     super.key,
     required this.currentRound,
+    required this.isCurrentPage,
   });
 
   @override
@@ -26,23 +28,44 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
     _loadSelectedTeam();
+    if (widget.isCurrentPage) {
+      _startTimer();
+    }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _stopTimer();
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant SchedulePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isCurrentPage != widget.isCurrentPage) {
+      if (widget.isCurrentPage) {
+        _startTimer();
+      } else {
+        _stopTimer();
+      }
+    }
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+    _secondsSpent = 0;
+  }
+
   void _startTimer() {
+    _timer?.cancel(); // Cancel any existing timer
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _secondsSpent++;
 
       if (_secondsSpent >= 60) {
         context.read<AchievementProvider>().completeAchievementByTitle('Verlaufen?');
-        _timer?.cancel();
+        _stopTimer();
       }
     });
   }

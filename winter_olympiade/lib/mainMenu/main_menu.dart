@@ -282,7 +282,7 @@ class _MainMenuState extends State<MainMenu> {
         calculateRemainingTimeInRound: calculateRemainingTimeInRound(),
       ),
       const RulesScreen(),
-      SchedulePage(currentRound: currentRound),
+      SchedulePage(currentRound: currentRound, isCurrentPage: currentPageIndex == 2),
       const AchievementScreen()
     ];
   }
