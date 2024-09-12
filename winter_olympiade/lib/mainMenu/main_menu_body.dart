@@ -256,10 +256,11 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Aktuelle Runde",
-                          style: TextStyle(fontSize: 22, color: Colors.grey[350]!),
-                          textAlign: TextAlign.start,
-                        ),
+                        if (widget.calculateRemainingTimeInRound.inSeconds > (widget.roundTimeDuration.inSeconds - widget.playTimeDuration.inSeconds))
+                          Text("Aktuelle Runde",
+                            style: TextStyle(fontSize: 22, color: Colors.grey[350]!),
+                            textAlign: TextAlign.start,
+                          ),
                         Text(widget.currentMatchUpText,
                             style: const TextStyle(fontSize: 20), textAlign: TextAlign.start),
                       ]),
@@ -284,7 +285,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       opacity: isPointsDialogOpen ? 0.4 : 1.0,
       child: Container(
         height: 125,
-        width: 190,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           gradient: LinearGradient(
