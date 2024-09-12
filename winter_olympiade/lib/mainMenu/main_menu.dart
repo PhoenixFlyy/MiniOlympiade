@@ -172,12 +172,12 @@ class _MainMenuState extends State<MainMenu> {
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
         if (calculateRemainingTimeInRound().inSeconds <= (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-          currentMatchUpText = 'Wechseln. Bitte alles so aufbauen wie es vorher war!';
+          currentMatchUpText = 'Wechseln \nBitte alles so aufbauen\nwie es vorher war!';
         } else {
-          currentMatchUpText = 'Aktuell: $disciplineName gegen Team $opponentTeamNumber. $startTeam';
+          currentMatchUpText = '$disciplineName gegen Team $opponentTeamNumber \n$startTeam';
         }
 
-        nextMatchUpText = 'Coming up: $nextDisciplineName gegen Team $nextOpponentTeamNumber. $nextStartTeam';
+        nextMatchUpText = '$nextDisciplineName gegen Team $nextOpponentTeamNumber\n$nextStartTeam';
       });
     }
   }
@@ -264,13 +264,11 @@ class _MainMenuState extends State<MainMenu> {
   Widget build(BuildContext context) {
     String appBarTitle = 'Team $selectedTeam';
     if (selectedTeamName.isNotEmpty) {
-      appBarTitle += ' - $selectedTeamName';
+      appBarTitle += '         $selectedTeamName';
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
           if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
@@ -309,7 +307,6 @@ class _MainMenuState extends State<MainMenu> {
     _playTimeController.text = playTimeDuration.inMinutes.toString();
 
     showModalBottomSheet(
-      backgroundColor: Colors.black,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {

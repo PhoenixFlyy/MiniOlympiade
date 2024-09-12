@@ -28,9 +28,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
     context.read<AchievementProvider>().completeAchievementByTitle('Nerd');
 
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

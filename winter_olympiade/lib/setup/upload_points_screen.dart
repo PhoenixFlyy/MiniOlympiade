@@ -126,7 +126,6 @@ class _UploadResultsState extends State<UploadResults> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Hero(
             tag: "uploadHero",
@@ -145,7 +144,6 @@ class _UploadResultsState extends State<UploadResults> {
                 fontFamily: null,
                 height: 1.0,
               ),)),
-        backgroundColor: Colors.black,
       ),
       body: Center(
         child: Column(

@@ -40,10 +40,8 @@ class SoundBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     final audioService = AudioService();
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text("Soundboard"),
-        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Padding(

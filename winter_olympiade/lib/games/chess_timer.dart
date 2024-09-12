@@ -191,9 +191,7 @@ class _ChessTimerState extends State<ChessTimer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: const Hero(
             tag: "ChessClockHero",
             child: Text("Schachuhr",
