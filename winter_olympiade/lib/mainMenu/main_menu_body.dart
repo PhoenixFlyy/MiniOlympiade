@@ -199,7 +199,9 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.selectedTeam != widget.selectedTeam || oldWidget.currentRound != widget.currentRound) {
-      databaseListener();
+      if (widget.currentRound != 0 && widget.calculateRemainingTimeInRound.inSeconds != 0) {
+        databaseListener();
+      }
     }
   }
 

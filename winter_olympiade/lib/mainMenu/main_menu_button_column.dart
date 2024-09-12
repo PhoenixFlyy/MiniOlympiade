@@ -42,7 +42,7 @@ class MainButtonColumn extends StatelessWidget {
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DartStartScreen()))),
           ActivityButton(
               name: "Schachuhr",
-              description: "Eine Schachuhr um in Jenga die Zeit zu tracken",
+              description: "Eine Schachuhr, um in Jenga die Zeit zu tracken",
               iconWidget: const Icon(Icons.access_time),
               onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => ChessTimer(maxTime: maxChessTime.inSeconds)))),
