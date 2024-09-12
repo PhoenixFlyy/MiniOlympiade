@@ -27,7 +27,7 @@ class MainButtonColumn extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Activities", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[350]!)),
+          Text("Aktivitäten", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[350]!)),
           ActivityButton(
             name: "Punktestand",
             description: "Trage die Spielergebnisse schnell und einfach ein",
