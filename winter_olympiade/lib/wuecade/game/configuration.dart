@@ -5,4 +5,7 @@ class Config {
   static const birdVelocity = 400;
   static const gravity = -150.0;
   static const cloudsHeight = 70;
+
+  static const minPipeHeight = 50.0;
+  static const minPipeSpacing = 200.0;
 }

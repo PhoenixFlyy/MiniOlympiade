@@ -17,7 +17,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
   late TextComponent score;
-  Function? onAchievementReached;
+  Function(String)? onAchievementReached;
 
   @override
   Future<void> onLoad() async {
@@ -28,7 +28,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
       score = buildScore(),
     ]);
 
-    interval.onTick = () => add(PipeGroup());
+    interval.onTick = () => add(PipeGroup(onAchievementReached: onAchievementReached));
   }
 
   TextComponent buildScore() {
@@ -51,15 +51,5 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     interval.update(dt);
 
     score.text = 'Score: ${bird.score}';
-  }
-
-  void checkAchievements() {
-    if (bird.score == 10) {
-      onAchievementReached?.call('Flappy Chick');
-    }
-
-    if (bird.score == 50) {
-      onAchievementReached?.call('Flappy Eagle');
-    }
   }
 }

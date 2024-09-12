@@ -8,8 +8,9 @@ import '../game/flappy_wue_game.dart';
 import '../game/pipe_position.dart';
 
 class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
-  PipeGroup();
-  Function? onAchievementReached;
+  final Function(String)? onAchievementReached;
+
+  PipeGroup({this.onAchievementReached});
 
   final _random = Random();
 
@@ -18,11 +19,17 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
     position.x = gameRef.size.x;
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
-    final spacing = 150 + _random.nextDouble() * (heightMinusGround / 4);
-    final centerY =  spacing + _random.nextDouble() * (heightMinusGround - spacing);
+
+    final spacing = Config.minPipeSpacing + _random.nextDouble();
+
+    final minCenterY = Config.minPipeHeight + (spacing / 2);
+    final maxCenterY = heightMinusGround - Config.minPipeHeight - (spacing / 2);
+
+    final centerY = minCenterY + _random.nextDouble() * (maxCenterY - minCenterY);
+
     addAll([
-      Pipe(pipePosition: PipePosition.top, height: centerY - spacing / 2),
-      Pipe(pipePosition: PipePosition.bottom, height: heightMinusGround - (centerY + spacing / 2)),
+      Pipe(pipePosition: PipePosition.top, height: centerY - (spacing / 2)),
+      Pipe(pipePosition: PipePosition.bottom, height: heightMinusGround - (centerY + (spacing / 2))),
     ]);
   }
 
@@ -45,13 +52,11 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   void updateScore() {
     gameRef.bird.score += 1;
     FlameAudio.play(Assets.point);
-    if (gameRef.bird.score == 1) {
-      gameRef.checkAchievements();
+    if (gameRef.bird.score == 10) {
       onAchievementReached?.call('Flappy Chick');
     }
 
     if (gameRef.bird.score == 50) {
-      gameRef.checkAchievements();
       onAchievementReached?.call('Flappy Eagle');
     }
   }
