@@ -229,7 +229,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     return Opacity(
       opacity: isPointsDialogOpen ? 0.4 : 1.0,
       child: Padding(
-        padding: const EdgeInsets.only(top: 40),
+        padding: const EdgeInsets.only(top: 20),
         child: Container(
           height: 150,
           width: double.infinity,
@@ -397,12 +397,11 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Column(
                   children: [
-                    // Current row and time row
+                    // Current round and time row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -485,8 +484,13 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                   ],
                 ),
                 // Navigation button components
-                MainButtonColumn(
-                    currentRound: widget.currentRound, selectedTeam: widget.selectedTeam, maxChessTime: widget.maxChessTime),
+                Expanded(
+                  child: MainButtonColumn(
+                      currentRound: widget.currentRound,
+                      selectedTeam: widget.selectedTeam,
+                      maxChessTime: widget.maxChessTime
+                  ),
+                ),
               ],
             ),
           ),

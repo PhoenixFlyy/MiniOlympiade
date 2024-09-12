@@ -318,19 +318,18 @@ class _MainMenuState extends State<MainMenu> {
         children: _screenList(),
       ),
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         selectedIndex: currentPageIndex,
         indicatorColor: Colors.transparent,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         onDestinationSelected: (int index) {
-          if (currentPageIndex == 0 && index == 0) _key.currentState!.openDrawer();
           setState(() => currentPageIndex = index);
         },
-        destinations: <Widget>[
-          NavigationDestination(icon: Icon(currentPageIndex == 0 ? Icons.menu : Icons.home, color: Colors.grey), label: currentPageIndex == 0 ? "More" : "Home"),
-          const NavigationDestination(icon: Icon(Icons.rule, color: Colors.grey), label: "Regeln", selectedIcon: Icon(Icons.rule, color: Colors.amber)),
-          const NavigationDestination(icon: Icon(Icons.directions_run, color: Colors.grey), label: "Laufplan", selectedIcon: Icon(Icons.directions_run, color: Colors.amber)),
-          const NavigationDestination(icon: Icon(Icons.emoji_events, color: Colors.grey), label: "Achievements", selectedIcon: Icon(Icons.emoji_events, color: Colors.amber)),
+        destinations: const <Widget>[
+          NavigationDestination(icon: Icon(Icons.home, color: Colors.white), label: "Home", selectedIcon: Icon(Icons.home, color: Colors.amber)),
+          NavigationDestination(icon: Icon(Icons.rule, color: Colors.white), label: "Regeln", selectedIcon: Icon(Icons.rule, color: Colors.amber)),
+          NavigationDestination(icon: Icon(Icons.directions_run, color: Colors.white), label: "Laufplan", selectedIcon: Icon(Icons.directions_run, color: Colors.amber)),
+          NavigationDestination(icon: Icon(Icons.emoji_events, color: Colors.white), label: "Achievements", selectedIcon: Icon(Icons.emoji_events, color: Colors.amber)),
         ],
       ),
     );

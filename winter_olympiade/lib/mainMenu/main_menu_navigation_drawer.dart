@@ -146,7 +146,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         children: [
           ListTile(
             leading: const Icon(Icons.upload_outlined, color: Colors.white),
-            title: const Text('Ergebnisse nachtragen',
+            title: const Text('Punktestand',
                 style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
@@ -159,7 +159,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
           ),
           ListTile(
             leading: const Icon(Icons.bolt_outlined, color: Colors.white),
-            title: const Text('Dartsrechner',
+            title: const Text('Darts',
                 style: TextStyle(color: Colors.white)),
             onTap: () {
               HapticFeedback.lightImpact();
