@@ -396,10 +396,14 @@ class _DartStartScreenState extends State<DartStartScreen> {
                     GestureDetector(
                       onTap: () async {
                         final picker = ImagePicker();
-                        final pickedFile =
-                        await picker.pickImage(source: ImageSource.camera);
+                        final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
                         if (pickedFile != null) {
+                          // Check if the selected image is not 'darts.png'
+                          if (!pickedFile.path.contains('darts.png')) {
+                            context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
+                          }
+
                           setStateDialog(() {
                             playerImage = FileImage(File(pickedFile.path));
                           });
@@ -428,6 +432,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
                         ],
                       ),
                     ),
+
                     const SizedBox(width: 20),
                     Expanded(
                       child: TextField(
@@ -485,9 +490,9 @@ class _DartStartScreenState extends State<DartStartScreen> {
                           _savePlayer(newPlayer);
                         });
 
-                        if (!playerImage.file.path.contains('darts.png')) {
+    /*if (!playerImage.file.path.contains('darts.png')) {
                           context.read<AchievementProvider>().completeAchievementByTitle('Sehr photogen!');
-                        }
+                        }*/
 
                         Navigator.of(context).pop();
                       }

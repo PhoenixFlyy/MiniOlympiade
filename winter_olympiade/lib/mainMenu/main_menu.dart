@@ -178,7 +178,7 @@ class _MainMenuState extends State<MainMenu> {
           : "Beginner: Team $nextOpponentTeamNumber";
       setState(() {
         if (calculateRemainingTimeInRound().inSeconds <= (roundTimeDuration.inSeconds - playTimeDuration.inSeconds)) {
-          currentMatchUpText = 'Wechseln \nBitte alles so aufbauen\nwie es vorher war!';
+          currentMatchUpText = 'Wechseln: Bitte so aufbauen wie vorher!';
         } else {
           currentMatchUpText = '$disciplineName gegen Team $opponentTeamNumber \n$startTeam';
         }

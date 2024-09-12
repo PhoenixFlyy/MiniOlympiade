@@ -13,14 +13,15 @@ final List<GameRule> gameRules = [
   GameRule('Allgemeines, Alkohol', [
     'Gespielt wird in Zweierteams. Es ist nicht erlaubt, dass ein Teampartner aussetzt!',
     'Ist es Zeit, um zu wechseln und ein Ende des Spiels ist nicht in Sicht, wird das Spiel entweder als Unentschieden gewertet (Darts, nicht Jenga!) oder das Team gewinnt, das punktemäßig vorne liegt (Bierpong, Kicker, Billard, Kubb).',
-    'Bei einer Rundenzeit von nur 10 Minuten darf nicht getrödelt werden. Insbesondere bei Bierpong und Tischkicker muss das Spiel zügig begonnen und durchgeführt werden. Bei Meinungsverschiedenheiten, die sich nicht mithilfe des nachstehenden Regelwerks ausräumen lassen, muss sich schnell geeinigt werden. Wir haben nicht viel Zeit!',
-    'Sollte am Ende das Gesamtergebnis nicht eindeutig sein, wird der Gesamtsieg/die Gesamtplatzierung mittels Gummischuss auf die Nase des Holzhampelmanns in der Küche entschieden. Wer die Nase zuerst trifft, ohne dass der Gegner trifft, gewinnt.',
-    'Es muss fleißig getrunken werden. Wer nichts oder nicht ausreichend getrunken hat, wird disqualifiziert!',
+    'Bei einer Rundenzeit von nur 10 Minuten darf nicht getrödelt werden. Insbesondere bei Bierpong und Tischkicker muss das Spiel zügig begonnen und durchgeführt werden. Bei Meinungsverschiedenheiten, die sich nicht mithilfe des nachstehenden Regelwerks ausräumen lassen, muss sich schnell geeinigt werden. Im Zweifel gelten die allgemein anerkannten Regeln des jeweiligen Spiels. Wir haben nicht viel Zeit!',
+    'Sollte am Ende das Gesamtergebnis nicht eindeutig sein, wird der Gesamtsieg/die Gesamtplatzierung durch ein dann festzulegendes Minispiel entschieden.',
+    'Es muss fleißig getrunken werden. Wer sich durch Nichttrinken einen unfairen Vorteil verschafft, wird disqualifiziert!',
+    'Wer in einem Spiel bescheißt, verliert das jeweilige Spiel automatisch und hat einen potenziellen Anspruch auf den ersten Platz verwirkt! Beginnt man einen Spielzug, ohne dass das eigene Team bereit ist, gilt der Spielzug bei einem Fehlschlag/Erfolg der Gegner dennoch als durchgeführt (selber Schuld!).',
   ]),
   GameRule('Kicker', [
     '• Ein Spiel geht bis 10 Punkte.',
     '• Das Durchdrehen der Kickerstangen (Trillern) ist verboten.',
-    '• Verlässt der Ball das Spielfeld wird er an der nächstgelegenen Ecke zurück ins Spiel gebracht. Passiert dies in der Mitte des Tischs, wird er in der Mitte neu eingeworfen',
+    '• Verlässt der Ball das Spielfeld wird er an der nächstgelegenen Ecke bzw. in der Mitte des Tisches zurück ins Spiel gebracht.',
     '• Nach einem erzielten Tor darf der Ball von dem Team in der Mitte eingeworfen werden, das nicht gepunktet hat.',
     '• Ein Torwart-Tor zählt nicht doppelt.',
   ]),
@@ -37,7 +38,7 @@ final List<GameRule> gameRules = [
     '• Die weiße Kugel wird von der Kopflinie aus gespielt (waagerechte Linie durch den markierten Punkt).',
     '• Vor einem Stoß muss die Kugel angesagt werden, die gelocht werden soll. Ein Ansagen der richtigen Tasche ist nur bei der schwarzen Acht nötig.',
     '• Bei einem Foul darf der Gegner die weiße Kugel frei auf dem Tisch platzieren (Ball-in-Hand).',
-    '• Wird eine gegnerische Kugel gelocht, ohne dass ein Foul begangen wird, kommt der Gegner an die Reihe. Dieser hat dann jedoch kein Ball-in-Hand!',
+    '• Wird eine gegnerische Kugel oder eine nicht angesagte Kugel gelocht, ohne dass ein Foul begangen wird, kommt der Gegner an die Reihe. Dieser hat dann jedoch kein Ball-in-Hand!',
     '• Ein Foul liegt vor, wenn...',
     '   - Die weiße Kugel keine andere Kugel berührt.',
     '   - Die weiße Kugel zuerst auf eine gegnerische (oder schwarze) Kugel trifft.',
@@ -54,11 +55,11 @@ final List<GameRule> gameRules = [
   ]),
   GameRule('Bierpong', [
     'Gespielt wird mit sechs Bechern. Die letzten drei Becher befinden sich jeweils an der hinteren Kante des Tisches, die anderen beiden pyramidenförmig davor. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf bzw. muss dennoch ausgiebig getrunken werden!',
-    '• Die Ellenbogen müssen hinter dem Tisch bleiben. Ist dies nicht der Fall, ist der Wurf zwar getan, jedoch ungültig.',
-    '• Ist der Ball bereits einmal auf der Platte aufgekommen, kann er weggeschlagen werden. Trifft ein so gespielter Ball dennoch, müssen zwei Becher vom Tisch. Diesen darf das getroffene Team wählen.',
+    '• Die Ellenbogen müssen hinter dem Tisch bleiben. Ist dies nicht der Fall, ist der Wurf zwar durchgeführt, jedoch ungültig.',
+    '• Ist der Ball bereits einmal auf der Platte/Becher aufgekommen, kann er weggeschlagen werden. Trifft ein so gespielter Ball dennoch, müssen zwei Becher vom Tisch. Den zusätzlichen Becher darf das getroffene Team wählen.',
     '• Das Herauspusten des Balls ist nicht erlaubt.',
     '• Treffen beide Spieler in einen Becher, erhalten diese die Bälle zurück. Wird derselbe Becher getroffen, kommt ein zusätzlicher Becher weg (nicht alle drumherum!).',
-    '• Steht ein Becher allein, darf je Spieler einmal pro Spiel „Island“ gerufen werden. Trifft er den angesagten Becher, muss ein extra Becher weggestellt werden. Wird ein anderer Becher getroffen, zählt dieser Wurf nicht.',
+    '• Steht ein Becher allein, darf je Spieler einmal pro Spiel „Island“ gerufen werden. Trifft er den angesagten Becher, muss ein extra Becher weggestellt werden. Die Wahl hat das getroffene Team. Wird ein anderer Becher getroffen, zählt dieser Wurf nicht.',
     '• Kommt ein Ball über die Hälfte des Tisches zurück und gelingt es dem diesseitigen Team, den Ball zu erlangen, darf dieses einen zusätzlichen Trick-Shot-Wurf ausführen.',
     '• Die Becher dürfen einmal pro Spiel umgestellt werden',
     '• Es gibt keinen Nachwurf!',
@@ -69,7 +70,7 @@ final List<GameRule> gameRules = [
     '• Trifft man mit einem geworfenen Kubb einen schon im Feld liegenden Kubb ("Feldkubb"; gemeint sind nicht die Linienkubbs des Gegners), werden die Kubbs gestapelt. Es ist auch möglich, dass man in den ersten beiden Würfen zwei Kubbs weit auseinander wirft, dann aber mit dem dritten Wurf die beiden Kubbs berührt. Dann werden alle Kubbs aufeinandergestapelt. Gestapelt wird durch den Gegner. Dieser darf dabei wählen, welchen Kubb er als Basis nimmt; an diesem Ort entsteht dann der Turm. Der Basiskubb wird dabei an dem Ort aufgestellt, wo er liegen bleibt. Beim Aufstellen darf dieser in jede Richtung aufgeklappt werden.',
     '• Hat man alle zuvor gefallenen Kubbs geworfen, muss man sie umwerfen, bevor man die Linienkubbs des Gegners umwerfen darf. Fällt ein Linienkubb bevor nicht alle Feldkubbs umgeworfen wurden, wird dieser wieder aufgestellt.',
     '• Fällt ein Feldkubb nach einem Wurfstabwurf, wird der jeweilige Feldkubb aus dem Spiel entfernt.',
-    '• Hat es ein Spieler nicht geschafft, alle Feldkubbs umzuwerfen, darf der Gegner bis auf die Höhe des jeweiligen Feldkubbs vorrücken und seine nächsten Wurfstabwürfe von dort ausführen. Umgefallene Kubbs müssen weiterhin von der Basislinie geworfen werden.',
+    '• Hat es ein Spieler nicht geschafft, alle Feldkubbs umzuwerfen, darf der Gegner bis auf die Höhe des jeweiligen Feldkubbs vorrücken, welcher am weitesten von der Mittellinie entfernt ist, und seine nächsten Wurfstabwürfe von dort ausführen. Umgefallene Kubbs müssen weiterhin von der Basislinie geworfen werden.',
     '• Wird der König umgeworfen bevor alle gegnerischen Kubbs umgeworfen wurden, gilt das Spiel als verloren.',
     '• Hat man alle gegnerischen Kubbs umgeworfen, darf man auf den König werfen. Dieser Wurf muss jedoch rückwärts durch die eigenen Beine erfolgen.',
     '• Der Wurfstabwurf darf nur unter Schulterhöhe erfolgen. Der Wurfstab darf sich dabei nur vertikal drehen. Ein waagerecht rotierender Wurf ("Helikopterwurf") und waagerechte Würfe an sich sind verboten.',
@@ -78,7 +79,7 @@ final List<GameRule> gameRules = [
   GameRule('Jenga', [
     'Gespielt wird mit Schachuhr. Der Boden ist uneben und leicht zu erschüttern. Damit muss jeder klarkommen.',
     'Der Boden um den Turm herum soll mit Decken ausgelegt werden, um den Boden zu schützen.',
-    'Gespielt wird mit vier Minuten pro Spieler.',
+    'Gespielt wird mit fünf Minuten pro Spieler.',
     'Nach dem Spiel müssen der Turm wieder aufgebaut und die Decken wieder hingelegt werden. Beim Wiederaufbau des Turms ist darauf zu achten, dass die Ausrichtung der Steine übereinstimmt. Die breitere Seite muss nach oben zeigen.',
     '• Es muss ein Stein aus dem Turm gezogen werden und oben auf dem Turm platziert werden.',
     '• Es darf nur mit einer Hand gespielt werden!',
@@ -134,6 +135,7 @@ class _RulesScreenState extends State<RulesScreen> {
               onExpansionChanged: (expanded) {
                 if (expanded) {
                   context.read<AchievementProvider>().markRuleAsExpanded(ruleItem.name);
+                  context.read<AchievementProvider>().completeAchievementByTitle('Nimm es ganz genau!');
                 }
               },
               children: <Widget>[

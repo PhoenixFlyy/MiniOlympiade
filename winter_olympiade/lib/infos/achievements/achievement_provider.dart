@@ -56,6 +56,7 @@ class AchievementProvider extends ChangeNotifier {
     "Ende der Runde",
     "1 Minute übrig",
     "Pause",
+    "Alarm",
     "SIUUU",
     "Villager",
     "Yeet",
