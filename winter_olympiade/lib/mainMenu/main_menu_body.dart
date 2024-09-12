@@ -468,7 +468,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                                     child: Text(
                                         widget.currentRound > pairings.length
                                             ? "Die Olympiade ist zu Ende"
-                                            : "Die Olympiade beginnt bald..",
+                                            : "Die Olympiade beginnt bald...",
                                         style: const TextStyle(fontSize: 24)),
                                   ),
                                   AspectRatio(
