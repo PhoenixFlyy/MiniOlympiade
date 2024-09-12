@@ -395,7 +395,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
