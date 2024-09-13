@@ -16,7 +16,6 @@ class Bird extends SpriteGroupComponent<BirdMovement>
 
   @override
   Future<void> onLoad() async {
-    // Initially load the default bird skin (Skin1).
     await loadBirdSprites(Assets.birdUpFlap, Assets.birdMidFlap, Assets.birdDownFlap);
 
     size = Vector2(50, 40);
@@ -25,7 +24,6 @@ class Bird extends SpriteGroupComponent<BirdMovement>
     add(CircleHitbox());
   }
 
-  // Method to load bird sprites dynamically based on the selected skin
   Future<void> loadBirdSprites(String upFlap, String midFlap, String downFlap) async {
     final birdUpFlap = await gameRef.loadSprite(upFlap);
     final birdMidFlap = await gameRef.loadSprite(midFlap);
@@ -38,12 +36,13 @@ class Bird extends SpriteGroupComponent<BirdMovement>
     };
   }
 
-  // Method to set the bird skin based on the selected option
   void setBirdSkin(String skinType) {
     if (skinType == 'Skin1') {
       loadBirdSprites(Assets.birdUpFlap, Assets.birdMidFlap, Assets.birdDownFlap);
     } else if (skinType == 'Skin2') {
       loadBirdSprites(Assets.birdUpFlap2, Assets.birdMidFlap2, Assets.birdDownFlap2);
+    } else if (skinType == 'Skin3') {
+      loadBirdSprites(Assets.birdUpFlap3, Assets.birdMidFlap3, Assets.birdDownFlap3);
     }
   }
 

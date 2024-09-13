@@ -12,6 +12,10 @@ class Assets {
   static const birdUpFlap2 = 'bird_upflap2.png';
   static const birdDownFlap2 = 'bird_downflap2.png';
 
+  static const birdMidFlap3 = 'bird_midflap3.png';
+  static const birdUpFlap3 = 'bird_upflap3.png';
+  static const birdDownFlap3 = 'bird_downflap3.png';
+
   static const gameOver = 'assets/images/gameover.png';
   static const menu = 'assets/images/menu.jpg';
   static const message = 'assets/images/message.png';

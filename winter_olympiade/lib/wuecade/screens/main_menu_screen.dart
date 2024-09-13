@@ -117,6 +117,19 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
                         height: selectedSkin == 'Skin2' ? 120 : 80,
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedSkin = 'Skin3';
+                          widget.game.bird.setBirdSkin('Skin3');
+                        });
+                      },
+                      child: Image.asset(
+                        'assets/images/bird_midflap3.png',
+                        width: selectedSkin == 'Skin3' ? 120 : 80,
+                        height: selectedSkin == 'Skin3' ? 120 : 80,
+                      ),
+                    ),
                   ],
                 ),
               ],

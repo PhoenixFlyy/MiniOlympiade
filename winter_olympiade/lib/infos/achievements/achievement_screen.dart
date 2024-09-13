@@ -97,7 +97,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
               itemExtent: 155,
               center: false,
               anchor: 0.0,
-              velocityFactor: 0.4,
+              velocityFactor: 0.7,
               axisDirection: Axis.vertical,
               loop: false,
               itemBuilder: (context, itemIndex, realIndex) {
