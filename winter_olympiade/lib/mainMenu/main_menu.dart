@@ -65,50 +65,48 @@ class _MainMenuState extends State<MainMenu> {
       if (!isFirstRenderingWhistle && !streamIsPaused) {
         audioService.playStartSound();
       }
-      setState(() {
-        isPaused = streamIsPaused;
-      });
+      if (mounted) {
+        setState(() {
+          isPaused = streamIsPaused;
+        });
+      }
       if (isFirstRenderingWhistle) {
         isFirstRenderingWhistle = false;
       }
     });
     _databaseTime.child("pauseTime").onValue.listen((event) {
-      final int streamPauseTime = int.tryParse(event.snapshot.value.toString()) ?? 0;
-      setState(() {
-        pauseTimeInSeconds = streamPauseTime;
-      });
+      if (mounted) {
+        setState(() => pauseTimeInSeconds = int.tryParse(event.snapshot.value.toString()) ?? 0);
+      }
     });
     _databaseTime.child("startTime").onValue.listen((event) {
-      final DateTime streamEventStartTime = stringToDateTime(event.snapshot.value.toString());
-      setState(() {
-        _eventStartTime = streamEventStartTime;
-        currentRound = calculateCurrentRoundWithDateTime();
-      });
+      if (mounted) {
+        setState(() {
+          _eventStartTime = stringToDateTime(event.snapshot.value.toString());
+          currentRound = calculateCurrentRoundWithDateTime();
+        });
+      }
     });
     _databaseTime.child("pauseStartTime").onValue.listen((event) {
-      final DateTime streamPauseStartTime = stringToDateTime(event.snapshot.value.toString());
-      setState(() {
-        pauseStartTime = streamPauseStartTime;
-      });
+      if (mounted) {
+        setState(() => pauseStartTime = stringToDateTime(event.snapshot.value.toString()));
+      }
     });
     _databaseTime.child("chessTime").onValue.listen((event) {
-      final Duration streamChessTime = Duration(seconds: int.tryParse(event.snapshot.value.toString()) ?? 240);
-      setState(() {
-        maxChessTime = streamChessTime;
-      });
+      if (mounted) {
+        setState(() => maxChessTime = Duration(seconds: int.tryParse(event.snapshot.value.toString()) ?? 240));
+      }
     });
 
     _databaseTime.child("roundTime").onValue.listen((event) {
-      final Duration streamRoundTime = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 12);
-      setState(() {
-        roundTimeDuration = streamRoundTime;
-      });
+      if (mounted) {
+        setState(() => roundTimeDuration = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 12));
+      }
     });
     _databaseTime.child("playTime").onValue.listen((event) {
-      final Duration streamPlayTime = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 10);
-      setState(() {
-        playTimeDuration = streamPlayTime;
-      });
+      if (mounted) {
+        setState(() => playTimeDuration = Duration(minutes: int.tryParse(event.snapshot.value.toString()) ?? 10));
+      }
     });
   }
 

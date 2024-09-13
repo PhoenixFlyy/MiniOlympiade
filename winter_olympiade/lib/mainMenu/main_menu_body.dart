@@ -216,12 +216,14 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         final data = Map<String, dynamic>.from(event.snapshot.value as Map);
         final team1Score = data['team1'];
         final team2Score = data['team2'];
-        if ((team1Score == 1 && team2Score == 0) ||
-            (team1Score == 0 && team2Score == 1) ||
-            (team1Score == 0.5 && team2Score == 0.5)) {
-          setState(() => isDatabaseCorrect = true);
-        } else {
-          setState(() => isDatabaseCorrect = false);
+        if (mounted) {
+          if ((team1Score == 1 && team2Score == 0) ||
+              (team1Score == 0 && team2Score == 1) ||
+              (team1Score == 0.5 && team2Score == 0.5)) {
+            setState(() => isDatabaseCorrect = true);
+          } else {
+            setState(() => isDatabaseCorrect = false);
+          }
         }
       }
     });
