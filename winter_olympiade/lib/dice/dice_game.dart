@@ -23,6 +23,15 @@ class _DiceGameState extends State<DiceGame> {
     'assets/dice/diceSelect20.png',
   ];
 
+  final Map<int, Color> diceColors = {
+    4: Colors.green,
+    6: Colors.blue,
+    8: Colors.purple,
+    10: Colors.pink,
+    12: Colors.red,
+    20: Colors.orange,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -79,6 +88,7 @@ class _DiceGameState extends State<DiceGame> {
                 runSpacing: 10,
                 children: diceModels.map((dice) {
                   return SizedBox(
+                    key: ValueKey<DiceModel>(dice),
                     width: getDiceSize(),
                     height: getDiceSize(),
                     child: DiceWidget(
@@ -98,10 +108,16 @@ class _DiceGameState extends State<DiceGame> {
                         onTap: () => addDice(diceRanges[diceSelectImages.indexOf(image)]),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            image,
-                            width: 75,
-                            height: 75,
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                              diceColors[diceRanges[diceSelectImages.indexOf(image)]]!.withOpacity(0.5),
+                              BlendMode.srcATop,
+                            ),
+                            child: Image.asset(
+                              image,
+                              width: 75,
+                              height: 75,
+                            ),
                           ),
                         ),
                       );
@@ -114,10 +130,16 @@ class _DiceGameState extends State<DiceGame> {
                         onTap: () => addDice(diceRanges[diceSelectImages.indexOf(image)]),
                         child: Padding(
                           padding: const EdgeInsets.all(5),
-                          child: Image.asset(
-                            image,
-                            width: 75,
-                            height: 75,
+                          child: ColorFiltered(
+                            colorFilter: ColorFilter.mode(
+                              diceColors[diceRanges[diceSelectImages.indexOf(image)]]!.withOpacity(0.5),
+                              BlendMode.srcATop,
+                            ),
+                            child: Image.asset(
+                              image,
+                              width: 75,
+                              height: 75,
+                            ),
                           ),
                         ),
                       );
