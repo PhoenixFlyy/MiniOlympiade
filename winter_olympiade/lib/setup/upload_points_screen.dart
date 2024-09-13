@@ -26,13 +26,24 @@ class _UploadResultsState extends State<UploadResults> {
   int currentSelectedRound = 1;
   double currentRoundTeamScore = 0.0;
 
+  late Future<List<double>> teamScoresFuture;
+
   @override
   void initState() {
     super.initState();
     if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
       currentSelectedRound = widget.currentRound;
       selectedDiscipline = getDisciplineNumber(widget.currentRound, widget.teamNumber);
+      teamScoresFuture = getAllTeamPointsInDisciplineSortedByMatch(
+          selectedDiscipline, widget.teamNumber);
+    } else {
+      teamScoresFuture = Future.value([]); // Default-Wert
     }
+  }
+
+  void _updateTeamScores() {
+    teamScoresFuture = getAllTeamPointsInDisciplineSortedByMatch(
+        selectedDiscipline, widget.teamNumber);
   }
 
   void updateScores(int roundNumber, double teamScore) {
@@ -66,23 +77,24 @@ class _UploadResultsState extends State<UploadResults> {
     });
 
     context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling'); //Achievements
-
-    setState(() {});
+    _updateTeamScores(); // Tabelle aktualisieren
+    setState(() {}); // State aktualisieren, um UI zu aktualisieren
   }
 
   Widget getTeamScoreForAllRoundsText() {
     return FutureBuilder<List<double>>(
-      future: getAllTeamPointsInDisciplineSortedByMatch(
-          selectedDiscipline, widget.teamNumber),
+      future: teamScoresFuture,
       builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return const Text("An error occurred.");
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Text("Keine Daten verfügbar.");
         } else {
           final dataRows = List<DataRow>.generate(
             snapshot.data!.length,
-            (int index) => DataRow(
+                (int index) => DataRow(
               cells: <DataCell>[
                 DataCell(Text("Match ${index + 1}")),
                 DataCell(Text(
@@ -162,11 +174,12 @@ class _UploadResultsState extends State<UploadResults> {
                           HapticFeedback.lightImpact();
                           setState(() {
                             currentSelectedRound = newValue!;
+                            _updateTeamScores();
                           });
                         },
                         items: List<DropdownMenuItem<int>>.generate(
                           pairings.length,
-                          (index) => DropdownMenuItem<int>(
+                              (index) => DropdownMenuItem<int>(
                             value: index + 1,
                             child: Text('${index + 1}',
                                 style: const TextStyle(fontSize: 22)),
@@ -254,6 +267,7 @@ class _UploadResultsState extends State<UploadResults> {
                     HapticFeedback.lightImpact();
                     setState(() {
                       selectedDiscipline = newValue!;
+                      _updateTeamScores();  // Lade Tabelle bei Disziplinwechsel neu
                     });
                   },
                   items: disciplines.keys
