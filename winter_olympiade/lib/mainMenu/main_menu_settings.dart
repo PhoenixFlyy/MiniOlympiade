@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import '../setup/result_screen.dart';
 import '../utils/date_time_picker.dart';
 import '../utils/date_time_utils.dart';
 
@@ -101,23 +100,6 @@ class SettingsModal extends StatelessWidget {
                 ),
                 onPressed: updateShowResultPermission,
                 child: const Text("Erlaubnis für Ergebnisse umschalten"),
-              ),
-              const SizedBox(height: 20),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ResultScreen(),
-                    ),
-                  );
-                },
-                child: const Text('Ergebnisse anschauen'),
               ),
               const SizedBox(height: 20),
             ],
