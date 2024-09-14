@@ -11,12 +11,14 @@ class SettingsModal extends StatelessWidget {
   final DateTime eventStartTime;
   final void Function(int) updateChessTimeInDatabase;
   final void Function() updateIsPausedInDatabase;
+  final void Function() updateShowResultPermission;
 
   SettingsModal({
     super.key,
     required this.eventStartTime,
     required this.updateChessTimeInDatabase,
     required this.updateIsPausedInDatabase,
+    required this.updateShowResultPermission,
   });
 
   final _maxChessTimeController = TextEditingController(text: "300");
@@ -80,7 +82,7 @@ class SettingsModal extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               FilledButton.tonal(
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -88,8 +90,19 @@ class SettingsModal extends StatelessWidget {
                   ),
                 ),
                 onPressed: updateIsPausedInDatabase,
-                child: const Text("Update Pause in Database"),
+                child: const Text("Pause umschalten"),
               ),
+              const SizedBox(height: 20),
+              FilledButton.tonal(
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: updateShowResultPermission,
+                child: const Text("Erlaubnis für Ergebnisse umschalten"),
+              ),
+              const SizedBox(height: 20),
               FilledButton(
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -106,6 +119,7 @@ class SettingsModal extends StatelessWidget {
                 },
                 child: const Text('Ergebnisse anschauen'),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olympiade/mainMenu/activity_button.dart';
+import 'package:olympiade/setup/result_screen.dart';
 
 import '../dice/dice_game.dart';
 import '../games/Dart/darts_start_screen.dart';
@@ -63,6 +64,12 @@ class MainButtonColumn extends StatelessWidget {
               description: "Würfle und lass das Glück entscheiden",
               iconWidget: const Icon(Icons.casino),
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DiceGame()))
+          ),
+          ActivityButton(
+              name: "Auswertung",
+              description: "Anzeige und Auswertung aller Disziplinen Ergebnisse",
+              iconWidget: const Icon(Icons.download),
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ResultScreen()))
           ),
         ]),
       ),

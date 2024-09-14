@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:olympiade/dice/dice_game.dart';
 import 'package:olympiade/infos/soundboard.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
+import 'package:olympiade/setup/result_screen.dart';
 import 'package:olympiade/setup/team_selection.dart';
 import 'package:olympiade/setup/upload_points_screen.dart';
 import 'package:provider/provider.dart';
@@ -145,7 +146,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
         runSpacing: 16,
         children: [
           ListTile(
-            leading: const Icon(Icons.upload_outlined, color: Colors.white),
+            leading: const Icon(Icons.upload, color: Colors.white),
             title: const Text('Punktestand',
                 style: TextStyle(color: Colors.white)),
             onTap: () {
@@ -158,7 +159,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.bolt_outlined, color: Colors.white),
+            leading: const Icon(Icons.sports_esports, color: Colors.white),
             title: const Text('Darts',
                 style: TextStyle(color: Colors.white)),
             onTap: () {
@@ -170,7 +171,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
           ),
           ListTile(
             leading:
-                const Icon(Icons.access_time_outlined, color: Colors.white),
+                const Icon(Icons.access_time, color: Colors.white),
             title:
                 const Text('Schachuhr', style: TextStyle(color: Colors.white)),
             onTap: () {
@@ -182,7 +183,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.music_note_outlined, color: Colors.white),
+            leading: const Icon(Icons.music_note, color: Colors.white),
             title:
             const Text('Soundboard', style: TextStyle(color: Colors.white)),
             onTap: () {
@@ -215,6 +216,19 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const DiceGame(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.download, color: Colors.white),
+            title:
+            const Text('Auswertung', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ResultScreen(),
                   ));
             },
           ),
@@ -255,7 +269,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
           ),
           ListTile(
             leading:
-                const Icon(Icons.change_circle_outlined, color: Colors.white),
+                const Icon(Icons.change_circle, color: Colors.white),
             title: const Text('Team Auswahl',
                 style: TextStyle(color: Colors.white)),
             onTap: () {

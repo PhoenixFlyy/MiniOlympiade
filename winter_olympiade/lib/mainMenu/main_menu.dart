@@ -238,6 +238,18 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
+  void updateShowResultPermissionInDatabase() async {
+    if (!mounted) return;
+    DatabaseReference databaseRef = FirebaseDatabase.instance.ref('/time/showResults');
+    DatabaseEvent event = await databaseRef.once();
+    bool isCurrentlyEnabled = event.snapshot.value.toString() == "true";
+
+    final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
+    databaseReference.update({
+      "showResults": !isCurrentlyEnabled,
+    });
+  }
+
   void updateChessTimeInDatabase(int newChessTimeInSeconds) {
     if (!mounted) return;
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
@@ -323,6 +335,7 @@ class _MainMenuState extends State<MainMenu> {
           eventStartTime: _eventStartTime,
           updateChessTimeInDatabase: updateChessTimeInDatabase,
           updateIsPausedInDatabase: updateIsPausedInDatabase,
+          updateShowResultPermission: updateShowResultPermissionInDatabase,
         );
       },
     );

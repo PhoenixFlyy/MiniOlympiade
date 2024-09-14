@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/utils/text_formatting.dart';
@@ -13,6 +14,7 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  bool showResultsPermission = false;
   bool showSumGrid = false;
   bool showNormGrid = false;
   bool showWinnerGrid = false;
@@ -31,13 +33,25 @@ class _ResultScreenState extends State<ResultScreen> {
         return getAllTeamPointsInDisciplineSortedByMatch(disciplineIndex + 1, teamIndex + 1);
       });
     });
+
+    addPermissionListener();
+  }
+
+  void addPermissionListener() {
+    final DatabaseReference databaseTime = FirebaseDatabase.instance.ref('/time');
+    databaseTime.child("showResults").onValue.listen((event) {
+      final bool streamShowResults = event.snapshot.value.toString().toLowerCase() == 'true';
+      if (mounted) {
+        setState(() => showResultsPermission = streamShowResults);
+      }
+    });
   }
 
   Widget _toggleGridButton(int buttonNumber) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: SizedBox(
-        width: 200,
+        width: 300,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
@@ -47,41 +61,43 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
           onPressed: () {
             HapticFeedback.heavyImpact();
-            setState(() {
-              if (buttonNumber == 0) {
-                sumGridData = Future.wait(
-                  List.generate(teamAmount, (rowNumber) {
-                    return Future.wait(
-                      List.generate(teamAmount, (colNumber) {
-                        return getAllTeamPointsInDisciplineSortedByMatch(colNumber + 1, rowNumber + 1)
-                            .then((pointsList) => getPointsInList(pointsList));
-                      }),
-                    );
-                  }),
-                );
-                showSumGrid = true;
-              }
-              if (buttonNumber == 1) {
-                normGridData = Future.wait(
-                  List.generate(teamAmount, (teamNumber) {
-                    return getListOfPointsForDiscipline(teamNumber + 1);
-                  }),
-                );
-                showNormGrid = true;
-              }
-              if (buttonNumber == 2) {
-                winnerGridData = getWinner();
-                showWinnerGrid = true;
-              }
-            });
+            if (showResultsPermission) {
+              setState(() {
+                if (buttonNumber == 0) {
+                  sumGridData = Future.wait(
+                    List.generate(teamAmount, (rowNumber) {
+                      return Future.wait(
+                        List.generate(teamAmount, (colNumber) {
+                          return getAllTeamPointsInDisciplineSortedByMatch(colNumber + 1, rowNumber + 1)
+                              .then((pointsList) => getPointsInList(pointsList));
+                        }),
+                      );
+                    }),
+                  );
+                  showSumGrid = true;
+                }
+                if (buttonNumber == 1) {
+                  normGridData = Future.wait(
+                    List.generate(teamAmount, (teamNumber) {
+                      return getListOfPointsForDiscipline(teamNumber + 1);
+                    }),
+                  );
+                  showNormGrid = true;
+                }
+                if (buttonNumber == 2) {
+                  winnerGridData = getWinner();
+                  showWinnerGrid = true;
+                }
+              });
+            }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.download, color: Colors.black),
-              SizedBox(width: 10),
-              Text("Lade...",
-                  style: TextStyle(fontSize: 16, color: Colors.black)),
+              if(showResultsPermission) const Icon(Icons.download, color: Colors.black),
+              const SizedBox(width: 10),
+              Text(showResultsPermission ? "Lade..." : "Noch nicht verfügbar",
+                  style: const TextStyle(fontSize: 16, color: Colors.black)),
             ],
           ),
         ),
