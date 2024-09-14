@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/match_data.dart';
 import '../utils/match_detail_queries.dart';
+import '../utils/result_calculations.dart';
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
