@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../infos/achievements/achievement_provider.dart';
 import '../utils/play_sounds.dart';
 
 class ChessTimer extends StatefulWidget {
@@ -60,6 +62,7 @@ class _ChessTimerState extends State<ChessTimer> {
             playerOneTime = 0.0;
             timer.cancel();
             audioService.playAlarmSound();
+            context.read<AchievementProvider>().completeAchievementByTitle('Hochstapler');
           }
         } else {
           if (playerTwoTime > 0) {
@@ -68,6 +71,7 @@ class _ChessTimerState extends State<ChessTimer> {
             playerTwoTime = 0.0;
             timer.cancel();
             audioService.playAlarmSound();
+            context.read<AchievementProvider>().completeAchievementByTitle('Hochstapler');
           }
         }
       });

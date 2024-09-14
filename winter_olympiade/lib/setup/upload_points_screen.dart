@@ -162,10 +162,12 @@ class _UploadResultsState extends State<UploadResults> {
           ),
         ),
         onPressed: () {
-          HapticFeedback.heavyImpact();
-          updateScores(selectedRound, selectedChipScore);
-          fetchTeamScores();
-          setState(() => selectedChipScore = -1);
+          if (selectedChipScore != -1) {
+            HapticFeedback.heavyImpact();
+            updateScores(selectedRound, selectedChipScore);
+            fetchTeamScores();
+            setState(() => selectedChipScore = -1);
+          }
         },
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,

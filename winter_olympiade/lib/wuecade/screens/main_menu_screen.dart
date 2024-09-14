@@ -14,7 +14,6 @@ class FlappyMain extends StatelessWidget {
     final game = FlappyWueGame();
 
     game.onAchievementReached = (String achievementTitle) {
-      print(achievementTitle);
       if (achievementTitle == 'Flappy Chick') {
         context.read<AchievementProvider>().completeAchievementByTitle('Flappy Chick');
       } else if (achievementTitle == 'Flappy Eagle') {

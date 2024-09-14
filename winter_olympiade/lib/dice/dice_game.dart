@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olympiade/dice/DiceModel.dart';
+import 'package:olympiade/dice/dice_model.dart';
 import 'package:shake/shake.dart';
 
 class DiceGame extends StatefulWidget {
