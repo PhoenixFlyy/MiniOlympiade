@@ -10,6 +10,7 @@ import 'package:starsview/starsview.dart';
 
 import '../utils/match_data.dart';
 import '../utils/match_detail_queries.dart';
+import '../utils/text_formatting.dart';
 
 class MainMenuBody extends StatefulWidget {
   final int currentRound;
@@ -45,16 +46,6 @@ class MainMenuBody extends StatefulWidget {
 class _MainMenuBodyState extends State<MainMenuBody> {
   bool isPointsDialogOpen = false;
   bool isDatabaseCorrect = false;
-
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-
-    String days = duration.inDays != 0 ? '${duration.inDays} d ' : '';
-    String hours = '${twoDigits(duration.inHours.remainder(24))} h ';
-    String minutes = '${twoDigits(duration.inMinutes.remainder(60))} Min';
-
-    return days + hours + minutes;
-  }
 
   void showPointsDialog() async {
     bool pointsConfirmed = await showDialog(

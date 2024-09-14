@@ -24,7 +24,6 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
   int currentPageIndex = 0;
 
   late Timer _timer;
@@ -33,13 +32,9 @@ class _MainMenuState extends State<MainMenu> {
 
   final audioService = AudioService();
 
-  Duration maxChessTime = const Duration(minutes: 4);
+  Duration maxChessTime = const Duration(minutes: 5);
   Duration roundTimeDuration = const Duration(minutes: 12);
   Duration playTimeDuration = const Duration(minutes: 10);
-
-  final _roundTimeController = TextEditingController();
-  final _playTimeController = TextEditingController();
-  final _maxChessTimeController = TextEditingController();
 
   int currentRound = 0;
   bool isPaused = false;
@@ -54,24 +49,17 @@ class _MainMenuState extends State<MainMenu> {
 
   final DatabaseReference _databaseTime = FirebaseDatabase.instance.ref('/time');
 
-  bool isFirstRenderingWhistle = true;
-
   void _activateDatabaseTimeListener() {
     _databaseTime.child("isPaused").onValue.listen((event) {
       final bool streamIsPaused = event.snapshot.value.toString().toLowerCase() == 'true';
-      if (!isFirstRenderingWhistle && streamIsPaused) {
+      if (streamIsPaused) {
         audioService.playWhistleSound();
       }
-      if (!isFirstRenderingWhistle && !streamIsPaused) {
+      if (!streamIsPaused && event.previousChildKey != null) {
         audioService.playStartSound();
       }
       if (mounted) {
-        setState(() {
-          isPaused = streamIsPaused;
-        });
-      }
-      if (isFirstRenderingWhistle) {
-        isFirstRenderingWhistle = false;
+        setState(() => isPaused = streamIsPaused);
       }
     });
     _databaseTime.child("pauseTime").onValue.listen((event) {
@@ -94,7 +82,7 @@ class _MainMenuState extends State<MainMenu> {
     });
     _databaseTime.child("chessTime").onValue.listen((event) {
       if (mounted) {
-        setState(() => maxChessTime = Duration(seconds: int.tryParse(event.snapshot.value.toString()) ?? 240));
+        setState(() => maxChessTime = Duration(seconds: int.tryParse(event.snapshot.value.toString()) ?? 300));
       }
     });
 
@@ -121,9 +109,6 @@ class _MainMenuState extends State<MainMenu> {
 
   @override
   void dispose() {
-    _maxChessTimeController.dispose();
-    _roundTimeController.dispose();
-    _playTimeController.dispose();
     _timer.cancel();
     WakelockPlus.disable();
     super.dispose();
@@ -156,11 +141,8 @@ class _MainMenuState extends State<MainMenu> {
 
   void _updateCurrentRound() {
     int newCurrentRound = calculateCurrentRoundWithDateTime();
-    if (newCurrentRound != currentRound) audioService.playStartSound();
-
-    setState(() {
-      currentRound = newCurrentRound;
-    });
+    if (newCurrentRound != currentRound && currentRound > 0 && currentRound <= pairings.length) audioService.playStartSound();
+    setState(() => currentRound = newCurrentRound);
   }
 
   void _updateMatchAndDiscipline() {
@@ -256,11 +238,11 @@ class _MainMenuState extends State<MainMenu> {
     });
   }
 
-  void updateChessTimeInDatabase() {
+  void updateChessTimeInDatabase(int newChessTimeInSeconds) {
     if (!mounted) return;
     final DatabaseReference databaseReference = FirebaseDatabase.instance.ref('/time');
     databaseReference.update({
-      "chessTime": maxChessTime.inSeconds,
+      "chessTime": newChessTimeInSeconds,
     });
   }
 
@@ -293,7 +275,6 @@ class _MainMenuState extends State<MainMenu> {
     }
 
     return Scaffold(
-      key: _key,
       appBar: AppBar(
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
@@ -334,18 +315,11 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void _openSettings() {
-    _maxChessTimeController.text = maxChessTime.inSeconds.toString();
-    _roundTimeController.text = roundTimeDuration.inMinutes.toString();
-    _playTimeController.text = playTimeDuration.inMinutes.toString();
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return SettingsModal(
-          maxChessTimeController: _maxChessTimeController,
-          roundTimeController: _roundTimeController,
-          playTimeController: _playTimeController,
           eventStartTime: _eventStartTime,
           updateChessTimeInDatabase: updateChessTimeInDatabase,
           updateIsPausedInDatabase: updateIsPausedInDatabase,

@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../infos/achievements/achievement_provider.dart';
 import '../utils/match_detail_queries.dart';
+import '../utils/text_formatting.dart';
 
 class MainMenuPointsDialog extends StatefulWidget {
   final int currentRound;
@@ -19,17 +20,6 @@ class MainMenuPointsDialog extends StatefulWidget {
 
 class _MainMenuPointsDialogState extends State<MainMenuPointsDialog> {
   double currentRoundTeamScore = 0.0;
-
-  String getLabelForScore(double value) {
-    if (value == 0.0) {
-      return "Verlierer";
-    } else if (value == 0.5) {
-      return "Unentsch.";
-    } else if (value == 1.0) {
-      return "Gewinner";
-    }
-    return "";
-  }
 
   void updateScores(int roundNumber, double teamScore) {
     if (!mounted) return;

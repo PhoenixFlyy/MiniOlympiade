@@ -8,22 +8,18 @@ import '../utils/date_time_picker.dart';
 import '../utils/date_time_utils.dart';
 
 class SettingsModal extends StatelessWidget {
-  final TextEditingController maxChessTimeController;
-  final TextEditingController roundTimeController;
-  final TextEditingController playTimeController;
   final DateTime eventStartTime;
-  final void Function() updateChessTimeInDatabase;
+  final void Function(int) updateChessTimeInDatabase;
   final void Function() updateIsPausedInDatabase;
 
-  const SettingsModal({
+  SettingsModal({
     super.key,
-    required this.maxChessTimeController,
-    required this.roundTimeController,
-    required this.playTimeController,
     required this.eventStartTime,
     required this.updateChessTimeInDatabase,
     required this.updateIsPausedInDatabase,
   });
+
+  final _maxChessTimeController = TextEditingController(text: "300");
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +57,12 @@ class SettingsModal extends StatelessWidget {
                     height: 75,
                     width: 200,
                     child: TextField(
-                      controller: maxChessTimeController,
+                      controller: _maxChessTimeController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(labelText: "Schachuhr Zeit in Sekunden"),
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) {
-                        maxChessTimeController.text = value;
+                        _maxChessTimeController.text = value;
                       },
                     ),
                   ),
@@ -76,7 +72,10 @@ class SettingsModal extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: updateChessTimeInDatabase,
+                    onPressed: () {
+                      final int chessTimeInSeconds = int.tryParse(_maxChessTimeController.text) ?? 300;
+                      updateChessTimeInDatabase(chessTimeInSeconds);
+                    },
                     child: const Text("Update"),
                   ),
                 ],

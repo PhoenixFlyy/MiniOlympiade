@@ -1,11 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../utils/match_data.dart';
 import '../utils/match_detail_queries.dart';
 import 'package:olympiade/infos/achievements/achievement_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../utils/text_formatting.dart';
 
 class UploadResults extends StatefulWidget {
   final int currentRound;
@@ -23,27 +24,18 @@ class UploadResults extends StatefulWidget {
 
 class _UploadResultsState extends State<UploadResults> {
   int selectedDiscipline = 1;
-  int currentSelectedRound = 1;
-  double currentRoundTeamScore = 0.0;
-
-  late Future<List<double>> teamScoresFuture;
+  int selectedRound = 1;
+  double selectedChipScore = 0.0;
+  List<double>? teamScoresInDiscipline;
 
   @override
   void initState() {
     super.initState();
     if (widget.currentRound > 0 && widget.currentRound <= pairings.length) {
-      currentSelectedRound = widget.currentRound;
+      selectedRound = widget.currentRound;
       selectedDiscipline = getDisciplineNumber(widget.currentRound, widget.teamNumber);
-      teamScoresFuture = getAllTeamPointsInDisciplineSortedByMatch(
-          selectedDiscipline, widget.teamNumber);
-    } else {
-      teamScoresFuture = Future.value([]); // Default-Wert
     }
-  }
-
-  void _updateTeamScores() {
-    teamScoresFuture = getAllTeamPointsInDisciplineSortedByMatch(
-        selectedDiscipline, widget.teamNumber);
+    fetchTeamScores();
   }
 
   void updateScores(int roundNumber, double teamScore) {
@@ -76,187 +68,165 @@ class _UploadResultsState extends State<UploadResults> {
       opponentTeamKey: otherTeamScore
     });
 
-    context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling'); //Achievements
-    _updateTeamScores(); // Tabelle aktualisieren
-    setState(() {}); // State aktualisieren, um UI zu aktualisieren
+    context.read<AchievementProvider>().completeAchievementByTitle('Schreiberling');
+
+    setState(() {});
   }
 
-  Widget getTeamScoreForAllRoundsText() {
-    return FutureBuilder<List<double>>(
-      future: teamScoresFuture,
-      builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return const Text("An error occurred.");
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Text("Keine Daten verfügbar.");
-        } else {
-          final dataRows = List<DataRow>.generate(
-            snapshot.data!.length,
-                (int index) => DataRow(
-              cells: <DataCell>[
-                DataCell(Text("Match ${index + 1}")),
-                DataCell(Text(
-                    "Team ${getOpponentListByDisciplines(selectedDiscipline, widget.teamNumber)[index]}")),
-                DataCell(Text(snapshot.data![index].toString())),
-              ],
-            ),
-          );
-          dataRows.add(DataRow(
-            cells: <DataCell>[
-              const DataCell(Text("Summe:")),
-              const DataCell(Text("")),
-              DataCell(Text(getPointsInList(snapshot.data!).toString())),
-            ],
-          ));
+  void fetchTeamScores() async {
+    getAllTeamPointsInDisciplineSortedByMatch(selectedDiscipline, widget.teamNumber)
+        .then((data) => {
+      setState(() => teamScoresInDiscipline = data)
+    });
+  }
 
-          return DataTable(
-            columns: const <DataColumn>[
-              DataColumn(label: Text('')),
-              DataColumn(label: Text('Gegner')),
-              DataColumn(label: Text('Punkte')),
-            ],
-            rows: dataRows,
-          );
-        }
-      },
+  Widget _roundDisciplineSelection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text('Runde: ',
+                  style: TextStyle(fontSize: 22)),
+              DropdownButton<int>(
+                value: selectedRound,
+                onChanged: (newValue) {
+                  HapticFeedback.lightImpact();
+                  setState(() {
+                    selectedRound = newValue!;
+                  });
+                },
+                items: List<DropdownMenuItem<int>>.generate(
+                  pairings.length,
+                      (index) => DropdownMenuItem<int>(
+                    value: index + 1,
+                    child: Text('${index + 1}',
+                        style: const TextStyle(fontSize: 22)),
+                  ),
+                ),
+              ),
+            ]),
+        Text(getDisciplineName(selectedRound, widget.teamNumber),
+            style: const TextStyle(fontSize: 23)),
+      ],
     );
   }
 
-  String getLabelForScore(double value) {
-    if (value == 0.0) {
-      return "Nied.";
-    } else if (value == 0.5) {
-      return "Unent.";
-    } else if (value == 1.0) {
-      return "Sieg";
+  Widget _chipSelectionRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [0, 0.5, 1].map((value) {
+        return Expanded(
+          child: RawChip(
+            label: Column(
+              children: [
+                Text(
+                  value.toString(),
+                  style: TextStyle(
+                    color: selectedChipScore == value.toDouble() ? Colors.white : Colors.grey,
+                  ),
+                ),
+                Text(
+                  getLabelForScore(value.toDouble()),
+                  style: TextStyle(
+                    color: selectedChipScore == value.toDouble() ? Colors.white : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            selected: selectedChipScore == value.toDouble(),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              setState(() {
+                selectedChipScore = value.toDouble();
+              });
+            },
+            showCheckmark: false,
+            backgroundColor: const Color(0xFF000000),
+            selectedColor: const Color(0xB3FF9800),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _uploadButton() {
+    return SizedBox(
+      width: 200,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: () {
+          HapticFeedback.heavyImpact();
+          updateScores(selectedRound, selectedChipScore);
+          fetchTeamScores();
+        },
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.upload, color: Colors.black),
+            SizedBox(width: 10),
+            Text("Upload",
+                style: TextStyle(fontSize: 16, color: Colors.black)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getTeamScoreForAllRounds() {
+    if (teamScoresInDiscipline == null) {
+      return const Text("Noch keine Daten verfügbar");
     }
-    return "";
+
+    final dataRows = List<DataRow>.generate(
+      teamScoresInDiscipline!.length,
+          (int index) => DataRow(
+        cells: <DataCell>[
+          DataCell(Text("Match ${index + 1}")),
+          DataCell(Text(
+              "Team ${getOpponentListByDisciplines(selectedDiscipline, widget.teamNumber)[index]}")),
+          DataCell(getScoreText(teamScoresInDiscipline![index])),
+        ],
+      ),
+    );
+    return DataTable(
+      columns: const <DataColumn>[
+        DataColumn(label: Text('')),
+        DataColumn(label: Text('Gegner')),
+        DataColumn(label: Text('Ausgang')),
+      ],
+      rows: dataRows,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Hero(
-            tag: "uploadHero",
-            child: Text(
-              "Ergebnisse nachtragen",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-                fontStyle: FontStyle.normal,
-                letterSpacing: 0.0,
-                wordSpacing: 0.0,
-                decoration: TextDecoration.none,
-                decorationColor: Colors.transparent,
-                decorationStyle: TextDecorationStyle.solid,
-                fontFamily: null,
-                height: 1.0,
-              ),)),
+        title: const Text(
+          "Ergebnisse nachtragen",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          ),),
       ),
       body: Center(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Text('Runde: ',
-                          style: TextStyle(fontSize: 22)),
-                      DropdownButton<int>(
-                        value: currentSelectedRound,
-                        onChanged: (newValue) {
-                          HapticFeedback.lightImpact();
-                          setState(() {
-                            currentSelectedRound = newValue!;
-                            _updateTeamScores();
-                          });
-                        },
-                        items: List<DropdownMenuItem<int>>.generate(
-                          pairings.length,
-                              (index) => DropdownMenuItem<int>(
-                            value: index + 1,
-                            child: Text('${index + 1}',
-                                style: const TextStyle(fontSize: 22)),
-                          ),
-                        ),
-                      ),
-                    ]),
-                Text(getDisciplineName(currentSelectedRound, widget.teamNumber),
-                    style: const TextStyle(fontSize: 23)),
-              ],
+            _roundDisciplineSelection(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: _chipSelectionRow(),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Wrap(
-                      spacing: 8,
-                      children: [0.0, 0.5, 1.0].map((value) {
-                        return RawChip(
-                          label: Column(
-                            children: [
-                              Text(
-                                value.toString(),
-                                style: TextStyle(
-                                  color: currentRoundTeamScore == value
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                getLabelForScore(value),
-                                style: TextStyle(
-                                  color: currentRoundTeamScore == value
-                                      ? Colors.white
-                                      : Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          selected: currentRoundTeamScore == value,
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              currentRoundTeamScore = value;
-                            });
-                          },
-                          showCheckmark: false,
-                          backgroundColor: const Color(0xFF1B191D),
-                          selectedColor: const Color(0xFF494255),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.heavyImpact();
-                        updateScores(
-                            currentSelectedRound, currentRoundTeamScore);
-                      },
-                      child: const Text("Upload",
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _uploadButton(),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5.0),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Divider(color: Colors.white),
             ),
             Column(
@@ -265,10 +235,8 @@ class _UploadResultsState extends State<UploadResults> {
                   value: selectedDiscipline,
                   onChanged: (newValue) {
                     HapticFeedback.lightImpact();
-                    setState(() {
-                      selectedDiscipline = newValue!;
-                      _updateTeamScores();  // Lade Tabelle bei Disziplinwechsel neu
-                    });
+                    setState(() => selectedDiscipline = newValue!);
+                    fetchTeamScores();
                   },
                   items: disciplines.keys
                       .map<DropdownMenuItem<int>>((String value) {
@@ -280,7 +248,7 @@ class _UploadResultsState extends State<UploadResults> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: getTeamScoreForAllRoundsText(),
+                  child: _getTeamScoreForAllRounds(),
                 ),
               ],
             ),
