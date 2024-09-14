@@ -7,7 +7,7 @@ Map<String, String> disciplines = {
   '6': 'Jenga',
 };
 
-const amountOfPlayer = 6;
+const int teamAmount = 6;
 
 List<List<String>> pairings = [
   ['1-6', '3-4', '2-5', '', '', ''],

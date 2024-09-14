@@ -115,7 +115,7 @@ class _TeamSelectionState extends State<TeamSelection> {
   }
 
   List<Widget> _buildTeamChips() {
-    return List.generate(amountOfPlayer, (teamIndex) {
+    return List.generate(teamAmount, (teamIndex) {
       int teamNumber = teamIndex + 1;
       bool isSelected = selectedTeam == teamNumber;
 
