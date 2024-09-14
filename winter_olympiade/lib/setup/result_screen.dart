@@ -154,7 +154,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           teamData,
                           getOpponentListByDisciplines(disciplineNumber + 1, gridRowIndex + 1),
                         )[shiftedIndex];
-                        return DataCell(getScoreText(value));
+                        return DataCell(getShortScoreText(value));
                       },
                     )
                   ],

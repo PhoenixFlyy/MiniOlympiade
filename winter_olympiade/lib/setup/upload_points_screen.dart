@@ -25,7 +25,7 @@ class UploadResults extends StatefulWidget {
 class _UploadResultsState extends State<UploadResults> {
   int selectedDiscipline = 1;
   int selectedRound = 1;
-  double selectedChipScore = 0.0;
+  double selectedChipScore = -1;
   List<double>? teamScoresInDiscipline;
 
   @override
@@ -156,7 +156,7 @@ class _UploadResultsState extends State<UploadResults> {
       width: 200,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: selectedChipScore == -1 ? Colors.grey : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -165,6 +165,7 @@ class _UploadResultsState extends State<UploadResults> {
           HapticFeedback.heavyImpact();
           updateScores(selectedRound, selectedChipScore);
           fetchTeamScores();
+          setState(() => selectedChipScore = -1);
         },
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,

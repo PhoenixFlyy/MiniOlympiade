@@ -47,6 +47,42 @@ Widget getScoreText(double value) {
   }
 }
 
+Widget getShortScoreText(double value) {
+  if (value == 0) {
+    return const Text(
+      "0",
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  } else if (value == 1) {
+    return const Text(
+      "1",
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  } else if (value == 0.5) {
+    return const Text(
+      "0.5",
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  } else {
+    return const Text(
+      "N/A",
+      style: TextStyle(
+        color: Colors.grey,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
 String formatDuration(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
 
