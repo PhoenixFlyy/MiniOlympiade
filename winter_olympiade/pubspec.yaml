@@ -20,7 +20,7 @@ dependencies:
   image_picker: ^1.1.2
   path_provider: ^2.1.4
   animated_flip_counter: ^0.3.4
-  flame: ^1.18.0
+  flame: ^1.19.0
   flame_audio: ^2.10.2
   starsview: ^0.0.2
   provider: ^6.1.2
