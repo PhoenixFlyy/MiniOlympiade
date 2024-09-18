@@ -44,8 +44,8 @@ class _MainMenuState extends State<MainMenu> {
   int selectedTeam = 0;
   String selectedTeamName = "";
 
-  DateTime _eventStartTime = DateTime.now();
-  DateTime _eventEndTime = DateTime.now();
+  DateTime _eventStartTime = DateTime(2025, 11, 2);
+  DateTime _eventEndTime = DateTime(2025, 11, 2);
 
   final DatabaseReference _databaseTime = FirebaseDatabase.instance.ref('/time');
 
