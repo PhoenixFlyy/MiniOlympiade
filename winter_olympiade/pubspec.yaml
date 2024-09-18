@@ -21,7 +21,7 @@ dependencies:
   path_provider: ^2.1.4
   animated_flip_counter: ^0.3.4
   flame: ^1.18.0
-  flame_audio: ^2.10.2
+  flame_audio: ^2.10.3
   starsview: ^0.0.2
   provider: ^6.1.2
   awesome_notifications: ^0.9.3+1
