@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      - uses: phoenixflyy/flutter-action@v2
         with:
           channel: 'stable'
           architecture: x64
@@ -33,7 +33,7 @@ jobs:
         working-directory: build/ios/iphoneos
 
       - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+        uses: phoenixflyy/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/ios/iphoneos/FlutterIpaExport.ipa
