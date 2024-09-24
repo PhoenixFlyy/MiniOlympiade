@@ -74,6 +74,7 @@ class _DiceGameState extends State<DiceGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Text('Würfel'),
       ),
       body: Padding(

@@ -312,6 +312,7 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Text("Auswertung", style: TextStyle(fontSize: 20)),
       ),
       body: SingleChildScrollView(

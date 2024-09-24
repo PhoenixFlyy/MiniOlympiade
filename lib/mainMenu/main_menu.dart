@@ -288,6 +288,7 @@ class _MainMenuState extends State<MainMenu> {
 
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Text(appBarTitle, style: const TextStyle(fontSize: 20)),
         actions: [
           if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")

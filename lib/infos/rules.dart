@@ -109,6 +109,7 @@ class _RulesScreenState extends State<RulesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Hero(
             tag: "rulesHero",
             child: Text(

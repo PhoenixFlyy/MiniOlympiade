@@ -45,6 +45,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

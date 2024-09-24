@@ -145,6 +145,7 @@ class _DartStartScreenState extends State<DartStartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Hero(
             tag: "dartsHero",
             child: Text(
