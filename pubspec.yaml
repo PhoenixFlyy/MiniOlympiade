@@ -1,10 +1,10 @@
 name: olympiade
 description: Offizielle App der Wuerzburger Olympiade
 publish_to: 'none'
-version: 2.0.0+1
+version: 2.1.0+1
 
 environment:
-  sdk: '>=3.0.2 <4.0.0'
+  sdk: ^3.5.3
 
 dependencies:
   flutter:
@@ -31,7 +31,6 @@ dependencies:
   wakelock_plus: ^1.2.8
   just_audio: ^0.9.40
   audio_service: ^0.18.15
-  shake: ^2.2.0
 
 dev_dependencies:
   flutter_test:

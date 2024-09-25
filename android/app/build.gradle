@@ -30,16 +30,17 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace 'com.advancedentertainment.olympiade'
     compileSdk 34
     ndkVersion '21.4.7075529'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -67,7 +68,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    namespace 'com.advancedentertainment.olympiade'
     buildToolsVersion '33.0.1'
 }
 
@@ -76,7 +76,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.20"
     implementation platform('com.google.firebase:firebase-bom:32.8.1')
     implementation 'com.google.firebase:firebase-analytics'
 }

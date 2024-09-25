@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:olympiade/dice/dice_model.dart';
-import 'package:shake/shake.dart';
 
 class DiceGame extends StatefulWidget {
   const DiceGame({super.key});
@@ -10,7 +9,6 @@ class DiceGame extends StatefulWidget {
 }
 
 class _DiceGameState extends State<DiceGame> {
-  late ShakeDetector shakeDetector;
   final List<DiceModel> diceModels = [];
   final List<int> diceRanges = [4, 6, 8, 10, 12, 20];
 
@@ -31,25 +29,6 @@ class _DiceGameState extends State<DiceGame> {
     12: Colors.red,
     20: Colors.orange,
   };
-
-  @override
-  void initState() {
-    super.initState();
-    shakeDetector = ShakeDetector.autoStart(
-      shakeThresholdGravity: 2,
-      onPhoneShake: () {
-        if (mounted) {
-          rollDices();
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    shakeDetector.stopListening();
-    super.dispose();
-  }
 
   void addDice(int range) {
     setState(() => diceModels.add(DiceModel(range: range)));
