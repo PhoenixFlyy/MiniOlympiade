@@ -212,6 +212,7 @@ class _UploadResultsState extends State<UploadResults> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Text(
           "Ergebnisse nachtragen",
           style: TextStyle(

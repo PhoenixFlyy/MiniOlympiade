@@ -196,6 +196,7 @@ class _ChessTimerState extends State<ChessTimer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Hero(
             tag: "ChessClockHero",
             child: Text("Schachuhr",

@@ -19,6 +19,7 @@ class DartAnalyticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

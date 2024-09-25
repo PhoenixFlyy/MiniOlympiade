@@ -41,6 +41,7 @@ class SoundBoard extends StatelessWidget {
     final audioService = AudioService();
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: const Text("Soundboard"),
       ),
       body: SingleChildScrollView(

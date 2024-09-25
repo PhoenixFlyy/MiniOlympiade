@@ -259,6 +259,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          forceMaterialTransparency: true,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
