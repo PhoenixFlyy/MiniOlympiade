@@ -17,7 +17,7 @@ class GameOverScreen extends StatefulWidget {
 }
 
 class _GameOverScreenState extends State<GameOverScreen> {
-  List<Map<String, dynamic>> top5Players = [];
+  List<Map<String, dynamic>> topPlayers = [];
 
   @override
   void initState() {
@@ -43,10 +43,10 @@ class _GameOverScreenState extends State<GameOverScreen> {
         });
 
         playerScores.sort((a, b) => b['score'].compareTo(a['score']));
-        List<Map<String, dynamic>> topScores = playerScores.take(5).toList();
+        List<Map<String, dynamic>> topScores = playerScores.take(10).toList();
 
         setState(() {
-          top5Players = topScores;
+          topPlayers = topScores;
         });
       }
     } catch (e) {
@@ -80,6 +80,58 @@ class _GameOverScreenState extends State<GameOverScreen> {
     }
   }
 
+  Widget _topPlayerList() {
+    return Column(
+      children: List.generate(topPlayers.length, (i) {
+        var player = topPlayers[i];
+        String leadingEmoji;
+        double emojiSize = 24;
+        double textSize = 24;
+
+        if (i == 0) {
+          leadingEmoji = '🥇';
+          emojiSize = 40;
+          textSize = 30;
+        } else if (i == 1) {
+          leadingEmoji = '🥈';
+          emojiSize = 35;
+          textSize = 28;
+        } else if (i == 2) {
+          leadingEmoji = '🥉';
+          emojiSize = 30;
+          textSize = 26;
+        } else {
+          leadingEmoji = '${i + 1}.';
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                leadingEmoji,
+                style: TextStyle(fontSize: emojiSize),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${player['name']}: ${player['score']}',
+                style: TextStyle(
+                  fontSize: textSize,
+                  color: Colors.white,
+                  fontFamily: Assets.gameFont,
+                  fontWeight: i == 0 ? FontWeight.bold : null
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -94,6 +146,7 @@ class _GameOverScreenState extends State<GameOverScreen> {
                 fontSize: 60,
                 color: Colors.white,
                 fontFamily: Assets.gameFont,
+                fontWeight: FontWeight.bold
               ),
             ),
             Image.asset(Assets.gameOver),
@@ -115,23 +168,16 @@ class _GameOverScreenState extends State<GameOverScreen> {
                 )),
             const SizedBox(height: 40),
             const Text(
-              'Top 5 Scores',
+              'Top 10 Scores',
               style: TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-                fontFamily: Assets.gameFont,
+                  fontSize: 40,
+                  color: Colors.white,
+                  fontFamily: Assets.gameFont,
+                  fontWeight: FontWeight.bold
               ),
             ),
             const SizedBox(height: 10),
-            for (var player in top5Players)
-              Text(
-                '${player['name']}: ${player['score']}',
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontFamily: Assets.gameFont,
-                ),
-              ),
+            _topPlayerList(),
           ],
         ),
       ),

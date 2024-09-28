@@ -24,5 +24,5 @@ class Assets {
   static const collision = 'collision.wav';
   static const point = 'point.wav';
 
-  static const gameFont = 'Game.tff';
+  static const gameFont = 'assets/fonts/Game.tff';
 }
