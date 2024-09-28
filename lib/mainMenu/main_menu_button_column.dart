@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:olympiade/mainMenu/activity_button.dart';
 import 'package:olympiade/setup/result_screen.dart';
@@ -33,43 +34,43 @@ class MainButtonColumn extends StatelessWidget {
             name: "Punktestand",
             description: "Trage die Spielergebnisse schnell und einfach ein",
             iconWidget: const Icon(Icons.upload),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            onPressed: () => Navigator.of(context).push(CupertinoPageRoute(
                 builder: (context) => UploadResults(currentRound: currentRound, teamNumber: selectedTeam))),
           ),
           ActivityButton(
               name: "Darts",
               description: "Klassisches X01 Gameplay mit Einzel- oder Double-Out-Optionen",
               iconWidget: const Icon(Icons.sports_esports),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DartStartScreen()))),
+              onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const DartStartScreen()))),
           ActivityButton(
               name: "Schachuhr",
               description: "Eine Schachuhr, um in Jenga die Zeit zu tracken",
               iconWidget: const Icon(Icons.access_time),
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ChessTimer(maxTime: maxChessTime.inSeconds)))),
+                  .push(CupertinoPageRoute(builder: (context) => ChessTimer(maxTime: maxChessTime.inSeconds)))),
           ActivityButton(
             name: "Soundboard",
             description: "Spiele eine Auswahl an Tönen und Sounds ab",
             iconWidget: const Icon(Icons.music_note),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SoundBoard())),
+            onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const SoundBoard())),
           ),
           ActivityButton(
             name: "Wuecade Games",
             description: "Spiele FlappyBirds im Olympiaden- und Würzburg-Stil",
             iconWidget: const Icon(Icons.gamepad),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FlappyMain())),
+            onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const FlappyMain())),
           ),
           ActivityButton(
               name: "Würfel",
               description: "Würfle und lass das Glück entscheiden",
               iconWidget: const Icon(Icons.casino),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DiceGame()))
+              onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const DiceGame()))
           ),
           ActivityButton(
               name: "Auswertung",
               description: "Anzeige und Auswertung aller Disziplinen Ergebnisse",
               iconWidget: const Icon(Icons.download),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ResultScreen()))
+              onPressed: () => Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const ResultScreen()))
           ),
         ]),
       ),

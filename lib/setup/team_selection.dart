@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +90,7 @@ class _TeamSelectionState extends State<TeamSelection> {
                       }
                       HapticFeedback.heavyImpact();
                       Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) => const MainMenu(),
                         ),
                       );

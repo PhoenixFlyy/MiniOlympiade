@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:olympiade/infos/achievements/achievement_screen.dart';
@@ -305,9 +306,17 @@ class _MainMenuState extends State<MainMenu> {
           eventStartTime: _eventStartTime,
           eventEndTime: _eventEndTime,
           maxChessTime: maxChessTime.inSeconds),
-      body: IndexedStack(
-        index: currentPageIndex,
-        children: _screenList(),
+      body: PageTransitionSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (Widget child, Animation<double> primaryAnimation, Animation<double> secondaryAnimation) {
+          return SharedAxisTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            transitionType: SharedAxisTransitionType.vertical,
+            child: child,
+          );
+        },
+        child: _screenList()[currentPageIndex],
       ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.black,

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -152,7 +153,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(CupertinoPageRoute(
                   builder: (context) => UploadResults(
                       currentRound: widget.currentRound,
                       teamNumber: widget.teamNumber)));
@@ -165,7 +166,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(CupertinoPageRoute(
                   builder: (context) => const DartStartScreen()));
             },
           ),
@@ -177,7 +178,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
-              Navigator.of(context).push(MaterialPageRoute(
+              Navigator.of(context).push(CupertinoPageRoute(
                   builder: (context) =>
                       ChessTimer(maxTime: widget.maxChessTime)));
             },
@@ -190,7 +191,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SoundBoard()));
+                  CupertinoPageRoute(builder: (context) => const SoundBoard()));
             },
           ),
           ListTile(
@@ -201,7 +202,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.mediumImpact();
               Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => const FlappyMain(),
                   ));
             },
@@ -214,7 +215,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.mediumImpact();
               Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => const DiceGame(),
                   ));
             },
@@ -227,7 +228,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
               HapticFeedback.mediumImpact();
               Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => const ResultScreen(),
                   ));
             },
@@ -275,7 +276,7 @@ class _MainMenuNavigationDrawerState extends State<MainMenuNavigationDrawer> {
             onTap: () {
               HapticFeedback.lightImpact();
               Navigator.pop(context);
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              Navigator.of(context).pushReplacement(CupertinoPageRoute(
                   builder: (context) => const TeamSelection()));
             },
           ),
