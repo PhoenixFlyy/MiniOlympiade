@@ -110,23 +110,12 @@ class _RulesScreenState extends State<RulesScreen> {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
-        title: const Hero(
-            tag: "rulesHero",
-            child: Text(
-                'Regeln',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: 0.0,
-                  wordSpacing: 0.0,
-                  decoration: TextDecoration.none,
-                  decorationColor: Colors.transparent,
-                  decorationStyle: TextDecorationStyle.solid,
-                  fontFamily: null,
-                  height: 1.0,
-                ))),
+        title: const Text(
+            'Regeln',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            )),
       ),
       body: ListView(
         children: <Widget>[

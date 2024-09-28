@@ -197,22 +197,11 @@ class _ChessTimerState extends State<ChessTimer> {
     return Scaffold(
       appBar: AppBar(
         forceMaterialTransparency: true,
-        title: const Hero(
-            tag: "ChessClockHero",
-            child: Text("Schachuhr",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.normal,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: 0.0,
-                  wordSpacing: 0.0,
-                  decoration: TextDecoration.none,
-                  decorationColor: Colors.transparent,
-                  decorationStyle: TextDecorationStyle.solid,
-                  fontFamily: null,
-                  height: 1.0,
-                ))),
+        title: const Text("Schachuhr",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            )),
       ),
       body: Column(
         children: [
