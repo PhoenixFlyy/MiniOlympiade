@@ -18,9 +18,22 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
   bool isHit = false;
   late TextComponent score;
   Function(String)? onAchievementReached;
+  bool isExpertMode = false;
+
+  double gameSpeed = Config.gameSpeed;
+  double minPipeHeight = Config.minPipeHeight;
+  double minPipeSpacing = Config.minPipeSpacing;
+  double speedIncrease = 0.0;
 
   @override
   Future<void> onLoad() async {
+    if (isExpertMode) {
+      gameSpeed = Config.expertSpeed;
+      minPipeHeight = Config.expertMinPipeHeight;
+      minPipeSpacing = Config.expertMinPipeSpacing;
+      speedIncrease = Config.expertSpeedIncrease;
+    }
+
     addAll([
       Background(),
       Ground(),
@@ -29,6 +42,12 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     ]);
 
     interval.onTick = () => add(PipeGroup(onAchievementReached: onAchievementReached));
+  }
+
+  void increaseGameSpeed() {
+    if (isExpertMode) {
+      gameSpeed += speedIncrease;
+    }
   }
 
   TextComponent buildScore() {
@@ -53,7 +72,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     if (isHit) {
       score.text = '';
     } else {
-      score.text = 'Score: ${bird.score}';
+      score.text = '${isExpertMode ? 'Expert ' : ''} Score: ${bird.score}';
     }
   }
 }

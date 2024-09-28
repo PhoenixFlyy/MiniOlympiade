@@ -47,6 +47,7 @@ class FlappyMainMenuScreen extends StatefulWidget {
 
 class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
   String selectedSkin = 'Skin1';
+  int selectedModeIndex = 0; // 0 for Normal, 1 for Expert
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,8 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
         children: [
           GestureDetector(
             onTap: () {
+              widget.game.isExpertMode = selectedModeIndex == 1;
+              widget.game.bird.setBirdSkin(selectedSkin);
               widget.game.overlays.remove('mainMenu');
               widget.game.resumeEngine();
             },
@@ -78,6 +81,40 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: ToggleButtons(
+                    isSelected: [selectedModeIndex == 0, selectedModeIndex == 1],
+                    onPressed: (index) {
+                      setState(() {
+                        selectedModeIndex = index;
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    selectedColor: Colors.white,
+                    fillColor: selectedModeIndex == 0 ? Colors.green : Colors.red,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.child_care, size: 40),
+                            Text('Normal', style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.local_fire_department, size: 40),
+                            Text('Expert', style: TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const Text(
                   "Choose your fighter",
                   style: TextStyle(
@@ -86,14 +123,15 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                // Existing code for selecting skins...
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Skin 1
                     GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedSkin = 'Skin1';
-                          widget.game.bird.setBirdSkin('Skin1');
                         });
                       },
                       child: Image.asset(
@@ -103,11 +141,11 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
                       ),
                     ),
                     const SizedBox(width: 30),
+                    // Skin 2
                     GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedSkin = 'Skin2';
-                          widget.game.bird.setBirdSkin('Skin2');
                         });
                       },
                       child: Image.asset(
@@ -116,11 +154,12 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
                         height: selectedSkin == 'Skin2' ? 120 : 80,
                       ),
                     ),
+                    const SizedBox(width: 30),
+                    // Skin 3
                     GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedSkin = 'Skin3';
-                          widget.game.bird.setBirdSkin('Skin3');
                         });
                       },
                       child: Image.asset(

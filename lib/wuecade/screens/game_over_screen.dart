@@ -39,6 +39,7 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
 
   Future<void> fetchTopScores() async {
     try {
+      String mode = widget.game.isExpertMode ? 'expert' : 'normal';
       final DatabaseReference ref = FirebaseDatabase.instance.ref('flappyBirds');
       final DataSnapshot snapshot = await ref.get();
 
@@ -46,11 +47,14 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
         List<Map<String, dynamic>> playerScores = [];
 
         Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
-        data.forEach((key, value) {
-          playerScores.add({
-            'name': key,
-            'score': value['score'] ?? 0,
-          });
+        data.forEach((playerName, playerData) {
+          if (playerData[mode] != null && playerData[mode]['score'] != null) {
+            int score = (playerData[mode]['score'] ?? 0) as int;
+            playerScores.add({
+              'name': playerName,
+              'score': score,
+            });
+          }
         });
 
         playerScores.sort((a, b) => b['score'].compareTo(a['score']));
@@ -108,82 +112,85 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
     String? playerName = prefs.getString('teamName');
 
     if (playerName != null) {
-      final DatabaseReference playerRef = FirebaseDatabase.instance.ref('flappyBirds/$playerName');
+      String mode = widget.game.isExpertMode ? 'expert' : 'normal';
+      final DatabaseReference playerRef = FirebaseDatabase.instance.ref('flappyBirds/$playerName/$mode');
       final DataSnapshot snapshot = await playerRef.get();
 
       int newScore = widget.game.bird.score;
 
       if (snapshot.exists) {
-        int currentScore = snapshot.child('score').value as int;
+        int currentScore = (snapshot.child('score').value ?? 0) as int;
 
         if (newScore > currentScore) {
           await playerRef.update({'score': newScore});
-          await fetchTopScores();
         }
       } else {
         await playerRef.set({'score': newScore});
-        await fetchTopScores();
       }
+
+      await fetchTopScores();
     }
   }
 
   Widget _topPlayerList() {
-    return Column(
-      children: List.generate(topPlayers.length, (i) {
-        var player = topPlayers[i];
-        String leadingEmoji;
-        double emojiSize = 24;
-        double textSize = 24;
+    return SingleChildScrollView(
+      child: Column(
+        children: List.generate(topPlayers.length, (i) {
+          var player = topPlayers[i];
+          String leadingEmoji;
+          double emojiSize = 24;
+          double textSize = 24;
 
-        if (i == 0) {
-          leadingEmoji = '🥇';
-          emojiSize = 40;
-          textSize = 30;
-        } else if (i == 1) {
-          leadingEmoji = '🥈';
-          emojiSize = 35;
-          textSize = 28;
-        } else if (i == 2) {
-          leadingEmoji = '🥉';
-          emojiSize = 30;
-          textSize = 26;
-        } else {
-          leadingEmoji = '${i + 1}.';
-        }
+          if (i == 0) {
+            leadingEmoji = '🥇';
+            emojiSize = 40;
+            textSize = 30;
+          } else if (i == 1) {
+            leadingEmoji = '🥈';
+            emojiSize = 35;
+            textSize = 28;
+          } else if (i == 2) {
+            leadingEmoji = '🥉';
+            emojiSize = 30;
+            textSize = 26;
+          } else {
+            leadingEmoji = '${i + 1}.';
+          }
 
-        return FadeTransition(
-          opacity: _animations[i],
-          child: SlideTransition(
-            position: _animations[i].drive(Tween<Offset>(
-              begin: const Offset(0, 0.2),
-              end: Offset.zero,
-            )),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    leadingEmoji,
-                    style: TextStyle(fontSize: emojiSize),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${player['name']}: ${player['score']}',
-                    style: TextStyle(
-                      fontSize: textSize,
-                      color: Colors.white,
-                      fontFamily: Assets.gameFont,
-                      fontWeight: i == 0 ? FontWeight.bold : null,
+          return FadeTransition(
+            opacity: _animations[i],
+            child: SlideTransition(
+              position: _animations[i].drive(Tween<Offset>(
+                begin: const Offset(0, 0.2),
+                end: Offset.zero,
+              )),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      leadingEmoji,
+                      style: TextStyle(fontSize: emojiSize),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Text(
+                      '${player['name']}: ${player['score']}',
+                      style: TextStyle(
+                        fontSize: textSize,
+                        color: Colors.white,
+                        fontFamily: Assets.gameFont,
+                        fontWeight: i == 0 ? FontWeight.bold : null,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
