@@ -13,6 +13,7 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   PipeGroup({this.onAchievementReached});
 
   final _random = Random();
+  bool scoreUpdated = false;
 
   @override
   Future<void> onLoad() async {
@@ -38,9 +39,13 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
     super.update(dt);
     position.x -= gameRef.gameSpeed * dt;
 
+    if (!scoreUpdated && position.x <= 50) {
+      scoreUpdated = true;
+      updateScore();
+    }
+
     if (position.x < -30) {
       removeFromParent();
-      updateScore();
     }
 
     if (gameRef.isHit) {
@@ -52,7 +57,9 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   void updateScore() {
     gameRef.bird.score += 1;
     FlameAudio.play(Assets.point);
-    gameRef.increaseGameSpeed();
+    if (gameRef.isExpertMode) {
+      gameRef.increaseGameSpeed();
+    }
 
     if (gameRef.bird.score == 10) {
       onAchievementReached?.call('Flappy Chick');

@@ -47,7 +47,7 @@ class FlappyMainMenuScreen extends StatefulWidget {
 
 class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
   String selectedSkin = 'Skin1';
-  int selectedModeIndex = 0; // 0 for Normal, 1 for Expert
+  int selectedModeIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +60,7 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
           GestureDetector(
             onTap: () {
               widget.game.isExpertMode = selectedModeIndex == 1;
+              widget.game.updateGameMode();
               widget.game.bird.setBirdSkin(selectedSkin);
               widget.game.overlays.remove('mainMenu');
               widget.game.resumeEngine();
@@ -79,10 +80,10 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 50),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.only(top: 50),
                   child: ToggleButtons(
                     isSelected: [selectedModeIndex == 0, selectedModeIndex == 1],
                     onPressed: (index) {
@@ -115,57 +116,60 @@ class _FlappyMainMenuScreenState extends State<FlappyMainMenuScreen> {
                     ],
                   ),
                 ),
-                const Text(
-                  "Choose your fighter",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // Existing code for selecting skins...
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   children: [
-                    // Skin 1
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedSkin = 'Skin1';
-                        });
-                      },
-                      child: Image.asset(
-                        'assets/images/bird_midflap.png',
-                        width: selectedSkin == 'Skin1' ? 120 : 80,
-                        height: selectedSkin == 'Skin1' ? 120 : 80,
+                    const Text(
+                      "Choose your fighter",
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 30),
-                    // Skin 2
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedSkin = 'Skin2';
-                        });
-                      },
-                      child: Image.asset(
-                        'assets/images/bird_midflap2.png',
-                        width: selectedSkin == 'Skin2' ? 120 : 80,
-                        height: selectedSkin == 'Skin2' ? 120 : 80,
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    // Skin 3
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedSkin = 'Skin3';
-                        });
-                      },
-                      child: Image.asset(
-                        'assets/images/bird_midflap3.png',
-                        width: selectedSkin == 'Skin3' ? 120 : 80,
-                        height: selectedSkin == 'Skin3' ? 120 : 80,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedSkin = 'Skin1';
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/bird_midflap.png',
+                              width: selectedSkin == 'Skin1' ? 120 : 80,
+                              height: selectedSkin == 'Skin1' ? 120 : 80,
+                            ),
+                          ),
+                          const SizedBox(width: 30),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedSkin = 'Skin2';
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/bird_midflap2.png',
+                              width: selectedSkin == 'Skin2' ? 120 : 80,
+                              height: selectedSkin == 'Skin2' ? 120 : 80,
+                            ),
+                          ),
+                          const SizedBox(width: 30),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedSkin = 'Skin3';
+                              });
+                            },
+                            child: Image.asset(
+                              'assets/images/bird_midflap3.png',
+                              width: selectedSkin == 'Skin3' ? 120 : 80,
+                              height: selectedSkin == 'Skin3' ? 120 : 80,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

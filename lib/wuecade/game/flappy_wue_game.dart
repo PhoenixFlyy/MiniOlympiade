@@ -23,17 +23,9 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
   double gameSpeed = Config.gameSpeed;
   double minPipeHeight = Config.minPipeHeight;
   double minPipeSpacing = Config.minPipeSpacing;
-  double speedIncrease = 0.0;
 
   @override
   Future<void> onLoad() async {
-    if (isExpertMode) {
-      gameSpeed = Config.expertSpeed;
-      minPipeHeight = Config.expertMinPipeHeight;
-      minPipeSpacing = Config.expertMinPipeSpacing;
-      speedIncrease = Config.expertSpeedIncrease;
-    }
-
     addAll([
       Background(),
       Ground(),
@@ -44,9 +36,21 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     interval.onTick = () => add(PipeGroup(onAchievementReached: onAchievementReached));
   }
 
+  void updateGameMode() {
+    if (isExpertMode) {
+      gameSpeed = Config.expertSpeed;
+      minPipeHeight = Config.expertMinPipeHeight;
+      minPipeSpacing = Config.expertMinPipeSpacing;
+    } else {
+      gameSpeed = Config.gameSpeed;
+      minPipeHeight = Config.minPipeHeight;
+      minPipeSpacing = Config.minPipeSpacing;
+    }
+  }
+
   void increaseGameSpeed() {
     if (isExpertMode) {
-      gameSpeed += speedIncrease;
+      gameSpeed += (gameSpeed / 100).roundToDouble();
     }
   }
 

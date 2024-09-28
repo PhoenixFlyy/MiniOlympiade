@@ -133,64 +133,62 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
   }
 
   Widget _topPlayerList() {
-    return SingleChildScrollView(
-      child: Column(
-        children: List.generate(topPlayers.length, (i) {
-          var player = topPlayers[i];
-          String leadingEmoji;
-          double emojiSize = 24;
-          double textSize = 24;
+    return Column(
+      children: List.generate(topPlayers.length, (i) {
+        var player = topPlayers[i];
+        String leadingEmoji;
+        double emojiSize = 24;
+        double textSize = 24;
 
-          if (i == 0) {
-            leadingEmoji = '🥇';
-            emojiSize = 40;
-            textSize = 30;
-          } else if (i == 1) {
-            leadingEmoji = '🥈';
-            emojiSize = 35;
-            textSize = 28;
-          } else if (i == 2) {
-            leadingEmoji = '🥉';
-            emojiSize = 30;
-            textSize = 26;
-          } else {
-            leadingEmoji = '${i + 1}.';
-          }
+        if (i == 0) {
+          leadingEmoji = '🥇';
+          emojiSize = 40;
+          textSize = 30;
+        } else if (i == 1) {
+          leadingEmoji = '🥈';
+          emojiSize = 35;
+          textSize = 28;
+        } else if (i == 2) {
+          leadingEmoji = '🥉';
+          emojiSize = 30;
+          textSize = 26;
+        } else {
+          leadingEmoji = '${i + 1}.';
+        }
 
-          return FadeTransition(
-            opacity: _animations[i],
-            child: SlideTransition(
-              position: _animations[i].drive(Tween<Offset>(
-                begin: const Offset(0, 0.2),
-                end: Offset.zero,
-              )),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      leadingEmoji,
-                      style: TextStyle(fontSize: emojiSize),
+        return FadeTransition(
+          opacity: _animations[i],
+          child: SlideTransition(
+            position: _animations[i].drive(Tween<Offset>(
+              begin: const Offset(0, 0.2),
+              end: Offset.zero,
+            )),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    leadingEmoji,
+                    style: TextStyle(fontSize: emojiSize),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${player['name']}: ${player['score']}',
+                    style: TextStyle(
+                      fontSize: textSize,
+                      color: Colors.white,
+                      fontFamily: Assets.gameFont,
+                      fontWeight: i == 0 ? FontWeight.bold : null,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${player['name']}: ${player['score']}',
-                      style: TextStyle(
-                        fontSize: textSize,
-                        color: Colors.white,
-                        fontFamily: Assets.gameFont,
-                        fontWeight: i == 0 ? FontWeight.bold : null,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 
@@ -201,48 +199,51 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
       child: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 40),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                'Score: ${widget.game.bird.score}',
-                style: const TextStyle(
-                  fontSize: 60,
-                  color: Colors.white,
-                  fontFamily: Assets.gameFont,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              Image.asset(Assets.gameOver),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: onRestart,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                  child: const Text(
-                    'Restart',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  )),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () => onExit(context),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text(
-                    'Exit',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  )),
-              const SizedBox(height: 40),
-              const Text(
-                'Top 10 Scores',
-                style: TextStyle(
-                    fontSize: 40,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  'Score: ${widget.game.bird.score}',
+                  style: const TextStyle(
+                    fontSize: 60,
                     color: Colors.white,
                     fontFamily: Assets.gameFont,
                     fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              _topPlayerList(),
-            ],
+                Image.asset(Assets.gameOver),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: onRestart,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                    child: const Text(
+                      'Restart',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () => onExit(context),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    child: const Text(
+                      'Exit',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+                const SizedBox(height: 40),
+                const Text(
+                  'Top 10 Scores',
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                      fontFamily: Assets.gameFont,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _topPlayerList(),
+              ],
+            ),
           ),
         ),
       ),
