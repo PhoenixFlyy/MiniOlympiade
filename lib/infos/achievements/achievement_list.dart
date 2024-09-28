@@ -4,6 +4,7 @@ class Achievement {
   final String description;
   bool hidden;
   bool isCompleted;
+  bool isDisabled;
 
   Achievement({
     required this.image,
@@ -11,6 +12,7 @@ class Achievement {
     required this.description,
     this.hidden = false,
     this.isCompleted = false,
+    this.isDisabled = false,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class Achievement {
       'description': description,
       'isCompleted': isCompleted,
       'hidden': hidden,
+      'isDisabled': isDisabled,
     };
   }
 
@@ -30,6 +33,7 @@ class Achievement {
       description: json['description'],
       isCompleted: json['isCompleted'] ?? false,
       hidden: json['hidden'] ?? false,
+      isDisabled: json['isDisabled'] ?? false,
     );
   }
 }
@@ -46,101 +50,121 @@ final List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie2.PNG',
     title: 'First Blood!',
     description: 'Gewinne in der ersten Runde',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie3.PNG',
     title: 'Oh no, the perfect score!',
     description: 'Verliere deine erste Disziplin',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie4.PNG',
     title: 'Ein erster Schritt zum Sieg',
     description: 'Schlage den ersten Gegner',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie5.PNG',
     title: 'Diesmal nicht!',
     description: 'Besiege einen der Sieger der Vorjahre',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie6.PNG',
     title: 'Win Streak!',
     description: 'Gewinne drei Disziplinen hintereinander',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie7.PNG',
     title: 'Gotta Catch \'Em All',
     description: 'Gewinne in jeder Disziplin mindestens einmal',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie8.PNG',
     title: 'Mr. Consistent',
     description: 'Sei in jeder Disziplin unter den Top 3',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie9.PNG',
     title: 'Winner Winner Chicken Dinner',
     description: 'Gewinne das Event',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie10.PNG',
     title: 'Ruhige Hände',
     description: 'Gewinne in Jenga',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie11.PNG',
     title: 'Holzfäller!',
     description: 'Gewinne in Kubb',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie12.PNG',
     title: 'Einloch-Experte',
     description: 'Gewinne in Billard',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie13.PNG',
     title: 'Ab in den Ally Pally!',
     description: 'Gewinne in Darts',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie14.PNG',
     title: 'Noch nüchtern? Die Gegner nicht mehr!',
     description: 'Gewinne in Bierpong',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie15.PNG',
     title: 'Meeessssiiii!',
     description: 'Gewinne in Kicker',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie16.PNG',
     title: 'Mein Teampartner ist schuld!',
     description: 'Verliere in jeder Disziplin mindestens einmal',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie17.PNG',
     title: 'Comeback?',
     description: 'Gewinne nachdem du 3 mal verloren hast',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie18.PNG',
     title: 'Nicht aufzuhalten!',
     description: 'Gewinne in einer Disziplin gegen alle anderen',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie19.PNG',
     title: 'Kanonenfutter',
     description: 'Verliere in einer Disziplin gegen alle anderen',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie20.PNG',
     title: 'Ungespielt Moment',
     description: 'Gewinne fünf Disziplinen hintereinander',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie21.PNG',
     title: 'Hochstapler',
     description: 'Gewinne oder verliere ein Jengaspiel auf Zeit',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie22.PNG',
@@ -156,11 +180,13 @@ final List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie24.PNG',
     title: 'Kurzer Prozess',
     description: 'Trage die Ergebnisse schon nach 5 min ein',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie25.PNG',
     title: 'Chess GM',
     description: 'Gewinne Jenga mit über 2:30 Restzeit',
+    isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie26.PNG',

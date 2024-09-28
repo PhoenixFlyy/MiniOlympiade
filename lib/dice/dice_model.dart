@@ -35,12 +35,46 @@ class DiceModel extends ChangeNotifier {
   }
 }
 
-class DiceWidget extends StatelessWidget {
+class DiceWidget extends StatefulWidget {
   final DiceModel dice;
   final VoidCallback onRemove;
   final double diceSize;
 
   const DiceWidget({super.key, required this.dice, required this.onRemove, required this.diceSize});
+
+  @override
+  State<DiceWidget> createState() => _DiceWidgetState();
+}
+
+class _DiceWidgetState extends State<DiceWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  void _animateOut() {
+    _controller.reverse().then((value) {
+      widget.onRemove();
+    });
+  }
 
   Color getTintForRange(int range) {
     switch (range) {
@@ -64,31 +98,37 @@ class DiceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onRemove,
+      onTap: _animateOut,
       child: ChangeNotifierProvider<DiceModel>.value(
-        value: dice,
+        value: widget.dice,
         child: Consumer<DiceModel>(
           builder: (context, dice, child) {
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    getTintForRange(dice.range).withOpacity(0.5),
-                    BlendMode.srcATop,
-                  ),
-                  child: Image.asset(dice.currentDiceImage, width: 125, height: 125),
-                ),
-                if (dice.currentDiceNumber != -1)
-                  Text(
-                    dice.currentDiceNumber.toString(),
-                    style: TextStyle(
-                      fontSize: diceSize * 0.5,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            return FadeTransition(
+              opacity: _animation,
+              child: ScaleTransition(
+                scale: _animation,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        getTintForRange(dice.range).withOpacity(0.5),
+                        BlendMode.srcATop,
+                      ),
+                      child: Image.asset(dice.currentDiceImage, width: 125, height: 125),
                     ),
-                  ),
-              ],
+                    if (dice.currentDiceNumber != -1)
+                      Text(
+                        dice.currentDiceNumber.toString(),
+                        style: TextStyle(
+                          fontSize: widget.diceSize * 0.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             );
           },
         ),

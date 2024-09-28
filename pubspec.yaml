@@ -31,6 +31,7 @@ dependencies:
   wakelock_plus: ^1.2.8
   just_audio: ^0.9.40
   audio_service: ^0.18.15
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart_constants.dart';
@@ -27,7 +28,7 @@ class DartAnalyticsScreen extends StatelessWidget {
               HapticFeedback.heavyImpact();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
+                CupertinoPageRoute(
                   builder: (context) => const DartStartScreen(),
                 ),
               );

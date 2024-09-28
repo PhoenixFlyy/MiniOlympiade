@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:olympiade/games/Dart/dart_analytics_screen.dart';
@@ -142,7 +143,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => DartAnalyticsScreen(
           turnHistory: turnHistory,
           playerList: widget.playerList,
@@ -285,7 +286,7 @@ class _DartPlayScreenState extends State<DartPlayScreen> {
                         HapticFeedback.lightImpact();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          CupertinoPageRoute(
                             builder: (context) => DartAnalyticsScreen(
                               turnHistory: turnHistory,
                               playerList: widget.playerList,

@@ -49,24 +49,13 @@ class _AchievementScreenState extends State<AchievementScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Hero(
-                tag: "achievementHero",
-                child: Text(
-                  'Achievements',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: 0.0,
-                    wordSpacing: 0.0,
-                    decoration: TextDecoration.none,
-                    decorationColor: Colors.transparent,
-                    decorationStyle: TextDecorationStyle.solid,
-                    fontFamily: null,
-                    height: 1.0,
-                  ),
-                )),
+            const Text(
+              'Achievements',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
             if (selectedTeamName == "Felix99" || selectedTeamName == "Simon00")
               IconButton(
                 icon: const Icon(Icons.restart_alt),
@@ -108,6 +97,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
                   description: achievements[itemIndex].description,
                   isCompleted: achievements[itemIndex].isCompleted,
                   hidden: achievements[itemIndex].hidden,
+                  isDisabled: achievements[itemIndex].isDisabled,
                 );
               },
             );
@@ -139,6 +129,7 @@ class _AchievementScreenState extends State<AchievementScreen> {
     required String description,
     required bool isCompleted,
     required bool hidden,
+    required bool isDisabled,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -265,6 +256,15 @@ class _AchievementScreenState extends State<AchievementScreen> {
                     ],
                   ),
           ),
+          if (isDisabled)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
         ],
       ),
     );

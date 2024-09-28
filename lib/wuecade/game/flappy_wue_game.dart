@@ -50,6 +50,10 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
     super.update(dt);
     interval.update(dt);
 
-    score.text = 'Score: ${bird.score}';
+    if (isHit) {
+      score.text = '';
+    } else {
+      score.text = 'Score: ${bird.score}';
+    }
   }
 }
