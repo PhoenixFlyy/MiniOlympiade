@@ -139,7 +139,7 @@ final List<Achievement> defaultAchievements = [
   Achievement(
     image: 'assets/achievements/Folie17.PNG',
     title: 'Comeback?',
-    description: 'Gewinne nachdem du 3 mal verloren hast',
+    description: 'Gewinne nachdem du mind. 3 mal verloren hast',
     isDisabled: true,
   ),
   Achievement(
@@ -186,7 +186,7 @@ final List<Achievement> defaultAchievements = [
     image: 'assets/achievements/Folie25.PNG',
     title: 'Chess GM',
     description: 'Gewinne Jenga mit über 2:30 Restzeit',
-    isDisabled: true,
+    //isDisabled: true,
   ),
   Achievement(
     image: 'assets/achievements/Folie26.PNG',
