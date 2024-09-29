@@ -17,6 +17,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
   late TextComponent score;
+  late TextComponent multiplier;
   Function(String)? onAchievementReached;
   bool isExpertMode = false;
 
@@ -31,6 +32,7 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
       Ground(),
       bird = Bird(),
       score = buildScore(),
+      multiplier = buildMultiplier(),
     ]);
 
     interval.onTick = () => add(PipeGroup(onAchievementReached: onAchievementReached));
@@ -38,7 +40,6 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
 
   void updateGameMode() {
     if (isExpertMode) {
-      gameSpeed = Config.expertSpeed;
       minPipeHeight = Config.expertMinPipeHeight;
       minPipeSpacing = Config.expertMinPipeSpacing;
     } else {
@@ -50,8 +51,12 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
 
   void increaseGameSpeed() {
     if (isExpertMode) {
-      gameSpeed += (gameSpeed / 100).roundToDouble();
+      gameSpeed *= 1.02;
     }
+  }
+  
+  void resetGameSpeed() {
+    gameSpeed = Config.gameSpeed;
   }
 
   TextComponent buildScore() {
@@ -60,6 +65,15 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
         anchor: Anchor.center,
         textRenderer: TextPaint(
           style: const TextStyle(fontSize: 40, fontFamily: Assets.gameFont, fontWeight: FontWeight.bold, color: Colors.black),
+        ));
+  }
+
+  TextComponent buildMultiplier() {
+    return TextComponent(
+        position: Vector2(size.x / 2, size.y / 2 * 0.3),
+        anchor: Anchor.center,
+        textRenderer: TextPaint(
+          style: const TextStyle(fontSize: 25, fontFamily: Assets.gameFont, color: Colors.black),
         ));
   }
 
@@ -75,8 +89,10 @@ class FlappyWueGame extends FlameGame with TapDetector, HasCollisionDetection {
 
     if (isHit) {
       score.text = '';
+      multiplier.text = '';
     } else {
-      score.text = '${isExpertMode ? 'Expert ' : ''} Score: ${bird.score}';
+      score.text = 'Score: ${bird.score}';
+      multiplier.text = isExpertMode ? 'Multiplier: x${(gameSpeed / Config.gameSpeed).toStringAsFixed(2)}' : '';
     }
   }
 }

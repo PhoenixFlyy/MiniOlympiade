@@ -252,6 +252,7 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
 
   void onRestart() {
     widget.game.bird.reset();
+    widget.game.resetGameSpeed();
     widget.game.overlays.remove('gameOver');
     widget.game.resumeEngine();
   }
