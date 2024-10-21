@@ -1,9 +1,9 @@
 import 'dart:async';
-
+import 'package:olympiade/infos/achievements/achievement_screen.dart'; // Importiere die Achievement-Seite oder -Logik
 import 'package:animations/animations.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:olympiade/infos/achievements/achievement_screen.dart';
+import 'package:olympiade/utils/achievement_queries.dart';
 import 'package:olympiade/infos/rules.dart';
 import 'package:olympiade/infos/schedule_page.dart';
 import 'package:olympiade/mainMenu/main_menu_navigation_drawer.dart';
@@ -25,6 +25,8 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+  late int teamNumber; // Definiere hier die Teamnummer
+  late int roundNumber; // Definiere hier die Rundennummer
   int currentPageIndex = 0;
 
   late Timer _timer;
@@ -125,9 +127,20 @@ class _MainMenuState extends State<MainMenu> {
     if (!isPaused) {
       _updateCurrentRound();
       _updateMatchAndDiscipline();
+      // Prüfen, ob die aktuelle Runde abgeschlossen ist
+      if (calculateRemainingTimeInRound().inSeconds <= 0) {
+        // Hier teamNumber und roundNumber übergeben
+        _onRoundEnd(teamNumber, roundNumber); // Rufe die Methode auf, wenn die Runde endet
+      }
     }
     calculateEventEndTime();
   }
+
+  void _onRoundEnd(int teamNumber, int roundNumber) {
+    // Hier Achievements abfragen
+    checkAchievements(context, teamNumber, roundNumber); // Diese Funktion sollte in deiner Achievement-Logik definiert sein
+  }
+
 
   void calculateEventEndTime() {
     Duration calculatedDuration =

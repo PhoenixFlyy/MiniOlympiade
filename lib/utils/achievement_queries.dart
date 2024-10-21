@@ -517,3 +517,15 @@ void checkWinInJenga(BuildContext context, int teamNumber) async {
 }
 
 
+// Zentrale Funktion zum Überprüfen aller Achievements
+void checkAchievements(BuildContext context, int teamNumber, int roundNumber) {
+  checkFirstRoundWin(context, teamNumber);
+  checkFirstRoundWLoss(context, teamNumber, roundNumber);
+  checkFirstWin(context, teamNumber, roundNumber);
+  checkThreeConsecutiveWins(context, teamNumber);
+  checkFiveConsecutiveWins(context, teamNumber);
+  checkWinInEveryDiscipline(context, teamNumber);
+  checkLoseInEveryDiscipline(context, teamNumber);
+  checkWinAfterThreeOrMoreLosses(context, teamNumber);
+  checkWinAgainstAllInAnyDiscipline(context, teamNumber);
+}
