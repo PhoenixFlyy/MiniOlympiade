@@ -61,11 +61,11 @@ final List<GameRule> gameRules = [
     '• Treffen beide Spieler in einen Becher, erhalten diese die Bälle zurück. Wird derselbe Becher getroffen, kommt ein zusätzlicher Becher weg (nicht alle drumherum!).',
     '• Steht ein Becher allein, darf je Spieler einmal pro Spiel „Island“ gerufen werden. Trifft er den angesagten Becher, muss ein extra Becher weggestellt werden. Die Wahl hat das getroffene Team. Wird ein anderer Becher getroffen, zählt dieser Wurf nicht.',
     '• Kommt ein Ball über die Hälfte des Tisches zurück und gelingt es dem diesseitigen Team, den Ball zu erlangen, darf dieses einen zusätzlichen Trick-Shot-Wurf ausführen.',
-    '• Die Becher dürfen einmal pro Spiel umgestellt werden',
+    '• Die Becher dürfen einmal pro Spiel umgestellt werden.',
     '• Es gibt keinen Nachwurf!',
   ]),
   GameRule('Kubb', [
-    '• Der Aufbau erfolgt so wie auf dem Bild. Ziel des Spiels ist es, mit den Wurfstöcken alle Kubbs in der gegnerischen Hälfte umzuwerfen. Gelingt dies, darf - für den Sieg - der König umgeworfen werden.',
+    '• Der Aufbau erfolgt so wie auf dem Bild gezeigt. Ziel des Spiels ist es, mit den Wurfstöcken alle Kubbs in der gegnerischen Hälfte umzuwerfen. Gelingt dies, darf - für den Sieg - der König umgeworfen werden.',
     '• Wurde ein Kubb im eigenen Feld umgeworfen, muss dieser Kubb vor den eigenen Wurfstabwürfen in das gegnerische Feld geworfen werden. Wenn ein Kubb nicht im gegnerischen Feld liegen bleibt, darf der Wurf einmal wiederholt werden. Beim zweiten Fehlversuch darf der Gegner den Kubb selbst platzieren. Diese Kubbs müssen vor einem Wurf auf die Linienkubbs umgeworfen werden.',
     '• Trifft man mit einem geworfenen Kubb einen schon im Feld liegenden Kubb ("Feldkubb"; gemeint sind nicht die Linienkubbs des Gegners), werden die Kubbs gestapelt. Es ist auch möglich, dass man in den ersten beiden Würfen zwei Kubbs weit auseinander wirft, dann aber mit dem dritten Wurf die beiden Kubbs berührt. Dann werden alle Kubbs aufeinandergestapelt. Gestapelt wird durch den Gegner. Dieser darf dabei wählen, welchen Kubb er als Basis nimmt; an diesem Ort entsteht dann der Turm. Der Basiskubb wird dabei an dem Ort aufgestellt, wo er liegen bleibt. Beim Aufstellen darf dieser in jede Richtung aufgeklappt werden.',
     '• Hat man alle zuvor gefallenen Kubbs geworfen, muss man sie umwerfen, bevor man die Linienkubbs des Gegners umwerfen darf. Fällt ein Linienkubb bevor nicht alle Feldkubbs umgeworfen wurden, wird dieser wieder aufgestellt.',
