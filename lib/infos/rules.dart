@@ -56,12 +56,13 @@ final List<GameRule> gameRules = [
   GameRule('Bierpong', [
     'Gespielt wird mit sechs Bechern. Die letzten drei Becher befinden sich jeweils an der hinteren Kante des Tisches, die anderen beiden pyramidenförmig davor. Im Sinne der Spielfähigkeit der Kontrahenten sind die Becher nur mit Wasser gefüllt. Es darf bzw. muss dennoch ausgiebig getrunken werden!',
     '• Die Ellenbogen müssen hinter dem Tisch bleiben. Ist dies nicht der Fall, ist der Wurf zwar durchgeführt, jedoch ungültig.',
-    '• Ist der Ball bereits einmal auf der Platte/Becher aufgekommen, kann er weggeschlagen werden. Trifft ein so gespielter Ball dennoch, müssen zwei Becher vom Tisch. Den zusätzlichen Becher darf das getroffene Team wählen.',
+    '• Ist der Ball bereits einmal auf der Platte/Becher aufgekommen, kann er weggeschlagen werden. Trifft ein zuvor auf der Platte aufgekommener Ball dennoch, müssen zwei Becher vom Tisch. Den zusätzlichen Becher darf das getroffene Team wählen.',
     '• Das Herauspusten des Balls ist nicht erlaubt.',
     '• Treffen beide Spieler in einen Becher, erhalten diese die Bälle zurück. Wird derselbe Becher getroffen, kommt ein zusätzlicher Becher weg (nicht alle drumherum!).',
     '• Steht ein Becher allein, darf je Spieler einmal pro Spiel „Island“ gerufen werden. Trifft er den angesagten Becher, muss ein extra Becher weggestellt werden. Die Wahl hat das getroffene Team. Wird ein anderer Becher getroffen, zählt dieser Wurf nicht.',
     '• Kommt ein Ball über die Hälfte des Tisches zurück und gelingt es dem diesseitigen Team, den Ball zu erlangen, darf dieses einen zusätzlichen Trick-Shot-Wurf ausführen.',
     '• Die Becher dürfen einmal pro Spiel umgestellt werden.',
+    '• Werden die Becher durch Eigenverschulden umgekippt oder getroffen, zählen sie als vom Gegner getroffen.',
     '• Es gibt keinen Nachwurf!',
   ]),
   GameRule('Kubb', [
