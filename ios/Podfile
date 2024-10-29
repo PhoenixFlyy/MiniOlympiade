@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '12.0'
+platform :ios, '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -32,13 +32,16 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  target 'RunnerTests' do
-    inherit! :search_paths
-  end
-end
 
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
+  post_install do |installer|
+        # Issue info: https://github.com/invertase/react-native-firebase/issues/8082
+        # Patch info: https://github.com/google/leveldb/pull/965
+        leveldb_posix_file = 'Pods/leveldb-library/util/env_posix.cc'
+        if File.exist?(leveldb_posix_file)
+          old_contents = File.read(leveldb_posix_file)
+          new_contents = old_contents.gsub(/std::memory_order::memory_order_relaxed/, "std::memory_order_relaxed")
+          File.chmod(0777, leveldb_posix_file)
+          File.open(leveldb_posix_file, "w") { |file| file.puts new_contents }
+        end
+    end
   end
-end
