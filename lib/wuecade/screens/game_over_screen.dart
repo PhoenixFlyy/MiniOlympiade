@@ -39,6 +39,7 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
 
   Future<void> fetchTopScores() async {
     try {
+      String mode = widget.game.isExpertMode ? 'expert' : 'normal';
       final DatabaseReference ref = FirebaseDatabase.instance.ref('flappyBirds');
       final DataSnapshot snapshot = await ref.get();
 
@@ -46,11 +47,14 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
         List<Map<String, dynamic>> playerScores = [];
 
         Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
-        data.forEach((key, value) {
-          playerScores.add({
-            'name': key,
-            'score': value['score'] ?? 0,
-          });
+        data.forEach((playerName, playerData) {
+          if (playerData[mode] != null && playerData[mode]['score'] != null) {
+            int score = (playerData[mode]['score'] ?? 0) as int;
+            playerScores.add({
+              'name': playerName,
+              'score': score,
+            });
+          }
         });
 
         playerScores.sort((a, b) => b['score'].compareTo(a['score']));
@@ -108,22 +112,23 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
     String? playerName = prefs.getString('teamName');
 
     if (playerName != null) {
-      final DatabaseReference playerRef = FirebaseDatabase.instance.ref('flappyBirds/$playerName');
+      String mode = widget.game.isExpertMode ? 'expert' : 'normal';
+      final DatabaseReference playerRef = FirebaseDatabase.instance.ref('flappyBirds/$playerName/$mode');
       final DataSnapshot snapshot = await playerRef.get();
 
       int newScore = widget.game.bird.score;
 
       if (snapshot.exists) {
-        int currentScore = snapshot.child('score').value as int;
+        int currentScore = (snapshot.child('score').value ?? 0) as int;
 
         if (newScore > currentScore) {
           await playerRef.update({'score': newScore});
-          await fetchTopScores();
         }
       } else {
         await playerRef.set({'score': newScore});
-        await fetchTopScores();
       }
+
+      await fetchTopScores();
     }
   }
 
@@ -194,48 +199,51 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
       child: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 40),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                'Score: ${widget.game.bird.score}',
-                style: const TextStyle(
-                  fontSize: 60,
-                  color: Colors.white,
-                  fontFamily: Assets.gameFont,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              Image.asset(Assets.gameOver),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: onRestart,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                  child: const Text(
-                    'Restart',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  )),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () => onExit(context),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text(
-                    'Exit',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  )),
-              const SizedBox(height: 40),
-              const Text(
-                'Top 10 Scores',
-                style: TextStyle(
-                    fontSize: 40,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  'Score: ${widget.game.bird.score}',
+                  style: const TextStyle(
+                    fontSize: 60,
                     color: Colors.white,
                     fontFamily: Assets.gameFont,
                     fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              _topPlayerList(),
-            ],
+                Image.asset(Assets.gameOver),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: onRestart,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                    child: const Text(
+                      'Restart',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () => onExit(context),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                    child: const Text(
+                      'Exit',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+                const SizedBox(height: 40),
+                const Text(
+                  'Top 10 Scores',
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                      fontFamily: Assets.gameFont,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _topPlayerList(),
+              ],
+            ),
           ),
         ),
       ),
@@ -244,6 +252,7 @@ class _GameOverScreenState extends State<GameOverScreen> with TickerProviderStat
 
   void onRestart() {
     widget.game.bird.reset();
+    widget.game.resetGameSpeed();
     widget.game.overlays.remove('gameOver');
     widget.game.resumeEngine();
   }

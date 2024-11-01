@@ -26,6 +26,6 @@ class Ground extends ParallaxComponent<FlappyWueGame> with HasGameRef<FlappyWueG
   @override
   void update(double dt) {
     super.update(dt);
-    parallax?.baseVelocity.x = Config.gameSpeed;
+    parallax?.baseVelocity.x = gameRef.gameSpeed;
   }
 }

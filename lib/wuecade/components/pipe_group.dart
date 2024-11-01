@@ -13,6 +13,7 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   PipeGroup({this.onAchievementReached});
 
   final _random = Random();
+  bool scoreUpdated = false;
 
   @override
   Future<void> onLoad() async {
@@ -20,10 +21,10 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
 
-    final spacing = Config.minPipeSpacing + _random.nextDouble();
+    final spacing = gameRef.minPipeSpacing + _random.nextDouble() * 50.0;
 
-    final minCenterY = Config.minPipeHeight + (spacing / 2);
-    final maxCenterY = heightMinusGround - Config.minPipeHeight - (spacing / 2);
+    final minCenterY = gameRef.minPipeHeight + (spacing / 2);
+    final maxCenterY = heightMinusGround - gameRef.minPipeHeight - (spacing / 2);
 
     final centerY = minCenterY + _random.nextDouble() * (maxCenterY - minCenterY);
 
@@ -36,11 +37,15 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    position.x -= Config.gameSpeed * dt;
+    position.x -= gameRef.gameSpeed * dt;
+
+    if (!scoreUpdated && position.x <= 50) {
+      scoreUpdated = true;
+      updateScore();
+    }
 
     if (position.x < -30) {
       removeFromParent();
-      updateScore();
     }
 
     if (gameRef.isHit) {
@@ -52,6 +57,10 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyWueGame> {
   void updateScore() {
     gameRef.bird.score += 1;
     FlameAudio.play(Assets.point);
+    if (gameRef.isExpertMode) {
+      gameRef.increaseGameSpeed();
+    }
+
     if (gameRef.bird.score == 10) {
       onAchievementReached?.call('Flappy Chick');
     }
