@@ -56,7 +56,7 @@ PODS:
   - IosAwnCore (0.9.3)
   - just_audio (0.0.1):
     - Flutter
-  - leveldb-library (1.22.5)
+  - leveldb-library (1.22.6)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
-  leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
+  leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
