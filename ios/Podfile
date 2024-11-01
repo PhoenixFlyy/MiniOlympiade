@@ -32,7 +32,9 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.7.0'  target 'RunnerTests' do
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '10.7.0'
+
+  target 'RunnerTests' do
     inherit! :search_paths
   end
 end
@@ -47,16 +49,17 @@ post_install do |installer|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       end
     end
-  
+
     ################  Awesome Notifications pod modification 1 ###################
     awesome_pod_file = File.expand_path(File.join('plugins', 'awesome_notifications', 'ios', 'Scripts', 'AwesomePodFile'), '.symlinks')
     require awesome_pod_file
     update_awesome_pod_build_settings(installer)
     ################  Awesome Notifications pod modification 1 ###################
   end
-  
+
   ################  Awesome Notifications pod modification 2 ###################
   awesome_pod_file = File.expand_path(File.join('plugins', 'awesome_notifications', 'ios', 'Scripts', 'AwesomePodFile'), '.symlinks')
   require awesome_pod_file
   update_awesome_main_target_settings('Runner', File.dirname(File.realpath(__FILE__)), flutter_root)
   ################  Awesome Notifications pod modification 2 ###################
+end
